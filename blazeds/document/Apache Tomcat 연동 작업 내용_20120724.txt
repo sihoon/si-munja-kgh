@@ -1,0 +1,23 @@
+1. sms계정 추가
+ - sms/sms1207
+
+2. /etc/httpd/conf/httpd.conf 수정
+ - ##Tomcat 주석으로 표기됨
+
+3. etc/httpd/conf/workers.properties 추가
+
+4. /etc/httpd/conf.d/vir.conf 수정
+ - ##Tomcat 주석으로 표기됨
+
+5. /etc/httpd/modules/mod_jk.so 추가
+
+6. /home/sms/apache-tomcat-7.0.29 톰켓 설치
+  - /home/sms/webapps/WebContent : root dir
+
+
+톰켓 구동
+/home/sms/apache-tomcat-7.0.29/bin/catalina.sh start
+/home/sms/apache-tomcat-7.0.29/bin/catalina.sh stop
+
+접속 테스트
+http://munja.imagemaker.co.kr/
