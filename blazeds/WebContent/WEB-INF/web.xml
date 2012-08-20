@@ -22,14 +22,14 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
-<!-- begin rds
+
     <servlet>
         <servlet-name>RDSDispatchServlet</servlet-name>
 		<display-name>RDSDispatchServlet</display-name>
         <servlet-class>flex.rds.server.servlet.FrontEndServlet</servlet-class>
 		<init-param>
 			<param-name>useAppserverSecurity</param-name>
-			<param-value>true</param-value>
+			<param-value>false</param-value>
 		</init-param>        
         <load-on-startup>10</load-on-startup>
     </servlet>
@@ -38,7 +38,7 @@
         <servlet-name>RDSDispatchServlet</servlet-name>
         <url-pattern>/CFIDE/main/ide.cfm</url-pattern>
     </servlet-mapping>
-end rds -->
+
 
     <servlet-mapping>
         <servlet-name>MessageBrokerServlet</servlet-name>
@@ -49,6 +49,18 @@ end rds -->
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
     </welcome-file-list>
+    <resource-ref>
+       <description>Web DB Connection</description>
+       <res-ref-name>jdbc/web</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+    </resource-ref>
+    <resource-ref>
+       <description>SMS DB Connection</description>
+       <res-ref-name>jdbc/sms1</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+    </resource-ref>
 
     <!-- for WebSphere deployment, please uncomment -->
     <!--

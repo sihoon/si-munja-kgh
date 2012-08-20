@@ -9,5 +9,23 @@
     <default-channels>
         <channel ref="my-amf"/>
     </default-channels>
+    
+    <destination id="WEB">
+		<properties>
+		<source>com.m.Web</source>
+		</properties>
+	</destination>
+	
+	<destination id="DS">
+		<properties>
+		<source>com.m.DS</source>
+		</properties>
+	</destination>
+	
+	<destination id="ADMIN">
+		<properties>
+		<source>com.m.Admin</source>
+		</properties>
+	</destination>
 
 </service>
