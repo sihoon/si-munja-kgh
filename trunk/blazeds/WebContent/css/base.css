@@ -1,0 +1,29 @@
+*{margin:0; padding:0;font-size:1em;}
+html, body {height: 100%; /* Required */}
+body{background: #fff;color:#666; font:0.75em/1.6 돋움,Dotum,AppleGothic,sans-serif; }
+* html body {font-size: 12px;}
+
+a:link, a:visited { color: #555; text-decoration: none;}
+a:active, a:hover { color: #fa9b47; text-decoration: underline;}
+
+div, p, ul, li, img, a, table, td, th, tr, h1, h2, h3, h4, h5, h6, form, input, span, iframe, dl, dt, dd {margin:0;padding:0;}
+fieldset{border:none;}
+img { border: 0 none;}
+em { font-style: normal; font-weight: bold;}
+address{font-style:normal;}
+table { border-collapse: collapse;}
+
+ul,ol {margin:0;padding:0;list-style:none;}
+li, dl, dd, dt { margin:0; padding:0;}
+legend, hr, caption{visibility:hidden;overflow:hidden;position:absolute;width:0;height:0;font-size:0;line-height:0;}
+td *, div *, li *, span *, p * { vertical-align: middle;}
+button {cursor:pointer;padding:0px;margin:0px;}
+
+input.type_img, li img { vertical-align: middle; /* For IE image margin */}
+input.inputText, textarea, select {border: 1px solid #c9c9c9;background: #fff;}
+input, select, textarea {vertical-align: middle; font-family:inherit;font-size: 100%;color: #666;}
+input.type-text, input.type-file, textarea { color: #003; border: 1px solid #CECECE;}
+input.type-text, input.type-file, textarea, select { background-color: #FFF;}
+input.type-text, input.type-file { padding-left: 2px;}
+/*ie 6이하 버전에서의 배경 위치변경관련 핵*/
+html {_filter: expression(document.execCommand("BackgroundImageCache", false, true));}
