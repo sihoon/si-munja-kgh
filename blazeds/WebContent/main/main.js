@@ -14,7 +14,7 @@ attributes.name = "Mainflex";
 attributes.align = "middle";
 swfobject.embedSWF(
     "main/Main.swf", "flashContent", 
-    "950", "540", 
+    "950", "750", 
     swfVersionStr, xiSwfUrlStr, 
     flashvars, params, attributes);
 // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.

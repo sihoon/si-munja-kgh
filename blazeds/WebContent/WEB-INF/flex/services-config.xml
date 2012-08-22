@@ -33,7 +33,7 @@
 
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
            <!-- <endpoint url="http://{server.name}:8080/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/> -->
-         <endpoint url="http://www.munja119.com:8080/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+         <endpoint url="http://{server.name}:{server.port}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
         </channel-definition>
 
         <channel-definition id="my-secure-amf" class="mx.messaging.channels.SecureAMFChannel">

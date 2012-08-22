@@ -70,8 +70,8 @@
 <div id="main"><!--main Start-->
         
 		<div id="flashContent" style="display:none;border:1px solid red;"></div>
-<!-- 		<script type="text/javascript" src="flexlib/swfobject.js"></script> -->
-<!-- 		<script type="text/javascript" src="main/main.js"></script> -->
+		<script type="text/javascript" src="flexlib/swfobject.js"></script>
+		<script type="text/javascript" src="main/main.js"></script>
 		
 		<!-- lms -->
         <fieldset class="emoticon">
