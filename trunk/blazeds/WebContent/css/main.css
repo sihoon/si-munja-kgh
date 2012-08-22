@@ -3,14 +3,14 @@
 .vab {vertical-align:bottom;}
 .top_bg {position: absolute; left: 0px; top: 0px; width:100%; height:218px; background: url("../images/top_bg.jpg") 0 0 repeat-x;}
 #wrapper {	position: relative;width: 910px;margin: 0 auto;}
-#sideBanner {position: absolute;top: 200px;right: -151px;width: 145px;height: 535px;background:url("../images/scroll.jpg") 0 0 no-repeat;text-indent:-9999px;}
+#sideBanner {position: absolute;top: 200px;right: -191px;width: 145px;height: 535px;background:url("../images/scroll.jpg") 0 0 no-repeat;text-indent:-9999px;}
 /* Box*/
 div.context {width:910px; height:auto; margin:0px auto;position: relative;}
 .ti {text-indent:-9999px;}
 #topSub {float:right;margin-bottom:10px;}
 #topSub a{font-size:11px;}
-#logo {clear:both;width:910px; height:52px;margin-bottom:29px;}
-#menu { width:910px;height:44px;}
+#logo {clear:both;width:910px; height:52px;margin-bottom:31px;}
+#menu { width:910px;height:44px;margin-bottom:30px;}
 #menu a {display:block;float:left;overflow:hidden;display:inline;}
 #menu .sms {width:149px; height:42px;background:url("../images/m01.jpg") 0 0 no-repeat; }
 #menu .lms {width:129px; height:42px;background:url("../images/m02.jpg") 0 0 no-repeat; }
