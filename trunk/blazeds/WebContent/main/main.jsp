@@ -109,7 +109,6 @@
             </div>
         </fieldset>
 		
-        <a href="javascript:return false;" class="potomore" onclick="window.location.href='?content=mms'">더보기</a>
         <fieldset id="poto">
            <img src="/images/tit03.gif" class="title_txt" />
             <ul class="title">
