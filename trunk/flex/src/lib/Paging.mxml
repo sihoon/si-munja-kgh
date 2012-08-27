@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" height="25">
+	<fx:Metadata>
+		[Event(name="clickPage", type="lib.CustomEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Button;
+			import mx.events.ItemClickEvent;
+			
+			[Bindable] public var bar:ArrayCollection = new ArrayCollection();
+			/* Records per page */
+			private var _viewDataCount:uint = 16; 
+			private var _totalDataCount:uint = 0;
+			
+			private var _currPage:uint = 0;
+			public var _pageBlockViewCount:uint = 5;
+			
+			private var index:uint = 0;
+			private var navPage:uint = 1;
+			
+			private var pageCount:uint = 0;
+			private var pageBlock:uint = 0;
+			
+			private var currPageBlock:int = -1;
+			
+			public function set viewDataCount(u:uint):void {_viewDataCount = u;createPageBar();}
+			public function set totalDataCount(u:uint):void {_totalDataCount = u; pageCount = Math.ceil(totalDataCount/viewDataCount);createPageBar();}
+			
+			private function set currPage(u:uint):void {_currPage = u; pageBlock = Math.ceil((_currPage+1)/pageBlockViewCount)-1}
+			private function set pageBlockViewCount(u:uint):void {_pageBlockViewCount = u;}
+			
+			public function get viewDataCount():uint { return _viewDataCount;}
+			public function get totalDataCount():uint { return _totalDataCount;}
+			private function get currPage():uint { return _currPage;}
+			private function get pageBlockViewCount():uint { return _pageBlockViewCount;}
+			
+			private function clickPage(event:ItemClickEvent):void {
+				
+				currPage = event.item.data;
+				dispatchEvent(new CustomEvent("clickPage",currPage));
+				var arr:Array = new Array();
+				arr.push(event.index);
+				callLater(selItem, arr);
+			}
+			private function selItem(i:int):void {
+				
+				var arr:Array = pageBar.getChildren();
+				for (var c:int = 0; c < arr.length; c++) {
+					if (c == i)	Button(pageBar.getChildAt(c)).enabled = false;
+					else Button(pageBar.getChildAt(c)).enabled = true;
+				}
+				
+			}
+			
+			public function init():void {
+				
+				var arr:Array = new Array();
+				
+				bar.removeAll();
+				if( pageBlock > 0 ){
+					bar.addItem({label:"  << 처음  ",data:0});
+					bar.addItem({label:"  < 이전  ",data:(pageBlock-1)*pageBlockViewCount});
+					
+					arr.push(2);
+					callLater(selItem, arr);
+				}else {
+					arr.push(0);
+					callLater(selItem, arr);
+				}
+				
+				for( var x:uint = 0; x < pageBlockViewCount; x++){
+					
+					var pg:uint = x + (pageBlock*pageBlockViewCount);
+					bar.addItem({label: pg + 1,data: pg});
+					if( pg + 1 >= pageCount) break;
+				}
+				
+				if( pageBlock < Math.ceil(pageCount/pageBlockViewCount)-1 ){
+					bar.addItem({label:"  다음 >  ",data:(pageBlock+1)*pageBlockViewCount});
+					bar.addItem({label:"  마지막 >>  ",data:pageCount-1});
+				}
+				currPageBlock = pageBlock;
+				
+			}
+			
+			private function createPageBar():void {
+				
+				if (currPageBlock != pageBlock)	init();
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:LinkBar id="pageBar" itemClick="clickPage(event)" dataProvider="{bar}" contentBackgroundAlpha="0"
+				horizontalGap="1" 
+				width="100%" height="25"/>
+</s:Group>

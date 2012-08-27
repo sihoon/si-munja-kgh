@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:handphone="component.handphone.*"
+		 height="20">
+	<fx:Script>
+		<![CDATA[
+			import lib.CustomEvent;
+			
+			import mx.events.FlexEvent;
+			
+			private var _cnt:uint = 0;
+			private var _minute:uint = 0;
+			
+			public function get bInterval():Boolean { return (intervalText.text.length > 0)?true:false; }
+			
+			public function get cnt():uint { return _cnt; }
+			public function get minute():uint { return _minute; }
+			
+			
+			protected function setIntButton_clickHandler(event:MouseEvent):void
+			{
+				this.intLayer.visible = true;
+			}
+			
+			protected function intLayer_setReservationHandler(event:CustomEvent):void {
+				
+				this._cnt = event.obj.cnt;
+				this._minute = event.obj.minute;
+				
+				intervalText.text = String(this._cnt+" / "+this._minute);
+			}
+			
+			public function canIntButton_clickHandler():void
+			{
+				this._cnt = 0;
+				this._minute = 0;
+				cb.selected = false;
+				this.intervalText.text = "";
+				checkbox1_changeHandler(null);
+			}
+			
+			protected function checkbox1_changeHandler(event:Event):void
+			{
+				if (cb.selected) {
+					cb.label = "";
+					setIntButton_clickHandler(null);
+					
+				}else {
+					cb.label = "간격발송";
+					Label( cb.labelDisplay ).setStyle("color","0x333333");
+					this.intervalText.text = "";
+				}
+				
+			}
+			
+			protected function cb_creationCompleteHandler(event:FlexEvent):void
+			{
+				Label( cb.labelDisplay ).setStyle("color","0x333333");
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle">
+		<s:CheckBox id="cb" label="간격발송" symbolColor="0x00bfff" color="#6D6D6D" change="checkbox1_changeHandler(event)" creationComplete="cb_creationCompleteHandler(event)"
+					fontSize="12"/>
+		<s:Label id="intervalText" fontSize="12" fontWeight="bold" color="0x00bfff" />	
+	</s:HGroup>
+	<handphone:IntervalLayer id="intLayer" visible="false" x="-150" y="-120" setInterval="intLayer_setReservationHandler(event)" />
+</s:Group>

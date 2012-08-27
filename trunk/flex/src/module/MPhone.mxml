@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  implements="module.IModuleInterface_Phone"
+		  width="285" height="566"
+		  creationComplete="creationCompleteHandler(event)"
+		  xmlns:handphone="component.handphone.*" xmlns:lib="lib.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace handphone "component.handphone.*";
+		*
+		{
+			font-family: Dotum;
+			color:#000000;
+		}
+	</fx:Style>
+
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.CustomEvent;
+			import lib.SLibrary;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.RemoteObject;
+			
+			private var defMode:String = "SMS";
+			private var bLMSAuto:Boolean = true;
+			
+			public function setMessage(msg:String):void {
+				
+				if ( Boolean(parentApplication.bLogin) == false ) ExternalInterface.call("alert","로그인 후 이용가능합니다.");
+				else {
+					cMessage.setMessage(msg);
+					if (parentApplication.appName != "Sent")
+						ExternalInterface.call("alert", "메시지창에 적용되었습니다.");
+				}
+			}
+			
+			public function setMessageAdd(msg:String):void {
+				
+				cMessage.setMessageAdd(msg);
+				//ExternalInterface.call("alert", "메시지창에 적용되었습니다.");
+			}
+			
+			public function setAutoMessage(b:Boolean):void {
+				bLMSAuto = b;
+			}
+			
+			
+			public function setPhoto(source:String):void {
+				if ( Boolean(parentApplication.bLogin) == false ) ExternalInterface.call("alert","로그인 후 이용가능합니다.");
+				else {
+					cMessage.setPhoto(source);
+					ExternalInterface.call("alert", "메시지창에 적용되었습니다.");
+				}
+			}
+			
+			public function addList(phone:String):void{
+				this.cPhone.addList(phone);
+				ExternalInterface.call("alert", "전화번호가 추가 되었습니다.");
+			}
+			public function addListArray(arr:Array):void{
+				this.cPhone.addListArray(arr);
+				ExternalInterface.call("alert", "전화번호가 추가 되었습니다.");
+			}
+			
+			public function changeSMS():void {
+				defMode = "SMS";
+			}
+			public function changeLMS():void {
+				defMode = "LMS";
+			}
+			public function changeMMS():void {
+				defMode = "MMS";
+			}
+			
+			/*###############################
+			#	variable & Attribute		#
+			###############################*/
+			private var ro:RemoteObject = null;
+			private var RO_DESTINATION:String = "WEB";
+			private var ro_sub:RemoteObject = null;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				ExternalInterface.addCallback("phoneFlexFunction",phoneFlexFunction);
+				
+				this.cMessage.bLMSAuto = bLMSAuto;
+				
+				if (defMode == "SMS")this.cMessage.changeSMS();
+				else if (defMode == "LMS")this.cMessage.changeLMS();
+				else if (defMode == "MMS")this.cMessage.changeMMS();
+				sendButton.enabled = false;
+				isValid();
+				
+				//ExternalInterface.call("readyPhone");
+			}
+			private function phoneFlexFunction(fun:String, arg:Object):void {
+				
+				if (fun == "setMessage") setMessage(arg as String);
+				else if (fun == "setMessageAdd") setMessageAdd(arg as String);
+				else if (fun == "setAutoMessage") setAutoMessage(arg as Boolean);
+				else if (fun == "setPhoto") setPhoto(arg as String);
+				else if (fun == "addList") addList(arg as String);
+				else if (fun == "addListArray") addListArray(arg as Array);
+			}
+			
+			public function isValid():void {
+				
+				var validMessage:String = "";
+				
+				if ( Boolean(parentApplication.bLogin) == false ) validMessage = "로그인 후 이용 가능 합니다.";
+				if (cMessage.getMessage() == "" ) validMessage = "메시지를 입력 하세요.";
+				else if (cMessage.bLimitMessage()) validMessage = "메시지가 " +cMessage.getLimitMessageByte()+ "byte를 초과 하였습니다.";
+				else if (cPhone.getTotalCount() == 0) validMessage = "전화번호를 입력하세요.";
+				else if (cReturnPhone.returnPhone.length == 0) validMessage = "회신번호를 입력하세요";
+				else {
+					validMessage = "<font color='font-weight:bold'>보내기</font> 버튼을 누르면 전송 됩니다.";
+					sendButton.enabled = true;
+				}
+				
+			}
+			
+			public function alert(s:String, mode:int=0):void {
+				
+				this.iAlert.text_label = s;
+				this.iAlert.end();
+				this.iAlertContainer.visible = true;
+				this.iAlert.play_glow(); 
+			}
+			
+			protected function message1_alertHandler(event:CustomEvent):void {
+				
+				trace(event.obj);
+			}
+			
+			
+			protected function validHandler(event:CustomEvent):void	{
+				isValid();
+			}
+			
+			
+			/*###############################
+			#	RemoteObject				#
+			###############################*/
+			private function remoteObjectInit():void {
+				
+				ro = new RemoteObject();
+				ro.showBusyCursor = true;
+				ro.destination = RO_DESTINATION;
+				ro.addEventListener(FaultEvent.FAULT, remoteObjectFaultEventHandler); 
+			}
+			private function remoteObjectInit_sub():void {
+				
+				ro_sub = new RemoteObject();
+				ro_sub.destination = RO_DESTINATION;
+				ro_sub.addEventListener(FaultEvent.FAULT, remoteObjectFaultEventHandler); 
+			}
+			
+			private function remoteObjectFaultEventHandler(event:FaultEvent):void{
+				
+				isValid();
+				trace(event.fault);
+				SLibrary.alert(event.fault.faultString);
+			}
+			
+			protected function sendButton_clickHandler(event:MouseEvent):void
+			{
+				sendButton.enabled = false;
+				confirm.visible = false;
+				remoteObjectInit();
+				
+				ro.addEventListener(ResultEvent.RESULT,send_ResultEventHandler);
+				
+				if (cMessage.maxByte == 2000 && cMessage.mode.text == "MMS") {
+					
+					ro.sendMMSconf( cMessage.mmsImage, cMessage.getMessage(),
+						cPhone.phoneList,
+						cReturnPhone.returnPhone ,
+						cReservation.bReservation ? cReservation.strReservation +":00" : "" ,
+						cInterval.bInterval ? cInterval.cnt +"/"+ cInterval.minute : "" ,
+						cMessage.getMessage().indexOf("{이름}") > -1 ? true:false
+					);
+					
+				} else if (cMessage.maxByte == 2000 && cMessage.mode.text == "LMS") {
+					
+					ro.sendLMSconf( cMessage.getMessage(),
+						cPhone.phoneList,
+						cReturnPhone.returnPhone ,
+						cReservation.bReservation ? cReservation.strReservation +":00" : "",
+						cInterval.bInterval ? cInterval.cnt +"/"+ cInterval.minute : "" ,
+						cMessage.getMessage().indexOf("{이름}") > -1 ? true:false
+					);
+				}else {
+
+					ro.sendSMSconf( cMessage.getMessage(),
+						cPhone.phoneList,
+						cReturnPhone.returnPhone ,
+						cReservation.bReservation ? cReservation.strReservation +":00" : "" ,
+						cInterval.bInterval ? cInterval.cnt +"/"+ cInterval.minute : "" ,
+						cMessage.getMessage().indexOf("{이름}") > -1 ? true:false
+					);
+				}
+					
+				//sending count
+				if (sendingCount_intervalID)
+					clearInterval(sendingCount_intervalID);
+				remoteObjectInit_sub();
+				ro_sub.addEventListener(ResultEvent.RESULT, getSendingCount_ResultEventHandler);
+				sendingCount_intervalID = setInterval(getSendingCount,duration);
+			}
+			
+			private function send_ResultEventHandler(e:ResultEvent):void {
+				
+				if (sendingCount_intervalID) clearInterval(sendingCount_intervalID);
+				
+				var bVO:BooleanAndDescriptionVO = e.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					
+					if ( delList.selected )
+						cPhone.init();
+					
+					isValid();
+					
+					var result:Array = String(bVO.strDescription).split(/\,/);
+					var cnt:int = result.length;
+					if (cnt > 0)
+						SLibrary.alert( result[0]+" 건 전송 요청이 완료 되었습니다." );
+					else
+						SLibrary.alert( "0 건 전송 요청이 완료 되었습니다." );
+					
+				} else {
+					
+					isValid();
+					if (bVO.strDescription != "스팸성 문구가 발견 되었습니다.")
+						SLibrary.alert(bVO.strDescription);
+				}
+				//parentApplication.userInfoInit();
+				
+			}
+			
+			
+			/*###############################
+			#	Sending Count				#
+			###############################*/
+			private var sendingCount_intervalID:uint;
+			private var duration:Number = 500;
+			private function getSendingCount():void {
+				
+				ro_sub.getState( parentApplication.login_id );
+			}
+			private function getSendingCount_ResultEventHandler(e:ResultEvent):void {
+				
+				alert( String(e.result) );
+			}
+			
+			
+			protected function cancelButton_clickHandler(event:MouseEvent):void
+			{
+				this.cPhone.init();
+				//this.cMessage.allDelPhoto();
+				isValid();
+			}
+			
+			
+			/*###############################
+			#	발송설정						#
+			###############################*/
+			private function confirmView():void {
+				if (cMessage.mode.text == "MMS" && cMessage.mmsImage == "") {
+					ExternalInterface.call("alert","사진을 첨부 하세요.");
+				}else {
+					confirmSetting();
+					confirm.visible = true;	
+				}
+				
+			}
+			private function confirmSetting():void {
+				
+				var sendtype:String = cMessage.mode.text;
+				var typeCnt:uint = 1;
+				if (sendtype == "LMS") typeCnt = 3;
+				else if (sendtype == "MMS") typeCnt = 15;
+				
+				type.text = sendtype;
+				cnt.text = cPhone.totalCount.text + " ("+uint(cPhone.totalCount.text)*typeCnt+"건 차감)";
+				sendTime.text = cReservation.bReservation ? cReservation.strReservation +":00" : "미설정";
+				interval.text = cInterval.bInterval ? cInterval.cnt +"건씩 "+ cInterval.minute+"분간격": "미설정";
+
+				
+				if (cMessage.getMessage().indexOf("{이름}") > -1) {
+					mergeItem.visible = true;
+					merge.text = "{이름} 위치에 넣음."
+				}else {
+					mergeItem.visible = false;
+				}
+				
+			}
+			
+			
+			protected function resLayer_setReservationHandler(event:CustomEvent):void
+			{
+				cReservation.reservationText.text = String(event.obj);
+			}
+			
+			protected function resLayer_cancelReservationHandler(event:Event):void
+			{
+				cReservation.canResButton_clickHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Image source="/images/hp.png" />
+	<s:Group left="10" top="40" width="268">
+		<s:VGroup width="100%" top="212" gap="10">
+			<handphone:ReturnPhone id="cReturnPhone" validValue="validHandler(event)"/>
+			
+			<s:VGroup width="100%" gap="5">
+				<handphone:Phone id="cPhone" validValue="validHandler(event)"/>
+				<s:HGroup gap="2">
+					<handphone:Reservation id="cReservation" width="135" viewRes="{resLayer.visible=true}"/>
+					<handphone:Interval id="cInterval" width="78"/>
+				</s:HGroup>
+				
+				<s:HGroup horizontalAlign="center" gap="10" width="100%">
+					<s:Image id="sendButton" buttonMode="true" useHandCursor="true" click="confirmView()" source="@Embed('images/h_send.gif')" />
+					<s:Image id="cancelButton" buttonMode="true" useHandCursor="true" click="cancelButton_clickHandler(event)" source="@Embed('images/h_cancle.gif')" />
+				</s:HGroup>
+			</s:VGroup>
+			
+		</s:VGroup>
+		<handphone:Message id="cMessage" width="100%" alert="message1_alertHandler(event)" validValue="validHandler(event)"/>
+		
+	</s:Group> 
+	<handphone:ReservationLayer id="resLayer" visible="false" x="14" y="130" setReservation="resLayer_setReservationHandler(event)" cancelReservation="resLayer_cancelReservationHandler(event)" />
+	
+	<!-- 설정 확인 -->
+	<s:Panel id="confirm" visible="false" bottom="10" left="4" right="4" title="보내기 확인">
+		<s:layout>
+			<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" paddingTop="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Label text="전송하시겠습니까?" />
+		<s:Form>
+			<s:layout><s:FormLayout gap="-14"/></s:layout>
+			<s:FormItem label="방식"><s:Label id="type" text="SMS" /></s:FormItem>
+			<s:FormItem label="건수"><s:Label id="cnt" text="100건(100건차감)" /></s:FormItem>
+			<s:FormItem label="예약"><s:Label id="sendTime" text="미설정" /></s:FormItem>
+			<s:FormItem label="간격발송"><s:Label id="interval" text="10건씩 10분간격" /></s:FormItem>
+			<s:FormItem id="mergeItem" visible="false" label="이름넣기">
+				<s:VGroup>
+					<s:Label id="merge" text="미설정" />
+					<s:Label text="※이름포함 제한byte 잘림." color="0xff6347"/>
+				</s:VGroup>
+				
+				
+			</s:FormItem>
+			<s:FormItem label="발송후설정">
+				<s:CheckBox id="delList" label="전화번호 삭제" />
+			</s:FormItem>
+		</s:Form>
+		<s:HGroup>
+			<s:Button label="발송" click="sendButton_clickHandler(null)" />
+			<s:Button label="취소" click="confirm.visible = false" />
+		</s:HGroup>
+	</s:Panel>
+	<!--전송중 카운트-->
+	<s:VGroup id="iAlertContainer" x="34" y="100" width="165" depth="7" focusEnabled="false" visible="true" horizontalAlign="center">
+		<s:Label text="전송요청!!" fontSize="14" color="0x000000" visible="false"/>
+		<lib:AlertLabel id="iAlert" font_size="40" glow_color="0x000000" text_color="0xFFFFFF" text_label="" effectEnd="this.iAlertContainer.visible=false"/>
+	</s:VGroup>
+</s:Module>

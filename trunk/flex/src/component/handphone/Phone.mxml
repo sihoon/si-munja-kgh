@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" gap="2">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.dg
+		{
+			/*
+			headerBackgroundSkin: Embed(source="assets/flex_skins.swf", symbol="DataGrid_headerBackgroundSkin");
+			columnDropIndicatorSkin: Embed(source="assets/flex_skins.swf", symbol="DataGrid_columnDropIndicatorSkin");
+			columnResizeSkin: Embed(source="assets/flex_skins.swf", symbol="DataGrid_columnResizeSkin");
+			headerSeparatorSkin: Embed(source="assets/flex_skins.swf", symbol="DataGrid_headerSeparatorSkin");
+			sortArrowSkin: Embed(source="assets/flex_skins.swf", symbol="DataGrid_sortArrowSkin");
+			stretchCursor: Embed(source="assets/flex_skins.swf",symbol="DataGrid_stretchCursor");
+			*/
+			alternatingItemColors: #FFFFFF, #FFFFFF;
+			verticalGridLineColor: #464646;
+			roll-over-color: #EEEEEE;
+			selection-color: #DDDDDD;
+			font-size: 12;
+		}
+
+	</fx:Style>
+	<fx:Metadata>
+		[Event(name="validValue", type="lib.CustomEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import lib.CustomEvent;
+			import lib.KoreaPhoneNumberFormatter;
+			import lib.SLibrary;
+			
+			import mx.collections.ArrayCollection;
+
+			[Bindable]
+			private var al:ArrayCollection = new ArrayCollection(); // 전화번호 리스트
+			private var Kpf:KoreaPhoneNumberFormatter = new KoreaPhoneNumberFormatter(); // 전화번호 포맷
+			
+			public function init():void {
+				
+				this.al = new ArrayCollection();
+				setTotalCount();
+			}
+			
+			public function setTotalCount():void { 
+				this.totalCount.text = new String(this.al.length);
+				dispatchEvent(new CustomEvent("validValue", null));
+			}
+			
+			public function getTotalCount():Number { return  Number(this.totalCount.text); }
+			
+			public function get phoneList():ArrayCollection { return this.al; }
+			
+			
+			public function addList(str:String):void {
+				
+				var arr:Array = str.split(",");
+				var cnt:int = arr.length;
+				
+				var pvo:PhoneListVO = null;
+				var temp:Array = null;
+				for (var i:int; i< cnt; i++) {
+					temp = arr[i].split("||");
+					
+					pvo = new PhoneListVO();
+					pvo.phoneNumber = (temp != null && temp.length > 0)?temp[0]:"";
+					pvo.phoneName = (temp != null && temp.length > 1)?temp[1]:"";					
+					phoneList.addItem(pvo);
+				}
+				setTotalCount();
+			}
+			
+			public function addListArray(arr:Array):void {
+				
+				var cnt:int = arr.length;
+				var vo:PhoneListVO = null;
+				var temp:Array = null;
+				
+				var addAc:ArrayCollection = new ArrayCollection();
+				
+				for (var i:int = 0; i < cnt; i++) {
+					
+					vo = new PhoneListVO();
+					temp = arr[i] as Array;
+					vo.phoneNumber = (temp.length > 0)? SLibrary.trim(temp[0]):"";
+					vo.phoneName = (temp.length > 1)? temp[1]:"";
+					
+					if ( SLibrary.bKoreaPhoneCheck(vo.phoneNumber) )
+						addAc.addItem(vo);
+				}
+				phoneList.addAllAt(addAc, (phoneList.length < 1)? 0 : phoneList.length-1);
+				setTotalCount();
+			}
+
+			protected function addPhoneButton_clickHandler(event:MouseEvent):void {
+				if (phoneTextInput.text == "") ExternalInterface.call("alert","전화번호를 입력하세요.");
+				else {
+					addList(phoneTextInput.text);phoneTextInput.text = "";
+				}
+			}
+			
+			// 전화번호 포맷
+			private function phoneFomat(item:Object, column:DataGridColumn):String	{ 
+				return Kpf.format(item.phoneNumber); 
+			}
+			
+			private function duplicateCheck():void {
+				var cnt:int = phoneList.length;
+				var arr:ArrayCollection = new ArrayCollection();
+				var tempStr:String = "";
+				var dupCnt:Number = 0;
+				
+				var vo:PhoneListVO = null;
+				for (var i:int = 0; i < cnt; i++) {
+					
+					vo = phoneList.getItemAt(i) as PhoneListVO;
+					if (tempStr.search(vo.phoneNumber) == -1) {
+						//중복체크용 문자열에 값이 없으면 새로운 배열에 추가
+						arr.addItem(vo);
+						tempStr += vo.phoneNumber + " ";
+					}else {
+						dupCnt++;
+					}
+					
+				}
+				al = arr;
+				setTotalCount();
+				ExternalInterface.call("alert", dupCnt + " 건의 중복번호가 제거 되었습니다.");
+			}
+
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup paddingBottom="5" paddingTop="5" gap="10">
+		<s:VGroup gap="10">
+			<s:Label text="받는사람" fontSize="12" color="0x6D6D6D" paddingTop="3" fontWeight="bold"/>
+			<s:Image source="images/h_ctrlv.gif" click="parentApplication.subLoad('copypaste')" toolTip="붙여넣기" buttonMode="true" useHandCursor="true" />
+		</s:VGroup>
+		
+		<s:VGroup gap="2">
+			<s:HGroup width="100%" gap="4">
+				<s:Image source="@Embed('images/h_post.gif')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('address')"/>
+				<s:Image source="@Embed('images/h_excel.gif')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('excel')"/>
+				<s:Image source="@Embed('images/main_51.png')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('sent')"/>
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle" gap="10">
+				<s:TextInput id="phoneTextInput" width="158" borderColor="#DDDDDD" enter="addPhoneButton_clickHandler(null)" />
+				<s:Image id="addPhoneButton" source="images/h_add.gif" click="addPhoneButton_clickHandler(event)" useHandCursor="true" buttonMode="true"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	<mx:DataGrid id="sendDG" width="100%" height="136" borderVisible="true" borderColor="0xDDDDDD" dataProvider="{al}" selectable="false" color="0x333333"
+				 showHeaders="false" styleName="dg" verticalGridLines="false" horizontalGridLines="true">
+		<mx:columns>
+				<mx:DataGridColumn  headerText="이름" dataField="phoneName" width="60"></mx:DataGridColumn>
+				<mx:DataGridColumn  headerText="전화번호" labelFunction="phoneFomat" dataField="phoneNumber"></mx:DataGridColumn>
+				<mx:DataGridColumn  sortable="false" itemRenderer="component.handphone.DeleteRenderer" width="20" ></mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:Group width="100%" height="20">
+		<s:Image left="0" verticalCenter="0" source="images/h_delete.gif" click="duplicateCheck()" buttonMode="true" useHandCursor="true" />
+		<s:HGroup right="0" verticalCenter="0">
+			<s:Label text="총인원 : " fontSize="11" color="0x333333"/>
+			<s:Label fontSize="11" id="totalCount" text="" width="50" textAlign="right" color="0x333333"></s:Label>
+			<s:Label fontSize="11" color="0x333333" text="명" />	
+		</s:HGroup>
+	</s:Group>
+</s:VGroup>

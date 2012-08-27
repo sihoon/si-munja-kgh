@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		.dgSpecialList {
+			background-alpha: 0;
+			color:#ffffff;
+			font-size:12;
+			horizontalGridLines: false;
+			verticalGridLines: false;
+			borderThickness: 0;
+			textSelectedColor: #5D5D5D;
+			headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
+			alternatingItemColors: #000000, #000000;
+			roll-over-color: #000000;			
+			
+		}
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			
+			private var spcData:Array = new Array(
+				["＃","＆","＊","＠","※","☆","★","○","●","◎","◇","◆","§"],
+				["□","■","△","▲","▽","▼","→","←","↑","↓","↔","〓","◁"],
+				["◀","▷","▶","♤","♠","♡","♥","♧","♣","∠","◈","▣","◐"],
+				["◑","▒","▤","▥","▨","▧","▦","▩","♨","☏","☎","☜","☞"],
+				["¶","†","‡","↕","↗","↙","↖","↘","♭","♩","♪","♬","㉿"],
+				["㈜","№","㏇","™","㏂","㏘","℡","®","ª","º","！","˝","＇"],
+				["．","／","：","；","？","＾","＿","｀","｜","￣","、","。","·"],
+				["」","『","』","【","】","＋","－","√","＝","∽","±","×","÷"],
+				["≠","≤","≥","∞","♂","♀","∝","∵","∫","∬","∈","∋","⊆"],
+				["⊇","⊂","⊃","∪","∩","∧","∨","￢","⇒","⇔","∀","∃","∮"],
+				["∑","∏","＋","－","＜","＝","＞","±","×","÷","≠","≤","≥"],
+				["∞","∴","♂","♀","∠","⊥","⌒","∂","∇","≡","≒","≡","≒"],
+				["‥","¨","…","〃","⊥","⌒","∥","＼","∴","´","～","ˇ","˘"],
+				["˚","˙","¸","˛","¡","¿","∂","，","＂","（","）","［","］"],
+				["｛","｝","‘","’","“","”","〔","〕","〈","〉","《","》","「"],
+				["㉠","㉡","㉢","㉣","㉤","㉥","㉦","㉧","㉨","㉩","㉪","㉫","㉬"],
+				["㉭","㉮","㉯","㉰","㉱","㉲","㉳","㉴","㉵","㉶","㉷","㉸","㉹"],
+				["㉺","㉻","ⓐ","ⓑ","ⓒ","ⓓ","ⓔ","ⓕ","ⓖ","ⓗ","ⓘ","ⓙ","ⓚ"],
+				["ⓛ","ⓜ","ⓝ","ⓞ","ⓟ","ⓠ","ⓡ","ⓢ","ⓣ","ⓤ","ⓥ","ⓦ","ⓧ"],
+				["ⓨ","ⓩ","①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","½"]
+			);
+			
+			//아이템 클릭 핸들러
+			private function itemClickHandler(event:ListEvent):void {
+				try {
+					var mySpcchars:String = spcData[event.rowIndex][event.columnIndex];
+					parentApplication.setMessageAdd(mySpcchars);
+					
+				} catch(error:Error){
+					trace("error-_-");
+				}
+			}
+			
+			public function closeBtnClickHandler(event:Event):void{
+				
+				this.visible = false;
+			}
+			
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//this.dg.dataProvider = this.spcData;
+			}
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+			
+			protected function list_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.list.dataProvider =  new ArrayList(spcData);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BitmapImage source="@Embed('images/ReserveBG.png')"/>
+	<s:Image source="images/AdvancedCloseBtn.png" top="0" right="-30" click="closeBtnClickHandler(event)"  />
+	<s:List id="list" creationComplete="list_creationCompleteHandler(event)">
+		<s:layout>
+			<s:TileLayout />
+		</s:layout>
+	</s:List>
+	<!--<mx:DataGrid styleName="dgSpecialList"
+				 id="dg"
+				 top="35" left="35" 
+				 width="354" height="220" rowHeight="26" 
+				 showHeaders="false" selectable="false"
+				 borderVisible="false"
+				 verticalScrollBarStyleName="sampleVScrollBarStyle"
+				 contentBackgroundColor="#000000" 
+				 contentBackgroundAlpha="0"
+				 alternatingItemColors="[]"
+				 focusEnabled="false"
+				 itemClick="itemClickHandler(event)">
+		<mx:columns>
+			<mx:DataGridColumn dataField="0" width="24"/>
+			<mx:DataGridColumn dataField="1" width="24" />
+			<mx:DataGridColumn dataField="2" width="24" />
+			<mx:DataGridColumn dataField="3" width="24" />
+			<mx:DataGridColumn dataField="4" width="24" />
+			<mx:DataGridColumn dataField="5" width="24" />
+			<mx:DataGridColumn dataField="6" width="24" />
+			<mx:DataGridColumn dataField="7" width="24" />
+			<mx:DataGridColumn dataField="8" width="24" />
+			<mx:DataGridColumn dataField="9" width="24" />
+			<mx:DataGridColumn dataField="10" width="24" />
+			<mx:DataGridColumn dataField="11" width="24" />
+			<mx:DataGridColumn dataField="12" width="24" />
+		</mx:columns>
+	</mx:DataGrid>-->
+</s:Group>
