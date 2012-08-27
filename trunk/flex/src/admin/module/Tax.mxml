@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="creationCompleteHandler(event)"
+		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			private var RO_DESTINATION_WEB:String = "WEB";
+			private var al:ArrayCollection = new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				spinnerStart();
+				submit();
+			}
+			
+			protected function submit():void {
+				
+				ro.set(RO_DESTINATION, submit_ResultEventHandler);
+				ro.method.getTaxList();
+				spinnerStart();
+			}
+			private function submit_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				callLater(spinnerStop);
+			}
+			
+			public function complet_submit(idx:int):void {
+				
+				ro.set(RO_DESTINATION, update_submit_ResultEventHandler);
+				ro.method.setTaxComplet(idx);
+				spinnerStart();
+			}
+			
+			public function delete_submit(idx:int):void {
+				
+				ro.set(RO_DESTINATION, update_submit_ResultEventHandler);
+				ro.method.setTaxDelete(idx);
+				spinnerStart();
+			}
+			
+			private function update_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1) {
+					Alert.show("적용되었습니다.");
+					spinnerStart();submit();
+				}
+				else
+					Alert.show("적용 실패");
+				
+				callLater(spinnerStop);
+			}
+			
+			
+			private function fnLabel(item:Object, column:DataGridColumn):String {
+				
+				return (al.getItemIndex(item) + 1).toString();
+			}
+			
+			private function spinnerStart():void {
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				spinner.stop();
+				spinner.visible = false;
+				if (tiIdFilter.text.length > 0) {
+					tiIdFilter_keyUpHandler(new KeyboardEvent(""));
+				}
+			}
+			
+			// id 검색(필터)
+			protected function tiIdFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkString;
+				al.refresh();
+			}
+			private function checkString(item:Object):Boolean {
+				
+				var _searchString:String = tiIdFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.user_id;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.user_id).match(pattern) ) return true;
+				
+				return false;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Panel width="100%" height="100%" title="결제관리">
+		<s:HGroup top="2">
+			<s:TextInput id="tiIdFilter" keyUp="tiIdFilter_keyUpHandler(event)" toolTip="아이디 검색" />
+			<s:Button id="refresh" label="다시가져오기" click="spinnerStart();submit();" />
+		</s:HGroup>
+		<mx:DataGrid id="dgGroup" left="0" right="0" top="25" bottom="0" draggableColumns="false"
+					 resizableColumns="false"  editable="true">
+			
+			<mx:columns>
+				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_id" headerText="아이디" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="method" headerText="방식" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="amount" headerText="금액" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="billingData" headerText="결제일" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="comp_name" headerText="회사명"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="comp_no" headerText="사업자번호"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="name" headerText="대표자"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="addr" headerText="주소"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="upte" headerText="업태"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="upjong" headerText="업종"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="email" headerText="이메일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeWrite" headerText="요청일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="yn" headerText="발행유무"></mx:DataGridColumn>
+				
+				<mx:DataGridColumn headerText="" width="200"  sortable="false" itemRenderer="admin.component.billing.TaxFunRenderer" />
+			</mx:columns>
+			
+		</mx:DataGrid>
+		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	</s:Panel>
+</mx:Module>

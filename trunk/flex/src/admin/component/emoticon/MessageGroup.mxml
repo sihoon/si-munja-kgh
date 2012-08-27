@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			
+			private var _arrMessage:Array = null;
+			
+			public function set arrMessage(arr:Array):void {
+				this._arrMessage = arr;
+				embedTitleGroup();
+			}
+			
+			public function get arrMessage():Array { return _arrMessage; }
+			
+			public function embedTitleGroup():void {
+				
+				if (arrMessage == null) return;
+				
+				tg.removeAllElements();
+				var cnt:uint = arrMessage.length;
+				var msg:Message = null;
+				
+				for ( var i:int = 0; i < cnt; i++) {
+					msg = new Message();
+					msg.idx = int(String(arrMessage[i]).substr(0,7));
+					msg.label.text = String(arrMessage[i]).substr(7);
+					tg.addElement(msg);
+				}
+				
+			}
+			
+			
+			public function modify(idx:int, msg:String):void {
+				
+				parentDocument.modify(idx, msg);
+			}
+			
+			
+			
+			public function deleteEmt(idx:int):void {
+				
+				parentDocument.deleteEmt(idx);
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:TileGroup id="tg" width="100%" height="100%" horizontalGap="5"></s:TileGroup>
+</s:Group>

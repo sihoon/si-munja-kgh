@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.components.ComboBox;
+			
+			private var _arrMessage:ArrayCollection = null;
+			
+			public function set arrMessage(arr:ArrayCollection):void {
+				this._arrMessage = arr;
+				embedTitleGroup();
+			}
+			
+			public function get arrMessage():ArrayCollection { return _arrMessage; }
+			
+			public function embedTitleGroup():void {
+				
+				if (arrMessage == null) return;
+				
+				tg.removeAllElements();
+				var cnt:uint = arrMessage.length;
+				var msg:MessageCate = null;
+
+				
+				for ( var i:int = 0; i < cnt; i++) {
+					msg = new MessageCate();
+		
+					ComboBox(msg.cbGubun).selectedIndex = this.getIndex(msg.gubun, arrMessage[i].gubun);
+					msg.cbGubun_changeHandler();
+					ComboBox(msg.cbCate).selectedIndex = this.getIndex( msg.cate , arrMessage[i].category);
+					
+					msg.idx = int(arrMessage[i].idx);
+					msg.label.text = arrMessage[i].msg;
+					tg.addElement(msg);
+				}
+				
+			}
+			
+			private function getIndex(ac:ArrayCollection, label:String):int {
+				
+				var cnt:int = ac.length;
+				var index:int = 0;
+				var obj:Object = null;
+				for (var i:int; i < cnt; i++) {
+					obj = ac.getItemAt(i);
+					
+					if (obj.data == label) {
+						index = i;
+						break;
+					}
+					
+				}
+					
+					
+				return index;
+			}
+			
+			
+			public function modify(idx:int,gubun:String, cate:String, msg:String):void {
+				
+				parentDocument.modify(idx,gubun, cate, msg);
+			}
+			
+			
+			
+			public function deleteEmt(idx:int):void {
+				
+				parentDocument.deleteEmt(idx);
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:TileGroup id="tg" width="100%" height="100%" horizontalGap="5"></s:TileGroup>
+</s:Group>

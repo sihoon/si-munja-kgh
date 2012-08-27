@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" creationComplete="creationCompleteHandler(event)">
+	<fx:Style source="admin/flex_admin.css"/>
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.RO;
+			import lib.SLibrary;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+
+			protected function linkbar1_itemClickHandler(event:ItemClickEvent):void
+			{
+				if (ml != null)
+					ml.unloadModule();
+				ml.loadModule(event.item.url);
+				lb.selectedIndex = event.index;
+				lb.tabIndex = event.index;
+			}
+			
+			protected function login_button_clickHandler(event:MouseEvent):void
+			{
+				if (login_id.text == "") {
+					SLibrary.alert("아이디를 입력하세요");
+				}else if (login_pw.text == "") {
+					SLibrary.alert("비밀번호를 입력하세요");
+				}else {
+					
+					ro.set(RO_DESTINATION, login_ResultEventHandler);
+					ro.method.login(login_id.text, login_pw.text);
+				}
+			}
+			private function login_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					loginOk.visible = true;
+					loginNo.visible = false;
+				} else {
+					//SLibrary.alert("로그인 실패.");
+					loginOk.visible = false;
+					loginNo.visible = true;
+				}
+			}
+
+
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				ro.set(RO_DESTINATION, login_ResultEventHandler);
+				ro.method.isLogin();
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group id="loginOk" width="100%" height="100%" visible="false">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<mx:LinkBar id="lb" color="0x0050AA" horizontalAlign="left" width="100%"
+					itemClick="linkbar1_itemClickHandler(event)" fontWeight="bold" borderColor="0xACACAC" borderStyle="solid">
+			<mx:dataProvider>
+				<fx:Array>
+					<fx:Object label="회원관리" url="admin/module/Member.swf"></fx:Object>
+					<fx:Object label="결제관리" url="admin/module/Billing.swf"></fx:Object>
+					<fx:Object label="무통장입금예약" url="admin/module/CashList.swf"></fx:Object>
+					<fx:Object label="포인트관리" url="admin/module/Point.swf"></fx:Object>
+					<fx:Object label="포인트로그관리" url="admin/module/PointLog.swf"></fx:Object>
+					<fx:Object label="전송관리" url="admin/module/Sent.swf"></fx:Object>
+					<fx:Object label="SMS이모티콘관리" url="admin/module/EmoticonSMS.swf"></fx:Object>
+					<fx:Object label="LMS이모티콘관리" url="admin/module/EmoticonLMS.swf"></fx:Object>
+					<fx:Object label="MMS이모티콘관리" url="admin/module/EmoticonMMS.swf"></fx:Object>
+					<fx:Object label="공지사항관리" url="admin/module/Notic.swf"></fx:Object>
+					<fx:Object label="세금계산서" url="admin/module/Tax.swf"></fx:Object>
+					<fx:Object label="FAQ관리" url="admin/module/Faq.swf"></fx:Object>
+					<!--<fx:Object label="통계" url="admin/module/Stats.swf"></fx:Object>-->
+				</fx:Array>
+			</mx:dataProvider>
+		</mx:LinkBar>
+		<mx:ModuleLoader id="ml" width="100%" height="100%"></mx:ModuleLoader>
+	</s:Group>
+	<s:Group id="loginNo" verticalCenter="0" horizontalCenter="0" width="300" height="100" visible="true">
+		<s:Rect id="background" left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<!--- @private -->
+				<s:SolidColor id="bgFill" color="#FFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		<s:Rect left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5">
+			<s:stroke>
+				<s:LinearGradientStroke weight="2"/>
+			</s:stroke>
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:entries>
+						<s:GradientEntry color="0xEEEEEE"/>
+						<s:GradientEntry color="0xDDDDDD" alpha=".8" />
+					</s:entries>
+				</s:LinearGradient>    
+			</s:fill>
+		</s:Rect>
+		<s:HGroup verticalCenter="0" horizontalCenter="0">
+			<s:VGroup>
+				<s:TextInput id="login_id"/>
+				<s:TextInput id="login_pw" displayAsPassword="true" enter="login_button_clickHandler(null)"/>	
+			</s:VGroup>
+			<s:Button id="login_button" label="로그인" height="100%"  click="login_button_clickHandler(event)"/>
+		</s:HGroup>
+		
+	</s:Group>
+</s:Application>

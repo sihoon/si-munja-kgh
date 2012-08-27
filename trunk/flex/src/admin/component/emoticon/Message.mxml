@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="142" height="135">
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			
+			public var idx:int = 0;
+			
+			protected function moify_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				parentDocument.modify(idx, label.text);
+			}
+			
+			
+			public function deleteEmt():void {
+				
+				parentDocument.deleteEmt(idx);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="142" height="100" >
+		<s:TextArea id="label" left="5" right="5" top="5" bottom="5" height="100" />
+	</s:Group>
+	<s:HGroup>
+		<s:Button label="수정" click="moify_clickHandler(event)" />
+		<s:Button label="삭제" click="deleteEmt()"/>
+	</s:HGroup>
+</s:Group>

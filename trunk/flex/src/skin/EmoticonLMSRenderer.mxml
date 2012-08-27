@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="150">
+	
+	<fx:Script>
+		<![CDATA[
+			import lib.RO;
+			
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			
+			override public function set data(value:Object):void { 
+				super.data = value; 
+				
+				// Check to see if the data property is null. 
+				if (value== null) return; 
+
+				emt.text = value.msg;
+			} 
+		
+			
+			protected function modify_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, modify_ResultEventHandler);
+				ro.method.updateEmotiCateLMS(data.idx, emt.text);
+			}
+			private function modify_ResultEventHandler(event:ResultEvent):void {
+				
+				ExternalInterface.call("alert", "수정되었습니다." );
+				
+			}
+			
+			protected function delete_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, delete_ResultEventHandler);
+				ro.method.deleteEmotiLMS(data.idx);
+				
+			}
+			private function delete_ResultEventHandler(event:ResultEvent):void {
+				
+				ExternalInterface.call("alert", "삭제되었습니다." );
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup width="100%" height="100%" horizontalAlign="center">
+		<s:TextArea id="emt" width="145" height="150"  useHandCursor="true"/>
+		<s:HGroup>
+			<s:Button id="modify" label="수정" click="modify_clickHandler(event)"  />
+			<s:Button id="delete" label="삭제" click="delete_clickHandler(event)"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+
+</s:ItemRenderer>

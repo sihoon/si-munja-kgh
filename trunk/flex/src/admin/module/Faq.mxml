@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			import component.notic.NoticVO;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			
+			[Bindable] private var dgAc:ArrayCollection = null;
+			
+			protected function datagrid1_creationCompleteHandler():void
+			{
+				contextNewBox.visible = false;
+				listClickHandler();
+				
+				ro.set(RO_DESTINATION, notic_ResultEventHandler);
+				ro.method.getFAQ();
+			}
+			
+			private function notic_ResultEventHandler(event:ResultEvent):void {
+				
+				var ac:ArrayCollection = event.result as ArrayCollection;
+				this.dgAc = ac;
+				
+				
+			}
+			
+			private function fnLabel(item:Object, column:GridColumn):String {
+				return (dgAc.getItemIndex(item) + 1).toString();
+			}
+			
+			private function fnDate(item:Object, column:GridColumn):String {
+				return item.timeWrite.substr(0,10);
+			}
+			
+			
+			protected function list_clickHandler(event:MouseEvent):void
+			{
+				listBox.percentHeight=50;
+				contextBox.visible = true;
+				contextBox.percentHeight=50;
+				
+				
+				var vo:NoticVO = dgAc.getItemAt( list.selectedIndex ) as NoticVO;
+				
+				this.cIdx.text = vo.idx.toString();
+				this.cTitle.text = vo.title;
+				this.cContent.text = vo.content;
+			}
+			
+			protected function preNextclickHandler(next:int):void
+			{
+				if (list.selectedIndex + next > 0 && list.selectedIndex + next < dgAc.length)
+					list.selectedIndex = list.selectedIndex + next;
+				
+				var vo:NoticVO = dgAc.getItemAt( list.selectedIndex ) as NoticVO;
+				
+				this.cIdx.text = vo.idx.toString();
+				this.cTitle.text = vo.title;
+				this.cContent.text = vo.content;
+			}
+			
+			protected function listClickHandler():void
+			{
+				listBox.percentHeight=100;
+				contextBox.visible = false;
+				contextBox.height=0;
+			}
+			
+			
+			// 수정
+			protected function modify_clickHandler():void
+			{
+				var vo:NoticVO = new NoticVO();
+				
+				vo.idx = int(this.cIdx.text);
+				vo.title = this.cTitle.text;
+				vo.content = this.cContent.text;
+				
+				ro.set(RO_DESTINATION, modify_ResultEventHandler);
+				ro.method.modifyFAQ(vo);
+			}
+			
+			private function modify_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int= event.result as int;
+				if (rslt == 1) {
+					ExternalInterface.call("alert","수정되었습니다.");
+				}else {
+					ExternalInterface.call("alert","실패");
+				}
+				
+				datagrid1_creationCompleteHandler();
+				
+			}
+			
+			
+			// 삭제
+			protected function delete_clickHandler():void
+			{
+				ro.set(RO_DESTINATION, delete_ResultEventHandler);
+				ro.method.deleteFAQ( int(this.cIdx.text));
+			}
+			
+			private function delete_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int= event.result as int;
+				if (rslt == 1) {
+					ExternalInterface.call("alert","삭제되었습니다.");
+				}else {
+					ExternalInterface.call("alert","실패");
+				}
+				
+				datagrid1_creationCompleteHandler();
+				
+			}	
+			
+			
+			
+			
+			protected function insert_clickHandler():void
+			{
+				var vo:NoticVO = new NoticVO();
+				
+				vo.title = this.cTitlen.text;
+				vo.content = this.cContentn.text;
+				
+				ro.set(RO_DESTINATION, insert_ResultEventHandler);
+				ro.method.insertFAQ(vo);
+			}
+			
+			private function insert_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int= event.result as int;
+				if (rslt == 1) {
+					ExternalInterface.call("alert","추가되었습니다.");
+				}else {
+					ExternalInterface.call("alert","실패");
+				}
+				
+				datagrid1_creationCompleteHandler();
+				
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%">
+		<s:Button label="글쓰기" click="{this.contextNewBox.visible=true}"  />
+		<s:VGroup width="100%" height="100%" gap="10">
+			
+			<s:VGroup id="listBox" width="100%" height="100%" gap="0">
+				<s:DataGrid id="list" requestedRowCount="4" width="100%" height="100%" creationComplete="datagrid1_creationCompleteHandler()" dataProvider="{dgAc}"
+							focusEnabled="false" selectionMode="singleRow" click="list_clickHandler(event)">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="번호" width="50" labelFunction="fnLabel"></s:GridColumn>
+							<s:GridColumn dataField="title" headerText="Q"></s:GridColumn>
+						</s:ArrayList>
+					</s:columns>
+				</s:DataGrid>
+				<s:Rect width="100%" height="2"><s:fill><s:SolidColor color="0x333333" /></s:fill></s:Rect>
+			</s:VGroup>
+			
+			<s:VGroup id="contextBox" width="100%" height="0" visible="false" gap="0">
+				<s:Rect width="100%" height="2"><s:fill><s:SolidColor color="0x333333" /></s:fill></s:Rect>
+				
+				
+				<s:HGroup height="20" verticalAlign="middle">
+					<s:Label fontWeight="bold" color="0x333333" width="70" text="키값"/>
+					<s:Label fontWeight="bold" color="0x333333" width="20" text="|"/>
+					<s:Label id="cIdx" />
+				</s:HGroup>
+				<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0xeeeeee" /></s:fill></s:Rect>
+				
+				
+				<s:HGroup height="20" verticalAlign="middle">
+					<s:Label fontWeight="bold" color="0x333333" width="70" text="Q"/>
+					<s:Label fontWeight="bold" color="0x333333" width="20" text="|"/>
+					<s:TextInput id="cTitle" />
+				</s:HGroup>
+				<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0xeeeeee" /></s:fill></s:Rect>
+				
+				<s:HGroup height="150" paddingTop="5">
+					<s:Label fontWeight="bold" color="0x333333" width="70" text="A"/>
+					<s:Label fontWeight="bold" color="0x333333" width="20" text="|"/>
+					<s:Scroller width="570" height="140">
+						<s:Group width="100%">
+							<s:TextArea id="cContent" width="100%" />	
+						</s:Group>
+					</s:Scroller>
+					
+				</s:HGroup>
+				<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0xeeeeee" /></s:fill></s:Rect>
+				<s:HGroup>
+					<s:Button label="이전글"  click="preNextclickHandler(-1)"  />
+					<s:Button label="다음글"  click="preNextclickHandler(1)"  />
+					
+					<s:Button label="수정하기"  click="modify_clickHandler()"  />
+					<s:Button label="삭제하기"  click="delete_clickHandler()"  />
+				</s:HGroup>
+				
+				
+				<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0x333333" /></s:fill></s:Rect>
+				
+				<s:Button label="목록보기" click="listClickHandler()"  />
+			</s:VGroup>
+			
+		</s:VGroup>
+	</s:VGroup>
+	
+	<!-- 새글 -->
+	<s:Panel id="contextNewBox" title="글쓰기" width="800" horizontalCenter="0" top="50" height="500" visible="false">
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+		<s:Rect width="100%" height="2"><s:fill><s:SolidColor color="0x333333" /></s:fill></s:Rect>
+		
+		<s:HGroup height="20" verticalAlign="middle">
+			<s:Label fontWeight="bold" color="0x333333" width="70" text="Q"/>
+			<s:Label fontWeight="bold" color="0x333333" width="20" text="|"/>
+			<s:TextInput id="cTitlen" width="100%" />
+		</s:HGroup>
+		<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0xeeeeee" /></s:fill></s:Rect>
+		
+		
+		<s:HGroup height="150" paddingTop="5">
+			<s:Label fontWeight="bold" color="0x333333" width="70" text="A"/>
+			<s:Label fontWeight="bold" color="0x333333" width="20" text="|"/>
+			<s:Scroller width="570" height="140">
+				<s:Group width="100%">
+					<s:TextArea id="cContentn" width="100%" />	
+				</s:Group>
+			</s:Scroller>
+			
+		</s:HGroup>
+		<s:Rect width="100%" height="1"><s:fill><s:SolidColor color="0xeeeeee" /></s:fill></s:Rect>
+		<s:HGroup>
+			
+			<s:Button label="등록하기"  click="insert_clickHandler()"  />
+			<s:Button label="취소하기"  click="{contextNewBox.visible=false;}"  />
+		</s:HGroup>
+	</s:Panel>
+	
+</s:Module>

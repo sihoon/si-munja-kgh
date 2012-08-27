@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="creationCompleteHandler(event)"
+		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
+		<fx:Script>
+			<![CDATA[
+				import lib.RO;
+				import lib.SLibrary;
+				
+				import mx.collections.ArrayCollection;
+				import mx.collections.XMLListCollection;
+				import mx.events.FlexEvent;
+				import mx.formatters.DateFormatter;
+				import mx.rpc.events.FaultEvent;
+				import mx.rpc.events.ResultEvent;
+				import mx.rpc.remoting.RemoteObject;
+				
+				private var ro:RO = new RO();
+				private var RO_DESTINATION:String = "ADMIN";
+				private var al:ArrayCollection = new ArrayCollection();
+				private var alDetail:ArrayCollection = new ArrayCollection();
+				
+				
+				protected function creationCompleteHandler(event:FlexEvent):void {
+					
+					var date:Date = new Date();
+					date.setMonth( date.getMonth()-1);
+					dateField1.selectedDate = date
+					dateField2.selectedDate = new Date;
+					
+					spinnerStart();
+					submit();
+				}
+				
+				private function fnLabel(item:Object, column:DataGridColumn):String {
+					
+					return (al.getItemIndex(item) + 1).toString();
+				}
+				
+				private function fnLabelDetail(item:Object, column:DataGridColumn):String {
+					
+					return (alDetail.getItemIndex(item) + 1).toString();
+				}
+				
+				/*###############################
+				#	RemoteObject				#
+				###############################*/
+				
+				
+				private function getDate(date1:Date, date2:Date):Object {
+					
+					var obj:Object = new Object();
+					obj.begin = date1.getFullYear()+"-"+twoNumber(date1.getMonth())+"-"+twoNumber(date1.getDate());
+					obj.end = date2.getFullYear()+"-"+twoNumber(date2.getMonth())+"-"+twoNumber(date2.getDate());
+					
+					return obj;
+				}
+				
+				private function twoNumber(n:Number):String {
+					
+					var s:String = "";
+					if (n < 10) s = "0"+n.toString();
+					else s = n.toString();
+					
+					return s;
+				}
+				
+				protected function submit():void {
+					
+					dg.visible = false;
+					dg.percentHeight = 0;
+					dgGroup.percentHeight=100;
+					
+					var obj:Object = this.getDate(this.dateField1.selectedDate , this.dateField2.selectedDate );
+					
+					var df:DateFormatter = new DateFormatter();
+					df.formatString = "YYYY-MM-DD";
+					
+					ro.set(RO_DESTINATION, submit_ResultEventHandler);
+					ro.method.getSentGroupList( df.format(dateField1.selectedDate), df.format(dateField2.selectedDate), false );
+					spinnerStart();
+				}
+				private function submit_ResultEventHandler(event:ResultEvent):void {
+					
+					al = event.result as ArrayCollection;
+					
+					if (al != null) {
+						delEnter();
+						dgGroup.dataProvider = al;
+					}
+					callLater(spinnerStop);
+				}
+				
+				public function detail_submit(user_id:String, idx:String, line:String):void {
+					
+					if (idx == null) idx = "0";
+					
+					ro.set(RO_DESTINATION, detail_submit_ResultEventHandler);
+					ro.method.getSentList( user_id, new int(idx), line );
+					
+					spinnerStart();
+					
+				}
+				private function detail_submit_ResultEventHandler(event:ResultEvent):void {
+					
+					alDetail = event.result as ArrayCollection;
+					
+					if (alDetail != null) {
+						delEnterDetail();
+						dg.dataProvider = alDetail;
+					}
+					
+					dgGroup.percentHeight=50;
+					dg.visible = true;
+					dg.percentHeight = 50;
+					callLater(spinnerStop);
+				}
+				
+				protected function reservation_submit():void {
+					
+					dg.visible = false;
+					dg.height = 0;
+					dgGroup.percentHeight=100;
+					var df:DateFormatter = new DateFormatter();
+					df.formatString = "YYYY-MM-DD";
+					
+					ro.set(RO_DESTINATION, reservation_submit_ResultEventHandler);
+					ro.method.getSentGroupList( df.format(dateField1.selectedDate), df.format(dateField2.selectedDate), true);
+					
+					spinnerStart();
+				}
+				private function reservation_submit_ResultEventHandler(event:ResultEvent):void {
+					
+					al = event.result as ArrayCollection;
+					
+					if (al != null) {
+						dgGroup.dataProvider = al;
+					}
+					callLater(spinnerStop);
+				}
+				
+				private function spinnerStart():void {
+					spinner.start();
+					spinner.visible = true;
+				}
+				
+				private function spinnerStop():void {
+					spinner.stop();
+					spinner.visible = false;
+				}
+				
+				// id 검색(필터)
+				protected function tiIdFilter_keyUpHandler(event:KeyboardEvent):void
+				{
+					al.filterFunction = checkString;
+					al.refresh();
+				}
+				private function checkString(item:Object):Boolean {
+					
+					var _searchString:String = tiIdFilter.text;
+					if(!_searchString) return true;
+					
+					var label:String = item.user_id;
+					var pattern:String = ".*"+_searchString+".*";
+					
+					if ( new String(item.user_id).match(pattern) ) return true;
+					
+					return false;
+				}
+				
+				protected function delEnter():void {
+					
+					if (al != null && delenterCheck.selected == true) {
+						var cnt:int = al.length;
+						var enterPattern:RegExp = /\n/g;
+						for( var i:int = 0; i < cnt; i++) {
+							al.getItemAt(i).message = String(al.getItemAt(i).message).replace(enterPattern,"");
+						}
+					}
+				}
+				
+				protected function delEnterDetail():void {
+					
+					if (alDetail != null && delenterCheck.selected == true) {
+						var cnt:int = alDetail.length;
+						var enterPattern:RegExp = /\n/g;
+						for( var i:int = 0; i < cnt; i++) {
+							alDetail.getItemAt(i).TR_MSG = String(alDetail.getItemAt(i).TR_MSG).replace(enterPattern,"");
+						}
+					}
+				}
+				
+				
+				
+			]]>
+		</fx:Script>
+		<fx:Declarations>
+			<!-- Place non-visual elements (e.g., services, value objects) here -->
+		</fx:Declarations>
+	<s:Panel width="100%" height="100%" title="전송내역">
+		<s:Group width="100%" height="100%">
+			<s:VGroup gap="2" width="100%" height="100%">
+				<s:HGroup left="0" right="0">
+					<s:TextInput id="tiIdFilter" keyUp="tiIdFilter_keyUpHandler(event)" toolTip="아이디 검색" />
+					<mx:DateField width="95" id="dateField1" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+					<s:Label text=" ~ " />
+					<mx:DateField width="95" id="dateField2" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+					<s:Button label="검색" click="submit()"/>
+					<s:Button label="예약내역만보기" click="reservation_submit()"/>
+					<s:CheckBox id="delenterCheck" label="줄바꿈제거" />
+				</s:HGroup>
+				
+				<mx:DataGrid id="dgGroup" width="100%" height="100%" draggableColumns="false" resizableColumns="false"  variableRowHeight="true">
+					<mx:columns>
+						<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="line" headerText="라인" width="50"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="user_id" headerText="아이디" width="100"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="timeSend" headerText="전송시간" width="130"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="returnPhone" headerText="회신번호"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="count" headerText="전송건수" width="80"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="message" headerText="메시지"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="ynDel" width="50" headerText="삭제"></mx:DataGridColumn>
+						<mx:DataGridColumn headerText="" width="200"  sortable="false" itemRenderer="admin.component.sent.SentFunRenderer" />
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:DataGrid id="dg" visible="false" width="100%" height="0%" draggableColumns="false" resizableColumns="false"  variableRowHeight="true">
+					<mx:columns>
+						<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabelDetail" width="50"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_CALLBACK" headerText="회신번호"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_ETC1" headerText="이름"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_ETC6" headerText="그룹키"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_MSG" headerText="메시지"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_PHONE" headerText="전화번호"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_RSLTDATE" headerText="결과시간"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_RSLTSTAT" headerText="결과코드"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_SENDDATE" headerText="전송시간"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="TR_SENDSTAT" headerText="결과상태"></mx:DataGridColumn>
+					</mx:columns>
+				</mx:DataGrid>
+			</s:VGroup>
+			<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+		</s:Group>
+	</s:Panel>
+</mx:Module>

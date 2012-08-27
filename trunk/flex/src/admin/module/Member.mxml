@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   creationComplete="creationCompleteHandler(event)"
+		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
+	<fx:Style source="admin/flex_admin.css"/>
+	<fx:Script>
+		<![CDATA[
+			import admin.component.member.MemberVO;
+			
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.DataGridEvent;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			private var al:ArrayCollection = new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				spinnerStart();
+				submit();
+			}
+			
+			protected function submit():void {
+				
+				ro.set(RO_DESTINATION, submit_ResultEventHandler);
+				ro.method.getMember();
+				spinnerStart();
+			}
+			private function submit_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				callLater(spinnerStop);
+			}
+			
+
+			private function fnLabel(item:Object, column:DataGridColumn):String {
+				
+				return (al.getItemIndex(item) + 1).toString();
+			}
+
+			private function spinnerStart():void {
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				spinner.stop();
+				spinner.visible = false;
+			}
+			
+			// 회원수정
+			public function update_submit(mvo:MemberVO):void {
+				
+				ro.set(RO_DESTINATION, update_submit_ResultEventHandler);
+				ro.method.updateMember(mvo);
+				spinnerStart();
+			}
+			private function update_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1)
+					Alert.show("수정되었습니다.");
+				else
+					Alert.show("수정 실패");
+				callLater(spinnerStop);
+			}
+			
+			// 회원비밀번호 초기화
+			public function passwd_submit(user_id:String):void {
+				
+				ro.set(RO_DESTINATION, passwd_submit_ResultEventHandler);
+				ro.method.updateMemberPasswd(user_id);
+				spinnerStart();
+			}
+			private function passwd_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1)
+					Alert.show("초기화 되었습니다.");
+				else
+					Alert.show("수정 실패");
+				callLater(spinnerStop);
+			}
+			
+			// 회원삭제
+			public function delete_submit(user_id:String):void {
+				
+				ro.set(RO_DESTINATION, delete_submit_ResultEventHandler);
+				ro.method.deleteMember(user_id);
+				spinnerStart();
+			}
+			private function delete_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1)
+					Alert.show("삭제 되었습니다.");
+				else
+					Alert.show("삭제 실패");
+				callLater(spinnerStop);
+			}
+
+			// id 검색(필터)
+			protected function tiIdFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkString;
+				al.refresh();
+			}
+			private function checkString(item:Object):Boolean {
+				
+				var _searchString:String = tiIdFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.user_id;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.user_id).match(pattern) ) return true;
+								
+				return false;
+			}
+			
+			// 이름 검색(필터)
+			protected function tiNameFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkStringName;
+				al.refresh();
+			}
+			private function checkStringName(item:Object):Boolean {
+				
+				var _searchString:String = tiNameFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.user_name;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.user_name).match(pattern) ) return true;
+				
+				return false;
+			}
+			
+			// 주민번호 검색(필터)
+			protected function tiJuminFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkStringJumin;
+				al.refresh();
+			}
+			private function checkStringJumin(item:Object):Boolean {
+				
+				var _searchString:String = tiJuminFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.jumin_no;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.jumin_no).match(pattern) ) return true;
+				
+				return false;
+			}
+			
+			// 휴대폰 검색(필터)
+			protected function tiHpFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkStringHp;
+				al.refresh();
+			}
+			private function checkStringHp(item:Object):Boolean {
+				
+				var _searchString:String = tiHpFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.hp;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.hp).match(pattern) || new String(item.phone_return).match(pattern) ) return true;
+				
+				return false;
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Panel width="100%" height="100%" title="회원관리">
+		<s:HGroup top="2">
+			<s:TextInput id="tiIdFilter" keyUp="tiIdFilter_keyUpHandler(event)" prompt="아이디 검색" toolTip="아이디 검색" />
+			<s:TextInput id="tiNameFilter" keyUp="tiNameFilter_keyUpHandler(event)" prompt="이름 검색" toolTip="이름 검색" />
+			<s:TextInput id="tiJuminFilter" keyUp="tiJuminFilter_keyUpHandler(event)" prompt="주민번호 검색" toolTip="주민번호 검색" />
+			<s:TextInput id="tiHpFilter" keyUp="tiHpFilter_keyUpHandler(event)" prompt="휴대폰 검색" toolTip="휴대폰 검색" />
+			<s:Button id="refresh" label="다시가져오기" click="spinnerStart();submit();" />
+		</s:HGroup>
+		
+		<mx:DataGrid id="dgGroup" left="0" right="0" top="25" bottom="0" dragEnabled="false" editable="true">
+
+			<mx:columns>
+				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_id" headerText="아이디" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="passwd" headerText="비밀번호" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_name" headerText="이름"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="jumin_no" headerText="주민등록번호" ></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="hp" headerText="휴대폰"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="point" headerText="포인트" editable="false"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="phone_return" headerText="회신번호"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="unit_cost" headerText="단가"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="email" headerText="이메일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="line" headerText="전송라인"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="memo" headerText="메모"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeLogin" headerText="로그인일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeJoin" headerText="가입일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="leaveYN" headerText="탈퇴"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="emailYN" headerText="이메일동의"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="hpYN" headerText="SMS동의"></mx:DataGridColumn>
+				<mx:DataGridColumn headerText="" width="120" editable="false"  sortable="false" itemRenderer="admin.component.member.MemberFunRenderer" />
+			</mx:columns>
+
+		</mx:DataGrid>
+		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	</s:Panel>
+</mx:Module>
