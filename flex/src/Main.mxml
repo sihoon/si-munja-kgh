@@ -53,7 +53,7 @@
 	</s:Group>
 	
 	<s:SkinnableContainer id="subContainer" visible="false" skinClass="skin.SkinableContainerSub" verticalCenter="0" horizontalCenter="0">
-		<s:Image source="images/AdvancedCloseBtn.png" buttonMode="true" useHandCursor="true" right="0" click="subContainer.visible=false" />
+		<s:Image source="images/pop_close.gif" buttonMode="true" useHandCursor="true" right="-5" top="-5" click="subContainer.visible=false" />
 		<s:ModuleLoader id="mSub" ready="subContainer.visible=true;"/>
 	</s:SkinnableContainer>
 </s:Application>	

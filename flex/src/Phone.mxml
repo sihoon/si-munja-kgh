@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="950" height="980" xmlns:component="component.*"
+			   width="285" height="850" backgroundAlpha="0" xmlns:component="component.*"
 			   >
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -16,14 +16,7 @@
 	<fx:Script source="common.as" />
 	<fx:Script>
 		<![CDATA[
-
-			public var appName:String = "Mms";
-			
-			
-			protected function mPhone_readyHandler(event:ModuleEvent):void
-			{
-				phoneFunction("mms",null);
-			}
+			public var appName:String = "Normal";
 			
 			
 			// 로그인 되어 있을 경우 처리
@@ -40,28 +33,18 @@
 				obj2.cReturnPhone.getList();
 				
 			}
-			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:HGroup width="100%" gap="15">
-		<s:VGroup horizontalAlign="center">
-			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)"  />
+	<s:Group width="100%">
+		<s:VGroup left="0" top="0">
+			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)" />
 			<s:ModuleLoader id="mPhone" url="module/MPhone.swf"/>
 			<s:Image source="images/sub_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=cost\'')}" />
 		</s:VGroup>
-		
-		<s:VGroup width="100%">
-			<s:Group width="100%">
-				<s:Image left="0" source="images/top3.jpg" verticalCenter="0" />
-			</s:Group>
-			
-			<s:ModuleLoader id="mDef" url="module/MEmoticonMMS.swf"/>
-		</s:VGroup>
-	</s:HGroup>
-	
+	</s:Group>
 	
 	<s:SkinnableContainer id="subContainer" visible="false" skinClass="skin.SkinableContainerSub" verticalCenter="0" horizontalCenter="0">
 		<s:Image source="images/pop_close.gif" buttonMode="true" useHandCursor="true" right="-5" top="-5" click="subContainer.visible=false" />

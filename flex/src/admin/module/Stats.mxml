@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="creationCompleteHandler(event)"
+		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
+	<fx:Script>
+		<![CDATA[
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			private var al:ArrayCollection = new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				spinnerStart();
+				submit();
+			}
+			
+			protected function submit():void {
+				
+				ro.set(RO_DESTINATION, submit_ResultEventHandler);
+				ro.method.getMember();
+				spinnerStart();
+			}
+			private function submit_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				callLater(spinnerStop);
+			}
+			
+			
+			private function fnLabel(item:Object, column:DataGridColumn):String {
+				
+				return (al.getItemIndex(item) + 1).toString();
+			}
+			
+			private function spinnerStart():void {
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				spinner.stop();
+				spinner.visible = false;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Panel width="100%" height="100%" title="통계관리">
+		<mx:DataGrid id="dgGroup" left="10" right="10" top="10" bottom="10" draggableColumns="false"
+					 resizableColumns="false">
+			
+			<mx:columns>
+				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_id" headerText="아이디"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="passwd" headerText="비밀번호"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_name" headerText="이름"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="jumin_no" headerText="주민등록번호"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="phone_return" headerText="회신번호"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="hp" headerText="휴대폰"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="unit_cost" headerText="단가"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="line" headerText="전송라인"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="memo" headerText="메모"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeLogin" headerText="로그인일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeJoin" headerText="가입일"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="leaveYN" headerText="탈퇴"></mx:DataGridColumn>
+				<mx:DataGridColumn headerText="" width="100"  sortable="false" />
+			</mx:columns>
+			
+		</mx:DataGrid>
+		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	</s:Panel>
+</mx:Module>

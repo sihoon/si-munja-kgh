@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" 
+						  focusEnabled="true">
+	<fx:Script>
+		<![CDATA[
+			import admin.module.Tax;
+			
+			import mx.events.FlexEvent;
+			
+			protected function btnModify_clickHandler(event:MouseEvent):void
+			{
+				var bvo:BillingVO = new BillingVO();
+				bvo.idx = data.idx;
+				bvo.user_id = data.user_id;
+				bvo.method = data.method;
+				bvo.amount = data.amount;
+				bvo.order_no = data.order_no; 
+				bvo.unit_cost = data.unit_cost;
+				bvo.remain_point = data.remain_point; 
+				bvo.memo = data.memo;
+				bvo.admin_id = data.admin_id;
+				bvo.timeWrite = data.timeWrite;
+				
+				parentDocument.update_submit(bvo);
+			}
+			
+			
+			protected function btnDelete_clickHandler(event:MouseEvent):void
+			{
+				parentDocument.delete_submit(data.idx);
+			}
+			
+			protected function btnComplet_clickHandler(event:MouseEvent):void
+			{
+				Tax(parentDocument).complet_submit(data.idx);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:HGroup top="0" bottom="0" left="2" right="2">
+		<s:Button id="btnComplet" height="20" label="완료" toolTip="발행함으로 설정합니다." click="btnComplet_clickHandler(event)"/>
+		<s:Button id="btnDelete" height="20" label="D" toolTip="정보를 삭제 합니다." click="btnDelete_clickHandler(event)"/>
+	</s:HGroup>
+	
+</s:MXDataGridItemRenderer>

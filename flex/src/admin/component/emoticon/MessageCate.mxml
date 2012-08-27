@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="142" height="180">
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			public var idx:int = 0;
+			
+			protected function moify_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				parentDocument.modify(idx, gubun.getItemAt( cbGubun.selectedIndex ).data, cate.getItemAt( cbCate.selectedIndex ).data,  label.text);
+			}
+			
+			
+			public function deleteEmt():void {
+				
+				parentDocument.deleteEmt(idx);
+			}
+			
+			
+			
+			[Bindable]public var gubun:ArrayCollection= new ArrayCollection(
+				[ {label:"테마문자", data:"테마문자"}, 
+					{label:"업종별문자", data:"업종별문자"},
+					{label:"등록문자", data:"등록문자"} ]);
+			
+			[Bindable]public var cate:ArrayCollection = null;
+			
+			public var theme:ArrayCollection = new ArrayCollection(
+				[ 
+					{label:"감사", data:"감사"},
+					{label:"계절", data:"계절"},
+					{label:"공지/안내", data:"공지/안내"},
+					{label:"기념", data:"기념"},
+					{label:"날씨", data:"날씨"},
+					{label:"명언/감동", data:"명언/감동"},
+					{label:"모임", data:"모임"},
+					{label:"부고/조의", data:"부고/조의"},
+					{label:"사과/화해", data:"사과/화해"},
+					{label:"사랑/고백", data:"사랑/고백"},
+					{label:"시즌", data:"시즌"},
+					{label:"안부", data:"안부"},
+					{label:"약속", data:"약속"},
+					{label:"요일", data:"요일"},
+					{label:"우정", data:"우정"},
+					{label:"위로/격려", data:"위로/격려"},
+					{label:"유머/패러디", data:"유머/패러디"},
+					{label:"종교", data:"종교"},
+					{label:"초대", data:"초대"},
+					{label:"축하", data:"축하"},
+					{label:"홍보/행사", data:"홍보/행사"},
+					{label:"기타", data:"기타"} ]);
+			
+			
+			
+			public var upjong:ArrayCollection = new ArrayCollection(
+				[ 
+					{label:"가구/인테리어", data:"가구/인테리어"},
+					{label:"가전", data:"가전"},
+					{label:"건강/다이어트", data:"건강/다이어트"},
+					{label:"결혼정보", data:"결혼정보"},
+					{label:"금융", data:"금융"},
+					{label:"꽃배달", data:"꽃배달"},
+					{label:"나이트", data:"나이트"},
+					{label:"낚시", data:"낚시"},
+					{label:"노래방", data:"노래방"},
+					{label:"대리운전", data:"대리운전"},
+					{label:"대출", data:"대출"},
+					{label:"동물병원", data:"동물병원"},
+					{label:"레저/스포츠", data:"레저/스포츠"},
+					{label:"렌터카", data:"렌터카"},
+					{label:"미용실", data:"미용실"},
+					{label:"병원", data:"병원"},
+					{label:"보험", data:"보험"},
+					{label:"부동산", data:"부동산"},
+					{label:"쇼핑몰/오픈마켓", data:"쇼핑몰/오픈마켓"},
+					{label:"스포츠", data:"스포츠"},
+					{label:"식품/슈퍼마켓", data:"식품/슈퍼마켓"},
+					{label:"여행사", data:"여행사"},
+					{label:"옷/의류", data:"옷/의류"},
+					{label:"유치원/어린이집", data:"유치원/어린이집"},
+					{label:"유흥", data:"유흥"},
+					{label:"음식", data:"음식"},
+					{label:"이삿짐", data:"이삿짐"},
+					{label:"자동차", data:"자동차"},
+					{label:"조합/노조", data:"조합/노조"},
+					{label:"종교", data:"종교"},
+					{label:"카센터", data:"카센터"},
+					{label:"택배/쿽서비스", data:"택배/쿽서비스"},
+					{label:"통신", data:"통신"},
+					{label:"학원/학교", data:"학원/학교"}
+				]);
+			
+			public function cbGubun_changeHandler():void
+			{
+				var gb:int =  cbGubun.selectedIndex;
+				
+				if (gb == 0) cate = theme;
+				else if (gb == 1) cate = upjong;
+				else cate = null;
+				
+				
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="142" height="100" >
+		<s:TextArea id="label" left="5" right="5" top="5" bottom="5" height="100" />
+	</s:Group>
+	<s:ComboBox id="cbGubun" prompt="구분 선택" dataProvider="{gubun}" change="cbGubun_changeHandler()"/>
+	<s:ComboBox id="cbCate" prompt="카테고리 선택" dataProvider="{cate}"/>
+	<s:HGroup>
+		
+		<s:Button label="수정" click="moify_clickHandler(event)" />
+		<s:Button label="삭제" click="deleteEmt()"/>
+	</s:HGroup>
+</s:Group>

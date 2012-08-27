@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="creationCompleteHandler(event)"
+		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "ADMIN";
+			private var RO_DESTINATION_WEB:String = "WEB";
+			private var al:ArrayCollection = new ArrayCollection();
+			private var user_unit:Number = 0;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				spinnerStart();
+				submit();
+			}
+			
+			protected function submit():void {
+				
+				ro.set(RO_DESTINATION, submit_ResultEventHandler);
+				ro.method.getCashList();
+				spinnerStart();
+			}
+			private function submit_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				callLater(spinnerStop);
+			}
+			
+			
+			private function fnLabel(item:Object, column:DataGridColumn):String {
+				
+				return (al.getItemIndex(item) + 1).toString();
+			}
+			
+			private function spinnerStart():void {
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				spinner.stop();
+				spinner.visible = false;
+				if (tiIdFilter.text.length > 0) {
+					tiIdFilter_keyUpHandler(new KeyboardEvent(""));
+				}
+			}
+			
+			// 결제 등록
+			public function update_submit(user_id:String, point:int):void {
+				
+				ro.set(RO_DESTINATION, update_submit_ResultEventHandler);
+				ro.method.setPoint(user_id, point);
+				spinnerStart();
+			}
+			private function update_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1) {
+					Alert.show("수정되었습니다.");
+					spinnerStart();submit();
+				}
+				else
+					Alert.show("수정 실패");
+				
+				callLater(spinnerStop);
+			}
+			
+			// 내역 삭제
+			public function delete_submit(idx:int):void {
+				
+				ro.set(RO_DESTINATION, delete_submit_ResultEventHandler);
+				ro.method.deleteCash(idx);
+				spinnerStart();
+			}
+			private function delete_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:int = event.result as int;
+				
+				if (rslt == 1) {
+					Alert.show("삭제 되었습니다.");
+					spinnerStart();submit();
+				}
+				else
+					Alert.show("삭제 실패");
+				
+				callLater(spinnerStop);
+			}
+			
+			
+			
+			// id 검색(필터)
+			protected function tiIdFilter_keyUpHandler(event:KeyboardEvent):void
+			{
+				al.filterFunction = checkString;
+				al.refresh();
+			}
+			private function checkString(item:Object):Boolean {
+				
+				var _searchString:String = tiIdFilter.text;
+				if(!_searchString) return true;
+				
+				var label:String = item.user_id;
+				var pattern:String = ".*"+_searchString+".*";
+				
+				if ( new String(item.user_id).match(pattern) ) return true;
+				
+				return false;
+			}
+			
+			
+			protected function chAmount_keyUpHandler(event:KeyboardEvent):void
+			{
+				var amount:int = 0;
+				if (chAmount.text != "") amount = new int( chAmount.text);
+				var unit:Number = 0;
+				
+					
+				if (amount < 1100000 ) unit = 12;
+				else if (amount < 3300000) unit = 11.5;
+				else if (amount < 5500000) unit = 11;
+				else if (amount >= 5500000 ) unit = 10.7;
+				else unit = 12;
+				
+				if (user_unit != 0) unit = user_unit;
+				
+				if (chUnitCheck.selected == true) {
+					
+					unit = new Number(chUnit.text);
+				}
+					
+				chUnit.text = new String(unit); 
+				chCount.text = new String( Math.round( Number(amount) / (unit+(unit*0.1)) ) );
+				
+			}
+			
+			protected function chButton_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, charge_set_submit_ResultEventHandler);
+				ro.method.setCash(chId.text, new int(chAmount.text), chCount.text, chNoti.selected);
+				spinnerStart();
+			}
+			
+			
+			private function charge_set_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				
+				if (rslt.bResult == true) {
+					Alert.show("충전 되었습니다.");
+					spinnerStart();
+					chargePanel.visible = false;
+				}
+				else {
+					Alert.show("충전 실패 :"+rslt.strDescription);
+				}
+				
+				callLater(spinnerStop);
+			}
+			
+			public function charge_view(user_id:String):void {
+				
+				chargePanel.visible = true;
+				chId.text = user_id;
+				if (user_id != null && user_id.length > 0) {
+					getUnit(user_id);
+				}
+				
+			}
+			
+			protected function getUnit(user_id:String):void {
+				
+				ro.set(RO_DESTINATION, getUnit_ResultEventHandler);
+				ro.method.getUnit(user_id);
+			}
+			private function getUnit_ResultEventHandler(event:ResultEvent):void {
+				
+				var unit:Number = event.result as Number;
+				user_unit = unit;
+				if (user_unit > 0) {
+					chUnit.text = new String(user_unit); 
+					ExternalInterface.call("alert",chId.text + " 단가 : " + user_unit);
+				}else {
+					chUnit.text = "0"; 
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Panel width="100%" height="100%" title="결제관리">
+		<s:HGroup top="2">
+			<s:TextInput id="tiIdFilter" keyUp="tiIdFilter_keyUpHandler(event)" toolTip="아이디 검색" />
+			<s:Button id="refresh" label="다시가져오기" click="spinnerStart();submit();" />
+			<s:Button id="chargeViewButton" label="충전하기" click="chargePanel.visible=true" />
+		</s:HGroup>
+		<mx:DataGrid id="dgGroup" left="0" right="0" top="25" bottom="0" draggableColumns="false"
+					 resizableColumns="false">
+			
+			<mx:columns>
+				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_id" headerText="아이디"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="account" headerText="계좌"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="method" headerText="방식"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="amount" headerText="금액"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="name" headerText="입금자명"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="timeWrite" headerText="요청시간"></mx:DataGridColumn>
+				
+				<mx:DataGridColumn headerText="" width="200"  sortable="false" itemRenderer="admin.component.billing.BillingFunRenderer" />
+			</mx:columns>
+			
+		</mx:DataGrid>
+		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	</s:Panel>
+	<s:Panel id="chargePanel" title="충전하기" visible="false" horizontalCenter="0" verticalCenter="0">
+		<s:Form horizontalCenter="0" >
+			<s:FormItem label="아이디">
+				<s:TextInput id="chId" focusOut="charge_view(chId.text)"/>
+			</s:FormItem>
+			<s:FormItem label="금액(vat 포함)">
+				<s:TextInput id="chAmount" enabled="{chId.text != ''}" keyUp="chAmount_keyUpHandler(event)" restrict="0-9"/>
+			</s:FormItem>
+			<s:FormItem label="단가(vat 미포함)">
+				<s:HGroup>
+					<s:TextInput id="chUnit" text="0" editable="{chUnitCheck.selected}" restrict="0-9 ."/>
+					<s:CheckBox id="chUnitCheck" label="수동단가"/>	
+				</s:HGroup>
+			</s:FormItem>
+			<s:FormItem label="건수">
+				<s:TextInput id="chCount" restrict="0-9"/>
+			</s:FormItem>
+			<s:FormItem label="충전정보발송">
+				<s:CheckBox id="chNoti" label="발송함"/>
+			</s:FormItem>
+			<s:FormItem>
+				<s:HGroup>
+					<s:Button id="chButton" label="충전" click="chButton_clickHandler(event)"/>
+					<s:Button id="chCancelButton" label="취소" click="chargePanel.visible=false"/>	
+				</s:HGroup>
+				
+			</s:FormItem>
+		</s:Form>
+	</s:Panel>
+</mx:Module>
