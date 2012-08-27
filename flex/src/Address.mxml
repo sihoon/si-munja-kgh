@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:component="component.*"
+			   width="950" height="970">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		*
+		{
+			font-family: Dotum;
+			color:#000000;
+		}
+	</fx:Style>
+	<fx:Script source="common.as" />
+	<fx:Script>
+		<![CDATA[
+			
+			public var appName:String = "Address";
+			
+			
+			// 로그인 되어 있을 경우 처리
+			protected function loginCheckHandler(event:CustomEvent):void
+			{
+				var uvo:UserInformationVO = UserInformationVO(event.obj)
+				loginBox.loginOK( uvo );
+				login_id = uvo.user_id;
+				bLogin = true;
+				
+				var obj2:Object = this.mPhone.child;
+				obj2.isValid();
+				//obj2.cReturnPhone.returnPhoneTextInput.text = uvo.phone_return;
+				obj2.cReturnPhone.getList();
+				
+				if (this.mDef) Object(this.mDef.child).creationCompleteHandler();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="100%">
+		<s:VGroup left="0" top="0">
+			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)" />
+			<s:ModuleLoader id="mPhone" url="module/MPhone.swf"/>
+			<s:Image source="images/sub_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=cost\'')}" />
+		</s:VGroup>
+		
+		<s:VGroup right="0" gap="0">
+			<s:Image source="images/top7.jpg" />
+			<s:ModuleLoader id="mDef" url="module/MAddress.swf"/>
+		</s:VGroup>
+	</s:Group>
+	
+	<s:SkinnableContainer id="subContainer" visible="false" skinClass="skin.SkinableContainerSub" verticalCenter="0" horizontalCenter="0">
+		<s:Image source="images/AdvancedCloseBtn.png" buttonMode="true" useHandCursor="true" right="0" click="subContainer.visible=false" />
+		<s:ModuleLoader id="mSub" ready="subContainer.visible=true;"/>
+	</s:SkinnableContainer>
+</s:Application>
