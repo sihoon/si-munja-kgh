@@ -39,8 +39,8 @@
 		if ( SLibrary.isNull(gubunlms) ) gubunlms = "업종별문자";
 		home = Home.getInstance();
 	
-		arrEmt = home.getMainEmt(conn, gubun, "%"+cate+"%", 0, 15);
-		arrCate = home.getMainCate(conn, gubun);
+		//arrEmt = home.getMainEmt(conn, gubun, "%"+cate+"%", 0, 15);
+		//arrCate = home.getMainCate(conn, gubun);
 		
 		arrEmtlms = home.getMainLMS(conn, gubunlms, "%"+catelms+"%", 0, 10);
 		arrCatelms = home.getMainCateLMS(conn, gubunlms);
@@ -50,12 +50,14 @@
 		arrMmsCate = home.getMainMmsCate(conn, "%%");
 		arrMms = home.getMainMms(conn, "%%", "%"+mmscate+"%", 0, 5);
 		
-		notihm = home.getNotices(conn);
+		//notihm = home.getNotices(conn);
 		
 		ses = new SessionManagement();
 		if ( !SLibrary.IfNull( (String)session.getAttribute("user_id") ).equals("") )
 			vo = ses.getUserInformation(conn, SLibrary.IfNull( (String)session.getAttribute("user_id") ));
-	}catch (Exception e) {}
+	}catch (Exception e) {
+		System.out.println(e.toString());
+	}
 	finally {
 		
 		try {
@@ -95,14 +97,14 @@
                 %>
                 </div>
                 <div class="emtibox">
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[0] %></textarea></div>
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[1] %></textarea></div>
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[2] %></textarea></div>
-                    <div class="emtiLms margright0"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[3] %></textarea></div>
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[4] %></textarea></div>
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[5] %></textarea></div>
-                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[6] %></textarea></div>
-                    <div class="emtiLms margright0"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=arrEmtlms[7] %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 0) %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 1) %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 2) %></textarea></div>
+                    <div class="emtiLms margright0"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 3) %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 4) %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 5) %></textarea></div>
+                    <div class="emtiLms"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 6) %></textarea></div>
+                    <div class="emtiLms margright0"><textarea onclick="setMsg(this.value)" class="emtiLms_ta" readonly ><%=SLibrary.IfNull(arrEmtlms, 7) %></textarea></div>
                 </div>
             </div>
         </fieldset>
@@ -144,32 +146,6 @@
             %>
             </div>
         </fieldset>
-
-		<div id="customer">
-			<img alt="customer" src="/images/customercenter.jpg" style="display:block;float:left;margin-right:10px;" />
-	        <fieldset id="noti">
-	            <legend>공지사항</legend>
-	            <a href="?content=notic" class="more">more</a>
-	            <%
-	            	if (notihm != null) {
-	            		int size = notihm.size();
-	            		HashMap<String, String> hm = null;
-	            		for (int i = 0; i < size; i++) {
-	            			hm = notihm.get(i);
-	            			%>
-	            			<div class="content"><a href="?content=notic&idx=<%=SLibrary.IfNull(hm, "idx") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
-	            			<%
-	            		}
-	            	}
-	            %>
-	        </fieldset>
-
-	        <div id="etc">
-	            <a href="?content=my" class="card">신용카드영수증출력</a>
-	            <a href="?content=faq" class="faq">자주하는 질문</a>
-	            <a href="?content=qna" class="cost">단가표</a>
-	        </div>
-		</div><!-- customer -->
 		
     </div><!--main End-->
 

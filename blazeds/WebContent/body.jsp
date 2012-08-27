@@ -27,7 +27,6 @@
 		else if ( strContent.equals("qna") ) 		includeURL = "custom/qna.jsp";
 		else if ( strContent.equals("faq") ) 		includeURL = "custom/faq.jsp";
 		
-		out.println("<div style=\"width:100%;height:26px;background:url('images/topbg.png') 0 0 repeat-x;\"></div>");
 	}
 	
 %>

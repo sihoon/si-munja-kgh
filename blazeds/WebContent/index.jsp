@@ -1,7 +1,34 @@
+<%@page import="com.common.VbyP"%>
+<%@page import="java.sql.Connection"%>
+<%@page import="com.m.home.Home"%>
+<%@page import="java.sql.SQLException"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="com.common.util.SLibrary"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%
 	String strContent = SLibrary.IfNull(request.getParameter("content"));
 	String session_id = SLibrary.IfNull((String)session.getAttribute("user_id"));
+	
+	Home home = null;
+	Connection conn = null;
+	ArrayList<HashMap<String, String>> notihm = null;
+	
+	try {
+		conn = VbyP.getDB();
+		home = Home.getInstance();
+		notihm = home.getNotices(conn);
+		
+	}catch (Exception e) {}
+	finally {
+		
+		try {
+			if ( conn != null )	conn.close();
+		}catch(SQLException e) {
+			VbyP.errorLog("getNotices >> conn.close() Exception!"); 
+		}
+		conn = null;
+	}
+	
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -52,6 +79,32 @@
     </div>
     
 	<jsp:include page="body.jsp" flush="false"/>
+	
+	<div id="customer">
+		<img alt="customer" src="/images/customercenter.jpg" style="display:block;float:left;margin-right:10px;" />
+        <fieldset id="noti">
+            <legend>공지사항</legend>
+            <a href="?content=notic" class="more">more</a>
+            <%
+            	if (notihm != null) {
+            		int size = notihm.size();
+            		HashMap<String, String> hm = null;
+            		for (int i = 0; i < size; i++) {
+            			hm = notihm.get(i);
+            			%>
+            			<div class="content"><a href="?content=notic&idx=<%=SLibrary.IfNull(hm, "idx") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
+            			<%
+            		}
+            	}
+            %>
+        </fieldset>
+
+        <div id="etc">
+            <a href="?content=my" class="card">신용카드영수증출력</a>
+            <a href="?content=faq" class="faq">자주하는 질문</a>
+            <a href="?content=qna" class="cost">단가표</a>
+        </div>
+	</div><!-- customer -->
 	
 	<div id="copyright">
 	    <a href="?content=company" class="company">회사소개</a>
