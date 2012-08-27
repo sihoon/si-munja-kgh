@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" />
+	</s:layout>
+
+	<fx:Metadata>
+		[Event(name="effectEnd", type="mx.events.EffectEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.EffectEvent;
+			import mx.events.FlexEvent;
+			private var animating:Boolean = false;
+			[Bindable] private var _font_size:int = 18;
+			[Bindable] private var _text_lable:String = "";
+			[Bindable] private var _glow_color:uint = 0x000000;
+			[Bindable] private var _text_color:uint = 0xffffff;
+			
+			public function get glow_color():uint	{ return _glow_color; }
+			public function set glow_color(value:uint):void {	_glow_color = value; }
+			
+			public function get text_color():uint	{ return _text_color; }
+			public function set text_color(value:uint):void {	_text_color = value; }
+
+			public function get text_label():String	{ return _text_lable; }
+			public function set text_label(value:String):void {	_text_lable = value; }
+			
+			public function get font_size():int	{ return _font_size; }
+			public function set font_size(value:int):void {	_font_size = value;	}
+			
+			public function play_glow():void { 
+				this.glower.play(); 
+			}
+			public function end():void { this.glower.end(); }
+			
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				
+				var fi:Array = this.label.filters;
+				fi.push( this.glow );
+				this.label.filters = fi;
+			}
+			/* repeatBehavior="{RepeatBehavior.REVERSE}" */
+
+			protected function glower_effectEndHandler(event:EffectEvent):void {
+				
+				this.dispatchEvent(new EffectEvent("effectEnd"));
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:GlowFilter id="glow" blurX="20" blurY="20" color="{_glow_color}" />
+		<s:AnimateFilter id="glower" target="{label}"
+						 bitmapFilter="{glow}" duration="700"
+						 repeatCount="3" effectEnd="glower_effectEndHandler(event)" >
+			<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1" />
+		</s:AnimateFilter>
+	</fx:Declarations>
+	<s:Label id="label" width="100%" textAlign="center" text="{_text_lable}" color="{_text_color}" fontSize="{_font_size}"/>
+</s:SkinnableContainer>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx" 
+						  focusEnabled="true">
+	<fx:Script>
+		<![CDATA[
+			import module.MAddress;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			protected function send_clickHandler(event:MouseEvent):void {
+				var parent:MAddress = parentDocument as MAddress;
+				parent.sendBtnAddr_ClickHandler( data );
+			}
+			
+			protected function modify_clickHandler(event:MouseEvent):void {
+				var parent:MAddress = parentDocument as MAddress;
+				
+				
+				var obj:Object = new Object();
+				obj.idx = new int( data.idx );
+				obj.group = new String( data.grpName );
+				obj.phone = new String( data.phone );
+				obj.name = new String( data.name );
+				obj.memo = new String( data.memo );
+				
+				parent.modifyAddressBtn_clickHandler(obj);
+			}
+			
+			protected function delete_clickHandler(event:MouseEvent):void {
+				
+				Alert.show("정말 주소록에서 삭제 하시겠습니까?", "삭제 확인", 1|8, this, alertClicked);
+			}
+			
+			private function alertClicked(event:CloseEvent):void {
+				
+				if(event.detail == Alert.YES) {
+					var parent:MAddress = parentDocument as MAddress;
+					parent.deleteAddress(new String(data.idx));
+				}
+			}
+			
+
+		]]>
+	</fx:Script>
+	<s:Label id="lblData" top="0" left="0" right="0" bottom="0" text="{dataGridListData.label}" />
+	
+	<s:HGroup top="0" bottom="0" left="2" right="2" horizontalAlign="center">
+		<s:Image click="send_clickHandler(event)" source="images/post_btn_send.gif" />
+		<s:Image click="modify_clickHandler(event)" source="images/post_btn_modify.gif" />
+		<s:Image click="delete_clickHandler(event)" source="images/post_btn_delete.gif" />
+	</s:HGroup>
+</s:MXDataGridItemRenderer>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="250" height="150">
+	<fx:Metadata>
+		[Event(name="setInterval", type="lib.CustomEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import lib.CustomEvent;
+			import lib.SLibrary;
+			
+			private function confirm():void
+			{
+				var obj:Object = new Object();
+				obj.cnt = cnt.text;
+				obj.minute = minute.text;
+				
+				if (obj.cnt == "") ExternalInterface.call("alert", "건수를 입력하세요.");
+				else if (obj.minute == "") ExternalInterface.call("alert", "분을 입력하세요.");
+				else {
+					this.dispatchEvent(new CustomEvent("setInterval", obj));
+					this.visible=false;	
+				}
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	
+	<s:BitmapImage source="images/ReserveBG.png" width="250" height="150" fillMode="scale"/>
+	
+	<s:Group top="20" left="15" bottom="20" right="10">
+		<s:layout><s:VerticalLayout verticalAlign="middle" horizontalAlign="left" paddingLeft="30"/></s:layout>
+		<s:HGroup verticalAlign="middle"><s:TextInput id="cnt" width="50" restrict="0-9" /><s:Label text="건 마다" color="white" /></s:HGroup>
+		<s:HGroup verticalAlign="middle"><s:TextInput id="minute" width="50" restrict="0-9" /><s:Label text="분 간격으로 전송" color="white" /></s:HGroup>
+		<s:HGroup>
+			<s:Image source="images/btn_group_confirm.gif" click="confirm()" useHandCursor="true" buttonMode="true"/>
+			<s:Image source="images/btn_group_cancle.gif" click="{this.visible=false;parentDocument.canIntButton_clickHandler();}" useHandCursor="true" buttonMode="true"/>
+		</s:HGroup>
+
+	</s:Group>
+
+</s:Group>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXTreeItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:local="*">
+
+	<fx:Script>
+		<![CDATA[
+			import lib.KoreaPhoneNumberFormatter;
+			
+			import module.MAddress;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectProxy;
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				if (treeListData != null && treeListData.hasChildren){
+					var chk:XMLList=new XMLList(treeListData.item);
+					var myChild:int=chk[0].children().length();
+					labelField.text=treeListData.label + " (" + myChild + ")";
+				}
+			}
+
+
+			protected function send_clickHandler(event:MouseEvent):void {
+				var parent:MAddress = parentDocument as MAddress;
+				parent.sendBtn_ClickHandler(data.attribute('type'), new XMLList(treeListData.item));
+			}
+			
+			protected function modify_clickHandler(event:MouseEvent):void {
+				var parent:MAddress = parentDocument as MAddress;
+				
+				if (data.attribute('type') == "group") {
+					parent.modifyGroupBtn_clickHandler(data.attribute('label'));	
+				} else {
+					var obj:Object = new Object();
+					obj.idx = new int( data.attribute('idx') );
+					obj.group = new String( data.attribute('group') );
+					obj.phone = new String( data.attribute('phone') );
+					obj.name = new String( data.attribute('label') );
+					obj.memo = new String( data.attribute('memo') );
+
+					parent.modifyAddressBtn_clickHandler(obj);
+				}
+				
+			}
+			
+			protected function delete_clickHandler(event:MouseEvent):void {
+				Alert.show("정말 주소록에서 삭제 하시겠습니까?", "삭제 확인", 1|8, this, alertClicked);
+			}
+			
+			private function alertClicked(event:CloseEvent):void {
+				
+				if(event.detail == Alert.YES) {
+					var parent:MAddress = parentDocument as MAddress;
+					var obj:Object = new Object();
+					obj.type = new String(data.attribute('type'));
+					obj.idx = new int(data.attribute('idx'));
+					obj.label = new String(data.attribute('label'));
+					
+					if (obj.type == "group")
+						parent.deleteGroup(obj);
+					else
+						parent.deleteAddress(new String(data.attribute('idx')));
+				}
+			}
+			
+			private var Kpf:KoreaPhoneNumberFormatter = new KoreaPhoneNumberFormatter(); // 전화번호 포맷
+			// 전화번호 포맷
+			private function phoneFomat(item:String):String	{ 
+				return Kpf.format(item); 
+			}
+
+		]]>
+	</fx:Script>
+
+	
+	<s:states>
+		<s:State name="normal" />            
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	<s:HGroup left="0" right="0" top="0" bottom="0" verticalAlign="middle">
+		<s:Rect id="indentationSpacer" width="{treeListData.indent}" percentHeight="100" alpha="0">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF" />
+			</s:fill>
+		</s:Rect>
+		<s:Group id="disclosureGroup">
+			<s:BitmapImage source="{treeListData.disclosureIcon}" />
+		</s:Group>
+		
+		<s:Label id="labelField" width="100" text="{treeListData.label}" paddingTop="2"/>
+		<s:Label width="100" text="{phoneFomat(data.attribute('phone'))}" paddingTop="2"/>
+		<s:Label width="50" text="{data.attribute('memo')}" paddingTop="2"/>
+	</s:HGroup>
+	<s:Group right="2">
+		<s:layout>
+			<s:HorizontalLayout  />
+		</s:layout>
+		<s:Image click="send_clickHandler(event)" source="images/post_btn_send.gif"  visible="{data.attribute('type')!='all'}"/>
+		<s:Image click="modify_clickHandler(event)" source="images/post_btn_modify.gif"  visible="{data.attribute('type')!='all'}"/>
+		<s:Image click="delete_clickHandler(event)" source="images/post_btn_delete.gif"  visible="{data.attribute('type')!='all'}"/>
+	</s:Group>
+</s:MXTreeItemRenderer>

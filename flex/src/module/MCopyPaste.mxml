@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="655" height="500" currentState="input" xmlns:lib="lib.*">
+	<fx:Script>
+		<![CDATA[
+			import component.address.AddressVO;
+			
+			import lib.BooleanAndDescriptionVO;
+			import lib.RO;
+			import lib.SLibrary;
+			
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var ac:ArrayCollection = null;
+			private var maxCol:int = 0;
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "WEB";
+			
+			// 2단계이동
+			protected function step1Btn_clickHandler(event:MouseEvent):void {
+				
+				this.currentState = "grid";
+				var rows:String = parseChar(row.selectedItem.data);
+				var cols:String = parseChar(col.selectedItem.data);
+				
+				if (paste.text == "") ExternalInterface.call("alert","입력 또는 붙여 넣으세요.");
+				else if (rows == "") ExternalInterface.call("alert","세로 구분자를 선택 하세요.");
+				else if (cols == "") ExternalInterface.call("alert","가로 구분자를 선택 하세요.");
+				else {
+					
+					ac = new ArrayCollection();
+					var arrRow:Array = paste.text.split(rows);
+					var cnt:int = arrRow.length;
+					for ( var i:int = 0; i < cnt; i++ ) {
+						ac.addItem( parseCol( String(arrRow[i]).split(cols), i+1 ));
+					}
+					if (ac.length > 0) {
+						this.data.dataProvider = ac;
+						callLater(phoneColSetting);
+						
+					}else ExternalInterface.call("alert","세로/ 가로 구분자를 올바르게 선택하세요.");
+				}
+			}
+			
+			// 2단계 완료 하기
+			private function clickAddButton():void {
+				
+				if (this.phone.selectedIndex < 0) {
+					SLibrary.alert("전화번호 열을 선택 하세요");
+				}
+				else {
+					spinnerStart();
+					
+					var userSelectedData:Array = setData( phone.selectedItem , phoneName.selectedItem  );
+					
+					if (this.where.selectedItem == "전송목록"){
+						parentApplication.phoneFunction( "addPhoneArray", userSelectedData);
+						spinnerStop();
+					}else {
+						addAddress(userSelectedData);
+					}
+				}
+			}
+			
+			// 주소록 그룹 리스트 가져오기
+			private function getAddressGroup():void {
+				
+				ro.set(RO_DESTINATION, addressGroup_ResultEventHandler);
+				ro.method.getAddressGroup();
+			}
+			private function addressGroup_ResultEventHandler(event:ResultEvent):void {
+				
+				var arr:Array = event.result as Array;
+				var ac:ArrayCollection = new ArrayCollection();
+				var obj:Object = null;
+				if (arr == null || arr.length <= 0) {
+					SLibrary.alert("주소록 그룹이 없습니다.");
+				}else {
+					
+					var cnt:int = arr.length;
+					for ( var i:int; i < cnt; i++ ) {
+						
+						obj = new Object();
+						obj.label = new String(arr[i]);
+						obj.data = new String(arr[i]);
+						ac.addItem(obj);
+					}				
+					comboBoxGroup.dataProvider = ac;
+				}
+				
+			}
+			
+			// 주소록 저장
+			private function addAddress(arr:Array):void {
+				
+				
+				ro.set(RO_DESTINATION, addAddress_ResultEventHandler);
+				
+				var al:ArrayList = new ArrayList();
+				var cnt:int = arr.length;
+				var vo:AddressVO = null;
+				var temp:Array = null;
+				var grpName:String = new String(comboBoxGroup.selectedItem.data);
+				
+				for (var i:int = 0; i < cnt; i++) {
+					
+					vo = new AddressVO();
+					temp = arr[i] as Array;
+					// 0 이 빠진경우
+					if (temp[0] != null && int(temp[0]) != 0 && temp[0].length > 6 && temp[0].substr(0,1) != "0")
+						vo.phone = (temp.length > 0)? "0"+SLibrary.trim(temp[0]):"";
+					else
+						vo.phone = (temp.length > 0)? SLibrary.trim(temp[0]):"";
+					vo.name = (temp.length > 1)? temp[1]:"";
+					vo.grpName = grpName;
+					al.addItem(vo);
+				}
+				
+				ro.method.addAddress(al);
+			}
+			private function addAddress_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) SLibrary.alert("저장되었습니다.");
+				else ExternalInterface.call("alert", bVO.strDescription);
+				
+				spinnerStop();
+			}
+			
+			// 저장배열 생성
+			private function setData(phoneColumn:String, nameColumn:String):Array {
+				
+				//initialize
+				var userSelectedData:Array = new Array();
+				var count:uint = this.ac.length;
+				var tempStr:String = "";
+				var chkInvaildChar:RegExp = /[^0-9]/g;	
+				
+				for (var i:uint = 0; i < count; i++) {
+					tempStr = this.ac[i][phoneColumn] as String;
+					
+					if (tempStr != null)
+						tempStr = tempStr.replace(chkInvaildChar,"");
+					else
+						continue;
+					
+					// 0 이 빠진경우
+					if (tempStr != null && int(tempStr) != 0 && tempStr.length > 6 && tempStr.substr(0,1) != "0")
+						userSelectedData.push( ["0"+tempStr ,this.ac[i][nameColumn]] );
+					else
+						userSelectedData.push( [this.ac[i][phoneColumn],this.ac[i][nameColumn]] );
+					
+				}
+				return userSelectedData;
+			}
+			
+			
+			// 역슬래시 인식위함.
+			private function parseChar(s:String):String {
+				
+				var rslt:String = "";
+				if (s == "\\n") rslt = "\n";else if (s == "\\t") rslt = "\t";else rslt = s;
+				return rslt;
+			}
+			
+			// 열 배열을 object로 변경
+			private function parseCol(a:Array, no:int):Object {
+				
+				var obj:Object = new Object();
+				if ( a != null) {
+					var cnt:int = a.length;
+					obj["/"] = String(no);
+					for ( var i:int = 0; i < cnt; i++) {
+						obj[azCol(i+1)] = a[i];
+					}
+					if (cnt+1 > maxCol) maxCol = cnt+1;
+				
+				}
+				return obj;
+			}
+			// A~Z 열 타이틀 생성
+			private function azCol(no:int):String {
+				
+				var rslt:String = "";
+				var base:int = int("A".charCodeAt(0));
+				var div:int = int("Z".charCodeAt(0)) - base + 1;		
+				
+				if ( (no-1) >= 0 ){
+					
+					//twoLength String
+					if ( no-1 >= div ) {
+						rslt = String.fromCharCode( (base + (int)( (no-1)/div ) -1) ) ;
+						rslt += String.fromCharCode( (base + (int)( (no-1)%div ) ) ) ;
+					}else {
+						rslt = String.fromCharCode( base+no-1 );
+					}
+				}
+				return rslt;
+			}
+			
+			// 전화번호,이름 combobox dataprovider
+			private function phoneColSetting():void {
+				
+				if (ac != null && ac.length > 0) {
+					var obj:Object = ac.getItemAt(0);
+					phone.dataProvider = new ArrayCollection( getArray(maxCol) );
+					phoneName.dataProvider = new ArrayCollection( getArray(maxCol) );
+				}
+			}
+			// 인자 개수의 배열을 생성한다.
+			private function getArray(cnt:int):Array {
+				var arr:Array = new Array();
+				for(var i:int = 0; i < cnt; i++) { arr.push( azCol(i+1) );	}
+				return arr;
+			}
+			
+			// spiner
+			private function spinnerStart():void { addOn.enabled = false; spinner.start(); spinner.visible = true;	}
+			private function spinnerStop():void { addOn.enabled = true;	spinner.stop();	spinner.visible = false; }
+			
+			protected function where_changeHandler(event:IndexChangeEvent):void	{ if (event.newIndex == 1) getAddressGroup(); }
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="input"/>
+		<s:State name="grid"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup includeIn="input" left="0" right="0" top="20" bottom="0">
+		<s:Image source="images/copy_tit01.gif" />
+		<s:TextArea id="paste" width="100%" height="400" prompt="전화번호가 포함된 내용을 복사( Ctrl+c ) 후 이곳에 붙여넣기( Ctrl+v ) 하세요. "/>
+		<s:HGroup>
+			<s:ComboBox id="row" prompt="세로 구분자" labelField="label" >
+				<s:ArrayCollection>
+					<fx:Object label="줄바꿈" data="\n" />
+					<fx:Object label="탭" data="\t" />
+					<fx:Object label="쉼표" data="," />
+					<fx:Object label="공백" data=" " />
+				</s:ArrayCollection>
+			</s:ComboBox>
+			<s:ComboBox id="col" prompt="가로 구분자" labelField="label" >
+				<s:ArrayCollection>
+					<fx:Object label="탭" data="\t" />
+					<fx:Object label="쉼표" data="," />
+					<fx:Object label="공백" data=" " />
+					<fx:Object label="줄바꿈" data="\n" />
+				</s:ArrayCollection>
+			</s:ComboBox>
+			<s:Image source="images/copy_btn_next.gif"  id="step1Btn" click="step1Btn_clickHandler(event)" buttonMode="true" useHandCursor="true" />
+			
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:VGroup includeIn="grid" left="0" right="0" top="30" bottom="0">
+		<s:Image source="images/copy_tit02.gif" />
+		<s:DataGrid id="data" width="100%" height="400" />
+		<s:HGroup>
+			<s:ComboBox id="phone" prompt="전화번호열번호" labelField="label" width="100" />
+			<s:ComboBox id="phoneName" prompt="이름열번호" labelField="label" width="100" />
+			
+			<s:ComboBox id="where" width="80" change="where_changeHandler(event)"
+						chromeColor="#cccccc" prompt="어디에?">
+				<s:dataProvider>
+					<s:ArrayList>
+						<fx:String>전송목록</fx:String>
+						<fx:String>주소록</fx:String>
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:ComboBox>
+			<s:DropDownList id="comboBoxGroup" visible="{where.selectedIndex == 1}" width="80" prompt="- 그룹 -"></s:DropDownList>
+			
+			<s:Image id="addOn" source="images/excel_add.gif" click="clickAddButton()" toolTip="{where.selectedIndex == 1?'선택한 전화번호열과 이름열을 주소록에 저장 합니다.':'선택한 전화번호열과 이름열을 전송목록에 추가 합니다.'}" buttonMode="true" useHandCursor="true"/>
+			<s:Image source="images/copy_btn_cancle.gif" click="this.currentState='input'"/>
+
+		</s:HGroup>
+	</s:VGroup>
+	<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="10" top="10" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	
+</s:Module>

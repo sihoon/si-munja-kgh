@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  creationComplete="creationCompleteHandler()"
+		  width="645" height="500" xmlns:lib="lib.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace lib "lib.*";
+		*
+		{
+			font-family: Dotum;
+			color:#000000;
+		}
+		.addrDg {
+			alternatingItemColors: #ffffff, #efefef;
+			borderColor: #ffffff;
+			headerColors: #A54645, #A54645;
+			headerStyleName:dgheaders;
+			headerBackgroundSkin:ClassReference("skin.GridHeaderSkin");
+			
+		}
+		.dgheaders {
+			textAlign:center;
+			color:#FFFFFF;
+		}
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import com.as3xls.xls.ExcelFile;
+			import com.as3xls.xls.Sheet;
+			
+			import lib.BooleanAndDescriptionVO;
+			import lib.KoreaPhoneNumberFormatter;
+			import lib.RO;
+			import lib.SLibrary;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.XMLListCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.formatters.DateFormatter;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.RemoteObject;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "WEB";
+			private var al:ArrayCollection = new ArrayCollection();
+			private var alDetail:ArrayCollection = new ArrayCollection();
+			
+			private var bRes:Boolean = false;
+			
+			
+			public function creationCompleteHandler():void {
+				
+				if (!parentApplication.bLogin) {
+					//SLibrary.alert("로그인 후 이용 가능합니다.");
+					return;
+				}
+
+				
+				var date:Date = new Date();
+				date.setMonth( date.getMonth()-1);
+				dateField1.selectedDate = date
+				dateField2.selectedDate = new Date;
+				
+				spinnerStart();
+				submit();
+			}
+			
+			private function fnLabel(item:Object, column:DataGridColumn):String {
+				
+				return (al.getItemIndex(item) + 1).toString();
+			}
+			
+			private function fnLabelDetail(item:Object, column:DataGridColumn):String {
+				
+				return (alDetail.getItemIndex(item) + 1).toString();
+			}
+			
+			/*###############################
+			#	RemoteObject				#
+			###############################*/
+			
+			
+			private function getDate(date1:Date, date2:Date):Object {
+				
+				var obj:Object = new Object();
+				obj.begin = date1.getFullYear()+"-"+twoNumber(date1.getMonth())+"-"+twoNumber(date1.getDate());
+				obj.end = date2.getFullYear()+"-"+twoNumber(date2.getMonth())+"-"+twoNumber(date2.getDate());
+				
+				return obj;
+			}
+			
+			private function twoNumber(n:Number):String {
+				
+				var s:String = "";
+				if (n < 10) s = "0"+n.toString();
+				else s = n.toString();
+				
+				return s;
+			}
+			
+			protected function submit():void {
+				
+				dgBox.visible = false;
+				
+				
+				
+				var obj:Object = this.getDate(this.dateField1.selectedDate , this.dateField2.selectedDate ); 
+				
+				var df:DateFormatter = new DateFormatter();
+				df.formatString = "YYYY-MM-DD";
+				
+				ro.set(RO_DESTINATION, submit_ResultEventHandler);
+				ro.method.getSentGroupList( df.format(dateField1.selectedDate), df.format(dateField2.selectedDate), false );
+				spinnerStart();
+			}
+			private function submit_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				bRes = false;
+				callLater(spinnerStop);
+			}
+			
+			public function detail_submit(idx:String, line:String):void {
+				
+				if (idx == null) idx = "0";
+				
+				ro.set(RO_DESTINATION, detail_submit_ResultEventHandler);
+				ro.method.getSentList( new int(idx), line );
+				
+				spinnerStart();
+				
+			}
+			private function detail_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				alDetail = event.result as ArrayCollection;
+				
+				if (alDetail != null) {
+					dg.dataProvider = alDetail;
+				}
+				
+				
+				dgBox.visible = true;
+				
+				callLater(spinnerStop);
+			}
+			
+			protected function reservation_submit():void {
+				
+				dgBox.visible = false;
+				
+				
+				
+				var df:DateFormatter = new DateFormatter();
+				df.formatString = "YYYY-MM-DD";
+				
+				ro.set(RO_DESTINATION, reservation_ResultEventHandler);
+				ro.method.getSentGroupList( df.format(dateField1.selectedDate), df.format(dateField2.selectedDate), true );
+				
+				spinnerStart();
+			}
+			
+			private function reservation_ResultEventHandler(event:ResultEvent):void {
+				
+				al = event.result as ArrayCollection;
+				
+				if (al != null) {
+					dgGroup.dataProvider = al;
+				}
+				bRes = true;
+				callLater(spinnerStop);
+			}
+			
+			
+			private var gidx:int = 0;
+			private var gline:String = "";
+			public function delete_submit(idx:String, line:String):void {
+				
+				if (idx == null) idx = "0";
+				
+				ro.set(RO_DESTINATION, delete_submit_ResultEventHandler);
+				
+				gidx = new int(idx);
+				gline = line;
+				if (bRes) {
+					Alert.show("정말 예약을 취소 하시겠습니까?", "예약취소확인", 1|8, this, resAlertClicked);
+					
+				}else {
+					Alert.show("정말 전송 내역을 삭제 하시겠습니까?", "삭제확인", 1|8, this, delAlertClicked);
+					
+				}
+				
+				//spinnerStart();
+				
+			}
+			
+			private function resAlertClicked(event:CloseEvent):void {
+				
+				if(event.detail == Alert.YES) {
+					ro.method.cancelSent( gidx, gline );
+				}
+			}
+			
+			private function delAlertClicked(event:CloseEvent):void {
+				
+				if(event.detail == Alert.YES) {
+					ro.method.deleteSent( gidx, gline );
+				}
+			}
+			
+			private function delete_submit_ResultEventHandler(event:ResultEvent):void {
+				
+				var bvo:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				
+				if (bvo.bResult) {
+					SLibrary.alert("삭제 되었습니다.");
+					if (bRes)
+						parentApplication.userInfoInit();
+					creationCompleteHandler();
+				}else {
+					SLibrary.alert(bvo.strDescription);
+				}
+				
+				
+			}
+			
+			
+			private function spinnerStart():void {
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				spinner.stop();
+				spinner.visible = false;
+			}
+			
+			protected function dgGroup_itemClickHandler(event:ListEvent):void
+			{
+				parentApplication.phoneFunction("message" , al.getItemAt(dgGroup.selectedIndex).message as String);
+			}
+			
+			
+			protected function excelButton_clickHandler(event:MouseEvent,type:Number):void
+			{
+				// type : 0(전체), 1(성공), 2(실패)
+				var sheet:Sheet = new Sheet();
+				var dataProviderCollection:ArrayCollection = dg.dataProvider as ArrayCollection;
+				var rowCount:int =  dataProviderCollection.length;
+				sheet.resize(rowCount+4,6);
+				sheet.setCell(0,0,"전화번호");
+				sheet.setCell(0,1,"결과");
+				sheet.setCell(0,2,"결과시간");
+				
+				var kpnf:KoreaPhoneNumberFormatter = new KoreaPhoneNumberFormatter();
+				var record:Object = null;
+				
+				var rowno:Number = 1;
+				
+				for(var r:int=0;r<rowCount;r++)
+				{
+					record = dataProviderCollection.getItemAt(r);
+					
+					if (type == 0) {
+						sheet.setCell(rowno,0,kpnf.format(String(record.phone)));
+						sheet.setCell(rowno,1,record.result);
+						sheet.setCell(rowno,2,record.resultDate);
+						rowno++;
+					} else if (type == 1 && record.result == "성공") {
+						sheet.setCell(rowno,0,kpnf.format(String(record.phone)));
+						sheet.setCell(rowno,1,record.result);
+						sheet.setCell(rowno,2,record.resultDate);
+						rowno++;
+					} else if (type == 2 && record.result != "성공") {
+						sheet.setCell(rowno,0,kpnf.format(String(record.phone)));
+						sheet.setCell(rowno,1,record.result);
+						sheet.setCell(rowno,2,record.resultDate);
+						rowno++;
+					}
+				}
+				
+				var fileName:String = "119.xlx";
+				
+				var typeFile:String = "all";
+				if (type == 1) typeFile = "success";
+				else if (type == 2) typeFile = "fail";
+				
+				if (record) fileName = String(record.sentGroupIndex)+"_"+typeFile+".xls";
+				
+				var xls:ExcelFile = new ExcelFile();
+				xls.sheets.addItem(sheet);
+				
+				var bytes: ByteArray = xls.saveToByteArray();
+				var fr:FileReference = new FileReference();
+				fr.save(bytes, fileName);
+				
+			}
+			
+			
+			public function send_clickHandler(idx:String, line:String):void {
+				
+				if (idx == null) idx = "0";
+				
+				ro.set(RO_DESTINATION, send_ResultEventHandler);
+				ro.method.getSentList( new int(idx), line );
+				
+				spinnerStart();
+				
+			}
+			private function send_ResultEventHandler(event:ResultEvent):void {
+				
+				var ac:ArrayCollection = event.result as ArrayCollection;
+				
+				if (ac != null) {
+					var phone:String = "";
+					var cnt:int = ac.length;
+					var obj:Object = null;
+					for (var i:int = 0; i < cnt; i++) {
+						obj = ac.getItemAt(i);
+						phone += obj.phone+"||,";
+					}
+					phone = phone.substr(0, phone.length -1);
+					parentApplication.phoneFunction("addPhone", phone);
+				}
+				callLater(spinnerStop);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:Group id="box" width="100%" height="100%">
+		
+		<s:VGroup gap="2" width="100%" height="100%">
+			<s:HGroup left="0" right="0" verticalAlign="middle" paddingTop="10" paddingBottom="10">
+				<mx:DateField width="95" id="dateField1" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+				<s:Label text=" ~ " />
+				<mx:DateField width="95" id="dateField2" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+				<s:Image source="images/btn_search.gif" click="submit()" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/btn_reserve.gif" click="reservation_submit()" buttonMode="true" useHandCursor="true" />
+			</s:HGroup>
+			<s:Group width="100%" height="100%">
+				<mx:DataGrid id="dgGroup" styleName="addrDg" width="100%" height="500" draggableColumns="false" resizableColumns="false" verticalGridLines="false"
+							 itemClick="dgGroup_itemClickHandler(event)" variableRowHeight="true" >
+					<mx:columns>
+						<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="40"></mx:DataGridColumn>
+						<!--<mx:DataGridColumn dataField="tranType" headerText="형식" width="50"></mx:DataGridColumn>-->
+						<mx:DataGridColumn dataField="timeSend" headerText="전송시간" width="120" sortable="false"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="returnPhone" headerText="회신번호" width="80" sortable="false"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="count" headerText="건수" width="50" sortable="false"></mx:DataGridColumn>
+						<mx:DataGridColumn dataField="message" headerText="메시지" sortable="false"></mx:DataGridColumn>
+						<mx:DataGridColumn headerText="" width="150"  sortable="false" itemRenderer="renderer.DeleteRenderer" />
+					</mx:columns>
+				</mx:DataGrid>
+				
+				<s:SkinnableContainer id="dgBox" width="90%" height="90%" visible="false" skinClass="skin.SkinableContainerSub" verticalCenter="0" horizontalCenter="0">
+					<s:Image source="images/AdvancedCloseBtn.png" buttonMode="true" useHandCursor="true" right="0" click="dgBox.visible=false" />
+					<s:HGroup id="excelButton" left="10" top="10" visible="true">
+						<s:Button label="엑셀다운(전체)" click="excelButton_clickHandler(event,0)" />
+						<s:Button label="엑셀다운(성공)" click="excelButton_clickHandler(event,1)" />
+						<s:Button label="엑셀다운(실패)" click="excelButton_clickHandler(event,2)" />
+					</s:HGroup>
+					<mx:DataGrid id="dg" styleName="addrDg" top="50" bottom="10" left="10" right="10" draggableColumns="false" resizableColumns="false" verticalGridLines="false">
+						<mx:columns>
+							<mx:DataGridColumn headerText="번호" sortable="false" width="50" labelFunction="fnLabelDetail"></mx:DataGridColumn>
+							<mx:DataGridColumn dataField="phone" headerText="전화번호"></mx:DataGridColumn>
+							<mx:DataGridColumn dataField="state" headerText="메시지위치"  itemRenderer="renderer.SentStateRenderer"></mx:DataGridColumn>
+							<mx:DataGridColumn dataField="result" headerText="결과"></mx:DataGridColumn>
+							<mx:DataGridColumn dataField="resultDate" headerText="결과시간"></mx:DataGridColumn>
+						</mx:columns>
+					</mx:DataGrid>
+				</s:SkinnableContainer>
+			</s:Group>
+
+		</s:VGroup>
+		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	</s:Group>
+</s:Module>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="177" height="135">
+	
+	<fx:Script>
+		<![CDATA[
+			import module.MEmoticon;
+			
+			import mx.events.FlexEvent;
+			protected function emtdel1_clickHandler(event:MouseEvent):void
+			{
+				//var parent:MEmoticon = parentDocument.parentDocument as MEmoticon;
+				parentDocument.parentDocument.deleteSave(int(data.idx));
+				
+			}
+			
+			override public function set data(value:Object):void { 
+				super.data = value; 
+				
+				// Check to see if the data property is null. 
+				if (value== null) return; 
+				
+				emt.text = value.msg;
+			} 
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Image source="images/pro_bg.gif" left="0"/>
+	<s:Label id="emt" left="16" right="16" top="30" bottom="4" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
+	<s:Button id="emtdel1" label="삭제" bottom="0" right="0" click="emtdel1_clickHandler(event)" />
+</s:ItemRenderer>

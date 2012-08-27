@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="655" height="550">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.components.Image;
+
+			
+			protected function photo_creationCompleteHandler():void	{
+				
+				var img:Image = null;
+				for (var i:int = 0; i < 8; i++) {
+					img = new Image();
+					img.source = "images/pro_ex.jpg";
+					img.buttonMode = true;
+					img.useHandCursor = true;
+					img.addEventListener(MouseEvent.CLICK, imgClick);
+					photo.addElement(img);
+				}
+			}
+			
+			protected function imgClick(event:MouseEvent):void {
+				
+				var img:Image = event.currentTarget as Image;
+				parentApplication.phoneFunction("photo", img.source);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="100%" top="10">
+		<s:Rect left="0" right="2" top="5" bottom="0" ><s:stroke><s:SolidColorStroke color="0xDCB8AC" weight="2" /></s:stroke></s:Rect>
+		<s:Image source="images/sub_photo_title.gif" />
+		<s:Group left="20" right="20" top="40" height="40">
+			<s:Rect left="0" right="0" top="0" bottom="0" ><s:fill><s:SolidColor color="0xEEE3DD"/></s:fill></s:Rect>
+			<s:HGroup horizontalCenter="0" verticalCenter="0" gap="20">
+				<s:Label text="돌잔치" />
+				<s:Label text="|" />
+				<s:Label text="결혼" />
+				<s:Label text="|" />
+				<s:Label text="기업초대" />
+				<s:Label text="|" />
+				<s:Label text="이벤트" />
+				<s:Label text="|" />
+				<s:Label text="모바일연하장" />
+			</s:HGroup>
+		</s:Group>
+		<s:TileGroup id="photo" horizontalCenter="0" horizontalGap="40" verticalGap="20" width="560" top="100" bottom="40" creationComplete="photo_creationCompleteHandler()">
+			
+		</s:TileGroup>
+		<s:Image left="10" verticalCenter="40" source="images/pre_emt.png"/>
+		<s:Image right="10" verticalCenter="40" source="images/next_emt.png"/>
+	</s:Group>
+	
+</s:Module>

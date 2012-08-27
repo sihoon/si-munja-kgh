@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="creationCompleteHandler()"
+		 width="285" height="150">
+	<fx:Metadata>
+		[Event(name="join", type="flash.events.MouseEvent")]
+		[Event(name="login", type="lib.CustomEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import component.member.Join;
+			import component.member.UserInformationVO;
+			
+			import lib.BooleanAndDescriptionVO;
+			import lib.CustomEvent;
+			import lib.RO;
+			import lib.SLibrary;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			
+			private var RO_DESTINATION:String = "WEB";
+			private var ro:RO = new RO();
+			
+			[Bindable]
+			private var userName:String = "";
+			
+			[Bindable]
+			private var point:String = "0";
+			
+			public function loginOK(vo:UserInformationVO):void {
+				
+				this.setCurrentState( "userInfo" );
+				login.visible = false;
+				loginInfo.visible = true;
+				
+				userName = vo.user_name;
+				point = SLibrary.addComma( vo.point );
+
+			}
+			
+			public function loginNO():void {
+				
+				this.setCurrentState( "login" );
+			}
+			
+			public function creationCompleteHandler():void
+			{
+				ro.set(RO_DESTINATION, loginOk_ResultEventHandler);
+				ro.method.getUserInformation();
+			}
+			protected function loginOk_ResultEventHandler(event:ResultEvent):void
+			{
+				var info:UserInformationVO = UserInformationVO(event.result);
+				if (info != null)
+					dispatchEvent(new CustomEvent("login",info));
+			}
+			
+			protected function login_id_focusInHandler(event:FocusEvent):void
+			{
+				
+				if (login_id.getStyle("color") == "0xaaaaaa") {
+					login_id.text = "";
+					login_id.setStyle("color", "0x000000");
+					
+				}
+			}
+			
+			protected function login_pw_focusInHandler(event:FocusEvent):void
+			{
+				if (login_pw.getStyle("color") == "0xaaaaaa") {
+					login_pw.text = "";
+					login_pw.setStyle("color", "0x000000");
+					login_pw.displayAsPassword = true;
+				}
+			}
+			
+			
+			
+			protected function login_button_clickHandler(event:MouseEvent):void
+			{
+				if (login_id.text == "") {
+					SLibrary.alert("아이디를 입력하세요");
+				}else if (login_pw.text == "") {
+					SLibrary.alert("비밀번호를 입력하세요");
+				}else {
+					
+					ro.set(RO_DESTINATION, login_ResultEventHandler);
+					ro.method.login(login_id.text, login_pw.text);
+				}
+			}
+			private function login_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					creationCompleteHandler();
+				} else {
+					SLibrary.alert("로그인 실패.");
+				}
+			}
+			
+			
+			protected function join_button_clickHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new MouseEvent("join"));
+			}
+			
+			protected function iframeClick(type:String, event:MouseEvent):void
+			{
+				parentDocument.viewIframe(type);
+			}
+			
+			protected function logout_button_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, logout_ResultEventHandler);
+				ro.method.logout_session();
+			}
+			
+			protected function modify_button_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, logout_ResultEventHandler);
+				ro.method.logout_session();
+			}
+			
+			private function logout_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					SLibrary.javascript("alert('정상적으로 로그아웃 되었습니다.');window.location.reload();");
+				} else {
+					SLibrary.alert("로그아웃 실패.");
+				}
+			}
+			
+			
+			public function moveState(name:String):void {
+				currentState = name;
+			}
+			
+			
+			
+			/* protected function coupon_clickHandler(event:MouseEvent):void
+			{
+				var key:String = couponText.text;
+				if (key == "") {
+					ExternalInterface.call("alert","쿠폰번호를 입력 하세요.");
+				}else {
+					ro.set(RO_DESTINATION, coupon_ResultEventHandler);
+					ro.method.setCoupon(key);	
+				}
+				
+			}
+			
+			protected function coupon_ResultEventHandler(event:ResultEvent):void
+			{
+				var rslt:String = event.result as String;
+				if (rslt == null || rslt == "") {
+					ExternalInterface.call("alert", "등록 되었습니다.");
+					creationCompleteHandler();
+				} else {
+					ExternalInterface.call("alert", rslt);
+				}
+			} */
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="login"/>
+		<s:State name="userInfo"/>
+	</s:states>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="100%" height="100%">
+		
+		
+		<s:Rect left="0" right="0" top="32" height="1">
+			<s:stroke>
+				<s:SolidColorStroke color="0xB9B9B9" weight="1" />
+			</s:stroke>
+		</s:Rect>
+		<s:Rect left="0" right="0" bottom="32" height="1">
+			<s:stroke>
+				<s:SolidColorStroke color="0xB9B9B9" weight="1" />
+			</s:stroke>
+		</s:Rect>
+		<s:Group id="login" includeIn="login" width="100%" height="100%" >
+			<s:Image source="/images/login_title.gif" top="5" left="5" />
+			<s:HGroup verticalCenter="0" horizontalCenter="0">
+				<s:VGroup gap="10">
+					<s:Group width="180">
+						<s:Image source="/images/id.gif" verticalCenter="0" />
+						<s:TextInput id="login_id" width="120" prompt="id" contentBackgroundColor="#F7F7F7" right="0"/>
+					</s:Group>
+					<s:Group width="180">
+						<s:Image source="/images/pw.gif" verticalCenter="0" />
+						<s:TextInput id="login_pw" width="120" prompt="password" displayAsPassword="true" enter="login_button_clickHandler(null)" contentBackgroundColor="#F7F7F7" right="0"/>
+					</s:Group>
+				</s:VGroup>
+				<s:Image id="login_button" source="/images/btn_login.jpg" click="login_button_clickHandler(event)" buttonMode="true" useHandCursor="true"/>
+			</s:HGroup>
+			
+			<s:HGroup left="10" bottom="5">
+				<s:Image id="join_button" source="/images/btn_member.gif" click="{ExternalInterface.call('eval','window.location.href=\'?content=join\'')}" buttonMode="true" useHandCursor="true"/>
+				<s:Image id="idsearch_button" source="/images/btn_idsearch.gif" click="{ExternalInterface.call('alert','고객센터로 연락 주시기 바랍니다.')}" buttonMode="true" useHandCursor="true"/>
+			</s:HGroup>
+		</s:Group>
+		<s:Group id="loginInfo" includeIn="userInfo" width="100%" height="100%" >
+			
+			<s:Image source="/images/login_title.gif" top="5" left="5" />
+			<s:HGroup verticalCenter="0" horizontalCenter="0">
+				<s:VGroup gap="10">
+					<s:HGroup width="180" verticalAlign="middle">
+						<s:Image source="/images/person.gif"/>
+						<s:Label text="{userName}" fontSize="12" color="0x5F4910" fontWeight="bold" />
+						<s:Image source="/images/text1.gif"/>
+					</s:HGroup>
+					<s:HGroup width="180" verticalAlign="middle">
+						<s:Image source="/images/text2.gif"/>
+						<s:Label text="{point}" fontWeight="bold" fontSize="22" />
+						<s:Label text="건"/>
+					</s:HGroup>
+				</s:VGroup>
+				<s:Image source="/images/btn_pay.jpg" click="{ExternalInterface.call('eval','window.location.href=\'?content=billing\'')}" buttonMode="true" useHandCursor="true"/>
+			</s:HGroup>
+			
+			<s:HGroup left="10" bottom="5">
+				<s:Image source="/images/bu_edit.gif"  click="{ExternalInterface.call('eval','window.location.href=\'?content=modify\'')}" buttonMode="true" useHandCursor="true"/>
+				<s:Image source="/images/bu_logout1.gif" click="{ExternalInterface.call('eval','window.location.href=\'member/_logout.jsp\'')}" buttonMode="true" useHandCursor="true"/>
+			</s:HGroup>
+
+		</s:Group>
+		
+	</s:Group>
+</s:Group>

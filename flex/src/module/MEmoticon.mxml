@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  width="645" minHeight="250" currentState="thema" xmlns:lib="lib.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		*
+		{
+			font-family: Dotum;
+			color:#000000;
+		}
+	</fx:Style>
+	<fx:Metadata>
+		[Event(name="clickMessage", type="lib.CustomEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.CustomEvent;
+			import lib.RO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.ItemClickEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "WEB";
+			private var gubun:String = "테마문자";
+			private var cate:String = "";
+			
+			[Binable] public var bMy:Boolean = false;
+			private var currTotalCount:int = 0;
+			
+			private var al:ArrayCollection =  new ArrayCollection();
+			
+			protected function cateList_creationCompleteHandler():void {
+				emotiList.dataProvider = al;
+				// 저장문자시 카테고리 안가져옴
+				if (gubun == "my") {
+					getEmotiList();
+				}
+				else {
+					if (parentApplication.appName != "Normal") {	paging.viewDataCount = 8; emotiList.height=300;}
+					ro.set(RO_DESTINATION, cateList_ResultEventHandler);
+					ro.method.getEmotiCateList(gubun);
+				}
+			}
+			
+			private function cateList_ResultEventHandler(event:ResultEvent):void {
+				
+				var arr:Array = event.result as Array;
+				var ac:ArrayCollection = new ArrayCollection(arr);
+				cateList.dataProvider = ac;
+				getEmotiList();
+			}
+			
+			protected function getEmotiList():void {
+				
+				ro.set(RO_DESTINATION, emoti_ResultEventHandler);
+				ro.method.getEmotiCatePage(gubun, cate, 0, paging.viewDataCount);
+			}
+			protected function getMyList():void {
+				
+				ro.set(RO_DESTINATION, emoti_ResultEventHandler);
+				ro.method.getEmotiCatePage(gubun, cate, 0, paging.viewDataCount);
+			}
+			protected function emoti_ResultEventHandler(event:ResultEvent):void {
+				
+				var rslt:ArrayCollection = event.result as ArrayCollection;
+				
+				if (rslt != null && rslt.length > 0) {
+					paging.totalDataCount = Object(rslt.getItemAt(0)).cnt;
+					
+					if (currTotalCount != paging.totalDataCount)paging.init();
+					currTotalCount = paging.totalDataCount;
+				}else {
+					paging.totalDataCount = 0;
+					paging.init();
+					currTotalCount = 0;
+					
+				}
+				
+				if (gubun == "my" && paging.totalDataCount > 0) {
+					currentState = "save";
+				}else if (gubun == "my") {
+					ExternalInterface.call("alert","등록된 문자가 없습니다.");
+					gubun = "업종별문자";
+					currentState = "upjong";
+					cateList_creationCompleteHandler();
+				}
+				
+				al.removeAll();
+				if (rslt)
+					al.addAll(rslt);
+			}
+			
+			
+			protected function paging_clickPageHandler(event:CustomEvent):void {
+				
+				ro.method.getEmotiCatePage(gubun, cate, event.obj, paging.viewDataCount);
+			}
+			
+			// 종류변경
+			protected function emti_changeHandler(idx:Number):void {
+				
+				if (idx == 0) { 
+					gubun = "업종별문자";
+					currentState = "upjong";
+					cateList_creationCompleteHandler();
+				}
+				else if (idx == 1) { 
+					gubun = "테마문자"; 
+					currentState = "thema";
+					cateList_creationCompleteHandler();
+				}
+				else if (idx == 2) {
+					if ( Boolean(parentApplication.bLogin) == false ) ExternalInterface.call("alert","로그인 후 이용가능합니다.");
+					else {
+						gubun = "my"; 
+						//currentState = "save";
+						cateList_creationCompleteHandler();
+					}
+					
+				}
+				cate = "";
+				
+			}
+			
+			public function deleteSave(idx:int):void {
+				ro.set(RO_DESTINATION, delete_ResultEventHandler);
+				ro.method.delMymsg(idx);
+			}
+			
+			private function delete_ResultEventHandler(event:ResultEvent):void {
+				
+				var b:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				
+				if (b.bResult == true) {
+					ExternalInterface.call("alert","삭제 되었습니다.");
+					cateList_creationCompleteHandler();
+				}
+			}
+			
+			protected function cateList_changeHandler(event:IndexChangeEvent):void
+			{
+				this.cate = cateList.selectedItem as String;
+				getEmotiList();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="upjong"/>
+		<s:State name="thema"/>
+		<s:State name="save"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:Group top="20">
+		
+		<s:Group top="37" width="645">
+			
+			<s:VGroup top="0" left="0" right="0" horizontalAlign="center">
+				<s:Group id="cateBox" visible.save="false" width="100%" height.save="0" >
+					
+					<s:List id="cateList" change="cateList_changeHandler(event)" left="10" right="10" height="66" verticalCenter="0"
+							selectionColor="0xffffff" rollOverColor="0xEEE3DD" skinClass="skin.ListBg" creationComplete="cateList_creationCompleteHandler()">
+						<s:layout><lib:FlowLayout /></s:layout>
+					</s:List>
+					<s:Rect left="0" right="0" bottom="0" height="2" ><s:fill><s:SolidColor color="0xDCDCDC"/></s:fill></s:Rect>
+				</s:Group>
+				<s:Spacer height="20" />
+				<s:List id="emotiList" width="620" itemRenderer.thema="renderer.EmotiRenderer" itemRenderer.upjong="renderer.EmotiRenderer" itemRenderer.save="renderer.MyMsgRenderer" skinClass="skin.ListBg">
+					<s:layout><s:TileLayout horizontalGap="12" verticalGap="10" requestedColumnCount="4"/></s:layout>
+				</s:List>
+				<lib:Paging id="paging" height="30" clickPage="paging_clickPageHandler(event)" />
+			</s:VGroup>
+		</s:Group>
+		
+		<s:Group width="100%">
+			<s:Rect bottom="0" left="0" right="0" height="2">
+				<s:fill>
+					<s:SolidColor color="0xB65754" />
+				</s:fill>
+			</s:Rect>
+			<s:HGroup gap="0" width="100%">
+				<s:Image source="images/tit01.gif" />
+				<s:Image source="images/tit01_m02.gif" source.thema="images/tit01_m02_.gif" click="emti_changeHandler(1)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit01_m01.gif" source.upjong="images/tit01_m01_.gif" click="emti_changeHandler(0)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit01_m01.gif" source.save="images/tit01_m01_.gif" click="emti_changeHandler(2)" buttonMode="true" useHandCursor="true" />
+			</s:HGroup>
+		</s:Group>
+	</s:Group>
+</s:Module>

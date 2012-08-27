@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  creationComplete="init()" width="645" height="500" xmlns:lib="lib.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.addrDg {
+			alternatingItemColors: #ffffff, #efefef;
+			borderColor: #ffffff;
+			headerColors: #f8f8f8, #e8e8e8;
+		}
+	</fx:Style>
+	<fx:Script>
+		<![CDATA[
+			import component.address.AddressVO;
+			import component.excel.ExcelLoaderEvent;
+			import component.excel.ExcelLoaderResultVO;
+			
+			import lib.BooleanAndDescriptionVO;
+			import lib.FileUploadByRemoteObject;
+			import lib.FileUploadByRemoteObjectEvent;
+			import lib.RO;
+			import lib.SLibrary;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.rpc.events.ResultEvent;
+			
+			/*###############################
+			#	variable & Attribute		#
+			###############################*/
+			[Bindable]
+			private var radioAddressSelected:Boolean = false;
+			private var fr:FileReference;
+			private var fur:FileUploadByRemoteObject;
+			private var data:ExcelLoaderResultVO;
+			
+			private var _userSelectedData:Array = new Array();
+			
+			private var _excelData:ArrayCollection = new ArrayCollection();
+			private var _phoneColumns:ArrayCollection = new ArrayCollection();
+			private var _nameColumns:ArrayCollection = new ArrayCollection();
+			
+			private var ro:RO = new RO();
+			private var RO_DESTINATION:String = "WEB";
+			/*###############################
+			#	public Function				#
+			###############################*/
+			public static const FILEUPLOAD:int = 0;
+			public static const SELECT:int = 1;
+			public static const METHOD:int = 2;
+			public static const ADDON:int = 3; 
+			
+			public function creationCompleteHandler():void {
+				init();
+			}
+			
+			public function set excelData(ac:ArrayCollection):void { this._excelData = ac; this.excelDg.dataProvider = this._excelData; }
+			public function get excelData():ArrayCollection { return this._excelData; }
+			
+			public function set userSelectedData(arr:Array):void { this._userSelectedData = arr; }
+			public function get userSelectedData():Array { return this._userSelectedData; }
+			
+			public function set phoneColumns(ac:ArrayCollection):void { this._phoneColumns = ac; }
+			public function get phoneColumns():ArrayCollection { return this._phoneColumns; }
+			
+			public function set nameColumns(ac:ArrayCollection):void { this._nameColumns = ac; }
+			public function get nameColumns():ArrayCollection { return this._nameColumns; }
+			/*###############################
+			#	private Function			#
+			###############################*/			
+			public function init():void {
+				
+				if (!parentApplication.bLogin) {
+					//SLibrary.alert("로그인 후 이용 가능합니다.");
+					return;
+				}
+				
+				setStep(FILEUPLOAD);
+				this.fur = new FileUploadByRemoteObject("WEB");
+				this.fur.addEventListener(FileUploadByRemoteObjectEvent.COMPLETE, FileUploadByRemoteObjectCOMPLETEHandler);
+				this.fur.addEventListener(FileUploadByRemoteObjectEvent.RESULT, FileUploadByRemoteObjectRESULTHandler);
+				this.fur.addEventListener(FileUploadByRemoteObjectEvent.FAULT, FileUploadByRemoteObjectFAULTHandler);
+				
+				getAddressGroup();
+			}
+			
+			private function setComboBoxData(array:Array):void {
+				
+				var count:uint = array.length;
+				var temp:String = "";
+				this.phoneColumns = new ArrayCollection();
+				this.nameColumns = new ArrayCollection();
+				
+				this.phoneColumns.addItem({label: "전화번호열", data:"" });
+				this.nameColumns.addItem({label: "이름열", data:"" });
+				for (var i:uint = 1; i < count; i++) {
+					
+					temp = (array[i] as DataGridColumn).dataField;
+					this.phoneColumns.addItem({label:temp, data:temp });
+					this.nameColumns.addItem({label:temp, data:temp });
+				}
+				
+				this.excelPhone.dataProvider = this._phoneColumns;
+				this.excelName.dataProvider = this._nameColumns;
+				
+				if (this._phoneColumns.length > 0) this.excelPhone.selectedIndex = 0;
+				if (this._nameColumns.length > 0) this.excelName.selectedIndex = 0;
+			}
+			
+			private function setData(phoneColumn:String, nameColumn:String):void {
+				
+				//initialize
+				userSelectedData = new Array();
+				var count:uint = this.excelData.length;
+				var tempStr:String = "";
+				var chkInvaildChar:RegExp = /[^0-9]/g;	
+				
+				for (var i:uint = 0; i < count; i++) {
+					tempStr = this.excelData[i][phoneColumn] as String;
+					
+					if (tempStr != null)
+						tempStr = tempStr.replace(chkInvaildChar,"");
+					else
+						continue;
+					
+					// 0 이 빠진경우
+					if (tempStr != null && int(tempStr) != 0 && tempStr.length > 6 && tempStr.substr(0,1) != "0")
+						_userSelectedData.push( ["0"+tempStr ,this.excelData[i][nameColumn]] );
+					else
+						_userSelectedData.push( [this.excelData[i][phoneColumn],this.excelData[i][nameColumn]] );
+				}
+			}
+			
+			
+			private function clickAddButton():void {
+				
+				if (this.excelPhone.selectedIndex == 0) {
+					SLibrary.alert("전화번호 열을 선택 하세요");
+				}
+				else {
+					if (this.phoneColumns[this.excelPhone.selectedIndex].label == this.nameColumns[this.excelName.selectedIndex].label)
+						ExternalInterface.call("alert","전화번호열과 이름열이 동일합니다. 다르게 선택해주세요.");
+					else {
+						
+						this.setData( this.phoneColumns[this.excelPhone.selectedIndex].label, this.nameColumns[this.excelName.selectedIndex].label );
+						
+						var event:ExcelLoaderEvent;
+						if (this.where.selectedItem == "전송목록"){
+							spinnerStart();
+							parentApplication.phoneFunction( "addPhoneArray", userSelectedData);
+							spinnerStop();
+						}else if (this.where.selectedItem == "주소록") {
+							spinnerStart();
+							addAddress();
+						}else {
+							ExternalInterface.call("alert","어디에 추가 하실지 정해 주세요.");
+						}
+					}
+					
+				}
+			}
+			
+			private function setStep(step:int):void {
+				
+				switch(step) {
+					
+					case FILEUPLOAD:
+						stepText.text = "엑셀 파일(.xls,.xlsx) 열기를 클릭하여 엑셀 파일을 선택 하세요.(csv 파일은 xls로 저장 후 사용)";
+						useage.visible = true;
+						excelPhone.visible = false;
+						excelName.visible = false;
+						where.visible = false;
+						comboBoxGroup.visible = false;
+						addOn.visible = false;
+						//excelDg.visible = false;
+						excelDg.dataProvider = null;
+						break;
+					case SELECT:
+					case METHOD:
+					case ADDON:
+						stepText.text = "전화번호 열을 선택 후 전송목록 또는 주소록을 선택 하세요.";
+						useage.visible = false;
+						excelPhone.visible = true;
+						excelName.visible = true;
+						where.visible = true;
+						comboBoxGroup.visible = false;
+						addOn.visible = true;
+						//excelDg.visible = true;
+						break;
+				}
+			}
+			
+			/*###############################
+			#	EventHandler				#
+			###############################*/
+			private function FileUploadByRemoteObjectCOMPLETEHandler(e:FileUploadByRemoteObjectEvent):void {
+				
+				SLibrary.bTrace("FileUploadByRemoteObjectCOMPLETEHandler");
+				
+				if ( Number(this.fur.UploadFiles[0].realsize) > Number(1024*1024*10) ) {
+					this.fur.UploadFiles.pop();
+					SLibrary.alert("10MB 이상의 파일은 사용 하실 수 없습니다.");
+				}else {
+					this.fur.remoteObject.getExcelLoaderData( e.data, e.fileName );
+				}
+			}
+			
+			private function FileUploadByRemoteObjectRESULTHandler(e:FileUploadByRemoteObjectEvent):void {
+				
+				SLibrary.bTrace("FileUploadByRemoteObjectRESULTHandler");
+				data = e.result as ExcelLoaderResultVO;
+				
+				if (data.bResult) {
+					this.excelData = data.list;
+					var columns:Array = this.excelDg.columns;
+					this.setComboBoxData(columns);
+					this.setStep(SELECT);
+				}else {
+					SLibrary.alert(data.strDescription);
+				}
+				
+			}
+			
+			private function FileUploadByRemoteObjectFAULTHandler(e:FileUploadByRemoteObjectEvent):void {
+				
+				SLibrary.bTrace("FileUploadByRemoteObjectFAULTHandler");
+				trace( e.fault );
+			}
+			
+			protected function radioAddress_clickHandler():void	{
+				this.radioAddressSelected = (this.where.selectedIndex == 1);
+			}
+			
+			/*###############################
+			#	RemoteObject				#
+			###############################*/
+			
+			// 주소록 그룹 리스트 가져오기
+			private function getAddressGroup():void {
+				
+				ro.set(RO_DESTINATION, addressGroup_ResultEventHandler);
+				ro.method.getAddressGroup();
+			}
+			private function addressGroup_ResultEventHandler(event:ResultEvent):void {
+				
+				var arr:Array = event.result as Array;
+				var ac:ArrayCollection = new ArrayCollection();
+				var obj:Object = null;
+				var cnt:int = arr.length;
+				
+				for ( var i:int; i < cnt; i++ ) {
+					
+					obj = new Object();
+					obj.label = new String(arr[i]);
+					obj.data = new String(arr[i]);
+					ac.addItem(obj);
+				}				
+				comboBoxGroup.dataProvider = ac;
+			}
+			
+			// 주소록 저장
+			private function addAddress():void {
+				
+				
+				ro.set(RO_DESTINATION, addAddress_ResultEventHandler);
+				
+				var al:ArrayList = new ArrayList();
+				var cnt:int = userSelectedData.length
+				var vo:AddressVO = null;
+				var temp:Array = null;
+				var grpName:String = new String(comboBoxGroup.selectedItem.data);
+				
+				for (var i:int = 0; i < cnt; i++) {
+					
+					vo = new AddressVO();
+					temp = userSelectedData[i] as Array;
+					// 0 이 빠진경우
+					if (temp[0] != null && int(temp[0]) != 0 && temp[0].length > 6 && temp[0].substr(0,1) != "0")
+						vo.phone = (temp.length > 0)? "0"+SLibrary.trim(temp[0]):"";
+					else
+						vo.phone = (temp.length > 0)? SLibrary.trim(temp[0]):"";
+					vo.name = (temp.length > 1)? temp[1]:"";
+					vo.grpName = grpName;
+					al.addItem(vo);
+				}
+				
+				ro.method.addAddress(al);
+			}
+			private function addAddress_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					SLibrary.alert("저장되었습니다.");
+					//parentApplication.addressInit();
+				} else {
+					ExternalInterface.call("alert", bVO.strDescription);
+				}
+				spinnerStop();
+			}
+			
+			private function spinnerStart():void {
+				addOn.enabled = false;
+				spinner.start();
+				spinner.visible = true;
+			}
+			
+			private function spinnerStop():void {
+				addOn.enabled = true;
+				spinner.stop();
+				spinner.visible = false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radiogroup1"/>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%">
+		<s:Group width="100%" height="40">
+			<s:HGroup gap="10" paddingLeft="5" top="0" width="100%" height="39" verticalAlign="middle">
+				<s:Image source="images/btn_excel.gif" click="this.fur.addFiles()" toolTip="클릭하여 엑셀 파일을 선택 하십시요." buttonMode="true" useHandCursor="true" />
+				<s:DropDownList id="excelPhone" width="80"></s:DropDownList>
+				
+				<s:DropDownList id="excelName" width="80"></s:DropDownList>
+				<s:ComboBox id="where" width="80" change="radioAddress_clickHandler()"
+							chromeColor="#cccccc" prompt="어디에?">
+					<s:dataProvider>
+						<s:ArrayList>
+							<fx:String>전송목록</fx:String>
+							<fx:String>주소록</fx:String>
+						</s:ArrayList>
+					</s:dataProvider>
+				</s:ComboBox>
+				<s:DropDownList id="comboBoxGroup" visible="{this.radioAddressSelected}" width="80" prompt="- 그룹 -"></s:DropDownList>
+				<s:Image id="addOn" source="images/h_add.gif"  
+						 toolTip="{this.radioAddressSelected?'선택한 전화번호열과 이름열을 주소록에 저장 합니다.':'선택한 전화번호열과 이름열을 전송목록에 추가 합니다.'}" click="clickAddButton()"
+						 buttonMode="true" useHandCursor="true"/>
+				
+				<s:Image source="images/btn_first.gif" click="{setStep(FILEUPLOAD)}" buttonMode="true" useHandCursor="true" />
+			</s:HGroup>
+			<s:Image id="useage" visible="false" right="0" source="images/guide.gif" verticalCenter="0" buttonMode="true" click="{navigateToURL(new URLRequest('usage_excel.html'), '_blank');}"/>
+		</s:Group>
+		<s:Label id="stepText" text="엑셀 파일 열기를 클릭하여 엑셀 파일을 선택 하세요."/>
+		<mx:DataGrid styleName="addrDg" id="excelDg" width="100%" height="370" headerHeight="25" verticalGridLines="false"></mx:DataGrid>
+	</s:VGroup>
+	<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="10" top="10" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
+	
+</s:Module>

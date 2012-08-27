@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" title="회원가입" width="500" height="410">
+
+	<fx:Script>
+		<![CDATA[
+			import lib.BooleanAndDescriptionVO;
+			import lib.JuminBunhoValidator;
+			import lib.SLibrary;
+			
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.RemoteObject;
+			import mx.validators.ValidationResult;
+			
+			private var ro:RemoteObject = null;
+			private var RO_DESTINATION:String = "WEB";
+			private var roStat:String = "";
+			
+			private var VALID_COLOR:Number = 0x0000FF;
+			private var INVALID_COLOR:Number = 0xFF0000;
+			
+			private function checkAll():Boolean {
+				
+				var b:Boolean = false;
+				if (tiId.getStyle("borderColor") == VALID_COLOR 
+					&&tipw.getStyle("borderColor") == VALID_COLOR
+					&&tiPwRe.getStyle("borderColor") == VALID_COLOR
+					&&tiName.getStyle("borderColor") == VALID_COLOR
+					&&tiJumin.getStyle("borderColor") == VALID_COLOR
+					&&tiHp.getStyle("borderColor") == VALID_COLOR
+					&&tiReturn.getStyle("borderColor") == VALID_COLOR
+				) b = true;
+				
+				return b;
+			}
+
+			// 아이디 검사
+			protected function tiId_keyUpHandler(event:KeyboardEvent):void
+			{
+				var ti:TextInput = TextInput(event.currentTarget);
+				sv.minLength = 4;
+				sv.maxLength = 12;
+				sv.tooShortError = "4자리 이상 입력하세요";
+				sv.tooLongError = "12자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(sv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					idHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					
+					idHelp.text = "";
+					dupleIdCheck(ti.text);
+				}
+			}
+			// 비밀번호검사
+			protected function tipw_keyUpHandler(event:KeyboardEvent):void
+			{
+				var ti:TextInput = TextInput(event.currentTarget);
+				sv.minLength = 4;
+				sv.maxLength = 12;
+				sv.tooShortError = "4자리 이상 입력하세요";
+				sv.tooLongError = "12자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(sv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					pwHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					ti.setStyle("borderColor",VALID_COLOR);
+					pwHelp.text = "확인";
+				}
+			}
+			// 비밀번호 확인 검사
+			protected function tiPwRe_keyUpHandler(event:KeyboardEvent):void
+			{
+				var ti:TextInput = TextInput(event.currentTarget);
+				sv.minLength = 4;
+				sv.maxLength = 12;
+				sv.tooShortError = "4자리 이상 입력하세요";
+				sv.tooLongError = "12자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(sv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					pwReHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					if (tipw.text == ti.text) {
+						ti.setStyle("borderColor",VALID_COLOR);
+						pwReHelp.text = "확인";
+					}else {
+						pwReHelp.text = "비밀번호와 일치 하지 않습니다.";
+					}
+				}
+			}
+			
+			// 이름 검사
+			protected function tiName_keyUpHandler(event:KeyboardEvent):void
+			{
+				var ti:TextInput = TextInput(event.currentTarget);
+				sv.minLength = 2;
+				sv.maxLength = 20;
+				sv.tooShortError = "2자리 이상 입력하세요";
+				sv.tooLongError = "10자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(sv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					nameHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					ti.setStyle("borderColor",VALID_COLOR);
+					nameHelp.text = "확인";
+				}
+			}
+			
+			// 주민 검사
+			protected function tiJumin_keyUpHandler(event:KeyboardEvent):void
+			{
+				var jv:JuminBunhoValidator = new JuminBunhoValidator();
+				var ti:TextInput = TextInput(event.currentTarget);
+				var rslt:String = null;
+				jv.minLength = 13;
+				jv.maxLength = 14;
+				jv.tooShortError = "13자리 이상 입력하세요";
+				jv.tooLongError = "13자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(jv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					juminHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					rslt = SLibrary.checkJumin(ti.text);
+					if (rslt == null)
+						dupleJuminCheck(ti.text);
+					else
+						juminHelp.text = rslt;
+					
+				}
+			}
+			
+			
+			// 핸드폰 검사
+			protected function tiHp_keyUpHandler(event:KeyboardEvent):void
+			{
+				var ti:TextInput = TextInput(event.currentTarget);
+				sv.minLength = 4;
+				sv.maxLength = 12;
+				sv.tooShortError = "10자리 이상 입력하세요";
+				sv.tooLongError = "13자리 이상 입력하실 수 없습니다.";
+				
+				var arr:Array = StringValidator.validateString(sv, ti.text);
+				
+				if (arr.length > 0) {
+					ti.setStyle("borderColor",INVALID_COLOR);
+					hpHelp.text = ValidationResult(arr[0]).errorMessage;
+				}else {
+					ti.setStyle("borderColor",VALID_COLOR);
+					hpHelp.text = "";
+				}
+			}
+			
+			// 회신번호 검사
+			protected function tiReturn_keyUpHandler(event:KeyboardEvent):void
+			{
+				tiReturn.setStyle("borderColor",VALID_COLOR);
+				returnHelp.text = "";
+			}
+			
+			
+			/*###############################
+			#	RemoteObject				#
+			###############################*/
+			private function remoteObjectInit(stat:String):void {
+				
+				ro = new RemoteObject();
+				ro.destination = RO_DESTINATION;
+				ro.addEventListener(FaultEvent.FAULT, remoteObjectFaultEventHandler);
+				this.roStat = stat;
+			}
+			
+			private function remoteObjectFaultEventHandler(event:FaultEvent):void{
+				
+				trace(event.fault);
+				SLibrary.alert(event.fault.faultString);
+			}
+			
+			// 아이디 중복 확인
+			protected function dupleIdCheck(id:String):void {
+				
+				if (id != "") {
+					if (roStat != "ID") {
+						remoteObjectInit("ID");
+						ro.addEventListener(ResultEvent.RESULT,idCheck_ResultEventHandler);
+					}
+					ro.checkID( id );
+				}
+			}			
+			private function idCheck_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					tiId.setStyle("borderColor",VALID_COLOR);
+					idHelp.text = "확인";
+				} else {
+					tiId.setStyle("borderColor",INVALID_COLOR);
+					idHelp.text = "사용할수 없는 아이디 입니다.";
+				}
+			}
+			
+			// 주민번호 중복 확인
+			protected function dupleJuminCheck(jm:String):void {
+				
+				if (jm != "") {
+					if (roStat != "JM") {
+						remoteObjectInit("JM");
+						ro.addEventListener(ResultEvent.RESULT,juminCheck_ResultEventHandler);
+					}
+					ro.checkJumin( jm );
+				}
+			}			
+			private function juminCheck_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					tiJumin.setStyle("borderColor",VALID_COLOR);
+					juminHelp.text = "확인";
+				} else {
+					tiJumin.setStyle("borderColor",INVALID_COLOR);
+					juminHelp.text = "가입된 주민등록 번호입니다.";
+				}
+			}
+			// 가입하기
+			protected function joinBtn_clickHandler(event:MouseEvent):void
+			{
+				if (checkAll() == true) {
+					if (roStat != "JO") {
+						remoteObjectInit("JO");
+						ro.addEventListener(ResultEvent.RESULT,join_ResultEventHandler);
+					}
+					ro.join( tiId.text, tipw.text, tiPwRe.text, tiName.text, tiJumin.text, tiHp.text, tiReturn.text );
+				} else {
+					SLibrary.alert("잘못된 정보가 있습니다.");
+				}
+			}
+			
+			private function join_ResultEventHandler(event:ResultEvent):void {
+				
+				var bVO:BooleanAndDescriptionVO = event.result as BooleanAndDescriptionVO;
+				if (bVO.bResult) {
+					SLibrary.alert("가입 되었습니다. 로그인 후 이용해 주세요.");
+					this.dispatchEvent(new Event("close"));
+				} else {
+					SLibrary.alert(bVO.strDescription);
+				}
+			}
+
+			protected function cancelBtn_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event("close"));
+			}
+
+
+			
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<mx:StringValidator id="sv" property="text" trigger="{tiId}" triggerEvent="keyup" />
+	</fx:Declarations>
+	<s:controlBarContent>
+		<s:Label text="사용자의 정보를 입력한 이후 확인 버튼을 클릭 하시기 바랍니다. "/>
+	</s:controlBarContent>
+	<s:Form width="100%" height="100%" skinClass="skin.JoinSkin">
+		<s:FormItem label="아이디" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiId" keyUp="tiId_keyUpHandler(event)" restrict="a-z0-9"/><s:Label id="idHelp" text="" />
+		</s:FormItem>
+		<s:FormItem label="비밀번호" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tipw" keyUp="tipw_keyUpHandler(event)"/><s:Label id="pwHelp" text="" />
+		</s:FormItem>
+		<s:FormItem label="비밀번호 확인" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiPwRe" keyUp="tiPwRe_keyUpHandler(event)"/><s:Label id="pwReHelp" text="" />
+		</s:FormItem>
+		<s:FormItem label="이름" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiName" keyUp="tiName_keyUpHandler(event)"/><s:Label id="nameHelp" text="" />
+		</s:FormItem>
+		<s:FormItem label="주민등록번호" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiJumin" keyUp="tiJumin_keyUpHandler(event)" restrict="0-9"/><s:Label id="juminHelp" text="숫자만 입력 가능 합니다." />
+		</s:FormItem>
+		<s:FormItem label="휴대폰번호" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiHp" keyUp="tiHp_keyUpHandler(event)" restrict="0-9"/>
+			<s:Label id="hpHelp" text="숫자만 입력 가능 합니다." />
+		</s:FormItem>
+		<s:FormItem label="회신번호" skinClass="skin.FormItemSkin">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:TextInput id="tiReturn" keyUp="tiReturn_keyUpHandler(event)" borderColor="255"  restrict="0-9"/><s:Label id="returnHelp" text="숫자만 입력 가능 합니다." />
+		</s:FormItem>
+		<s:FormItem>
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:Button id="joinBtn" label="가입하기" click="joinBtn_clickHandler(event)"/>
+			<s:Button id="cancelBtn" label="취소" click="cancelBtn_clickHandler(event)"/>
+		</s:FormItem>
+	</s:Form>
+</s:TitleWindow>
