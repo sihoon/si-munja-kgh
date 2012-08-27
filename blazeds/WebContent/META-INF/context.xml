@@ -25,7 +25,7 @@
               username="web" 
               password="xhdzmsdkdlelqlweb" 
               driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://1.226.84.99:3306/web"/>
+              url="jdbc:mysql://218.234.20.117:3306/web"/>
 
 	<Resource name="jdbc/sms1" 
               auth="Container" 
@@ -51,7 +51,7 @@
               username="sms1" 
               password="xhdzmsdkdlelqlsms1" 
               driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://1.226.84.99:3306/sms1"/>
+              url="jdbc:mysql://218.234.20.117:3306/sms1"/>
        -->        
 
 	<Resource name="jdbc/web"
@@ -65,12 +65,12 @@
 		maxActive="100" 
 		minIdle="10" 
 		maxWait="10000"
-		username="web"
-		password="xhdzmsdkdlelqlweb"
+		username="sms"
+		password="sms0820"
 		testOnBorrow="true"
 		validationQuery="select 1 "
 		poolPreparedStatements="true"
-        url="jdbc:mysql://1.226.84.99:3306/web?autoReconnection=true&amp;"
+        url="jdbc:mysql://218.234.20.117:3306/sms?autoReconnection=true&amp;"
         />
    	<Resource name="jdbc/sms1"
 		auth="Container"
@@ -83,12 +83,12 @@
 		maxActive="100" 
 		minIdle="10" 
 		maxWait="10000"
-		username="sms1"
-		password="xhdzmsdkdlelqlsms1"
+		username="sms"
+		password="sms0820"
 		testOnBorrow="true"
 		validationQuery="select 1 "
 		poolPreparedStatements="true"
-        url="jdbc:mysql://1.226.84.99:3306/sms1?autoReconnection=true&amp;"
+        url="jdbc:mysql://218.234.20.117:3306/sms?autoReconnection=true&amp;"
         />
 
 	
