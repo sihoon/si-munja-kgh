@@ -45,6 +45,7 @@ try {
 <div id="joinBox">
 	<p class="joinTitle ti">회원가입</p>
 	<p class="joinAd ti">업계최저가격 문자서비스</p>
+	<img src="/images/m_03.gif" style="display:block;margin:10px 0px;" />
 	<table class="inputTable" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td class="t">아이디</td>

@@ -54,7 +54,7 @@
 	
     <div id="topSub"><!--top-sub-->
         <%if (SLibrary.isNull(session_id)) { %><img src="/images/bu_login.gif" alt="로그인" class="hand"/><%}else {%><img src="/images/bu_logout.gif" onclick="window.location.href='member/_logout.jsp'" alt="로그아웃" class="hand"/><%} %> | 
-        <%if (SLibrary.isNull(session_id)) { %><img src="/images/bu_member.gif" onclick="window.location.href='?content=join'" alt="회원가입" class="hand"/><%}else {%><img src="/images/bu_member.gif" onclick="window.location.href='?content=modify'" alt="정보수정" class="hand"/><%} %> | 
+        <%if (SLibrary.isNull(session_id)) { %><img src="/images/bu_member.gif" onclick="window.location.href='?content=join'" alt="회원가입" class="hand"/><%}else {%><img src="/images/bu_modify.gif" onclick="window.location.href='?content=modify'" alt="정보수정" class="hand"/><%} %> | 
         <img src="/images/bu_mypage.gif" onclick="window.location.href='?content=my'" alt="마이페이지" class="hand"/> | 
         <img src="/images/bu_add.gif" class="hand" onclick="_addFavorite('문자랑','http://www.munjarang.com')" />
     </div>
@@ -108,9 +108,9 @@
 	
 	<div id="copyright">
 	    <a href="?content=company" class="company">회사소개</a>
-	    <a href="javascript:" onclick="openWindow('member/personal.html','p',715, 466)" class="personal">개인정보보호정책</a>
-	    <a href="javascript:" onclick="openWindow('member/promise.html','p',715, 466)" class="use">이용약관</a>
-	    <a href="javascript:" onclick="openWindow('member/spam.html','p',715, 466)" class="spam">광고스팸문자</a>
+	    <a href="?content=privcy" class="personal">개인정보보호정책</a>
+	    <a href="?content=use" class="use">이용약관</a>
+	    <a href="?content=spam" class="spam">광고스팸문자</a>
 	    <div class="link">
 	        <a href="" class="homeLink">HOME</a>
 	        <a href="" class="topLink">Top</a>
