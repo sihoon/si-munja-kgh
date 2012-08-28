@@ -27,6 +27,10 @@
 		else if ( strContent.equals("qna") ) 		includeURL = "custom/qna.jsp";
 		else if ( strContent.equals("faq") ) 		includeURL = "custom/faq.jsp";
 		
+		else if ( strContent.equals("privcy") ) 		includeURL = "custom/privcy.jsp";
+		else if ( strContent.equals("spam") ) 		includeURL = "custom/spam.jsp";
+		else if ( strContent.equals("use") ) 		includeURL = "custom/use.jsp";
+		
 	}
 	
 %>

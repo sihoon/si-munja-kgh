@@ -1,0 +1,30 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+global
+{
+	font-family: Dotum;
+}
+
+s|Button {
+	skinClass: ClassReference('admin.skin.MinButtonSkin');
+}
+
+mx|ToolTip 
+{
+	fontSize: 12;
+	color: #000000;
+	backgroundColor: #FCEA1E;
+}
+
+s|TextInput
+{
+	font-family:"±¼¸²Ã¼";
+}
+s|TextArea
+{
+	font-family:"±¼¸²Ã¼";	
+}
+	
