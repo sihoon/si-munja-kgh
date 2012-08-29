@@ -234,7 +234,7 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:VGroup includeIn="input" left="0" right="0" top="20" bottom="0">
-		<s:Image source="images/pop_tit01.gif" />
+		<s:Image source="/images/pop_tit01.gif" />
 		<s:TextArea id="paste" width="100%" height="400" prompt="전화번호가 포함된 내용을 복사( Ctrl+c ) 후 이곳에 붙여넣기( Ctrl+v ) 하세요. "/>
 		<s:HGroup>
 			<s:ComboBox id="row" prompt="세로 구분자" labelField="label" >
@@ -259,7 +259,7 @@
 	</s:VGroup>
 	
 	<s:VGroup includeIn="grid" left="0" right="0" top="30" bottom="0">
-		<s:Image source="images/pop_tit02.gif" />
+		<s:Image source="/images/pop_tit06.gif" />
 		<s:DataGrid id="data" width="100%" height="400" />
 		<s:HGroup>
 			<s:ComboBox id="phone" prompt="전화번호열번호" labelField="label" width="100" />
@@ -276,8 +276,8 @@
 			</s:ComboBox>
 			<s:DropDownList id="comboBoxGroup" visible="{where.selectedIndex == 1}" width="80" prompt="- 그룹 -"></s:DropDownList>
 			
-			<s:Image id="addOn" source="images/btn_pop_add.gif" click="clickAddButton()" toolTip="{where.selectedIndex == 1?'선택한 전화번호열과 이름열을 주소록에 저장 합니다.':'선택한 전화번호열과 이름열을 전송목록에 추가 합니다.'}" buttonMode="true" useHandCursor="true"/>
-			<s:Image source="images/btn_pop_cancle.gif" click="this.currentState='input'"/>
+			<s:Image id="addOn" source="/images/btn_pop_add.gif" click="clickAddButton()" toolTip="{where.selectedIndex == 1?'선택한 전화번호열과 이름열을 주소록에 저장 합니다.':'선택한 전화번호열과 이름열을 전송목록에 추가 합니다.'}" buttonMode="true" useHandCursor="true"/>
+			<s:Image source="/images/btn_pop_cancle.gif" click="this.currentState='input'"/>
 
 		</s:HGroup>
 	</s:VGroup>
