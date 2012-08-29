@@ -67,8 +67,8 @@ try {
 		<input type="radio" name="smsok" id="smsno" checked /><label for="smsno">아니오</label> &nbsp;&nbsp;<span>이벤트, 제품 정보, 주문정보 등에 대한 메일링 서비스</span></td></tr>
 	</table>
 	<div class="confirmBox">
-		<img src="images/btn_member1.gif" onclick="check_join()" />&nbsp;&nbsp;&nbsp;
-		<img src="images/btn_mcancle.gif" onclick="window.location.href='?'" />
+		<img src="images/btn_member1.gif" class="hand" onclick="check_join()" />&nbsp;&nbsp;&nbsp;
+		<img src="images/btn_mcancle.gif" class="hand" onclick="window.location.href='?'" />
 	</div>
 </div>
 </form>
