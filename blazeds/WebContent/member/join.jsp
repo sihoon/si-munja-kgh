@@ -645,7 +645,7 @@ VbyP.accessLog("회원가입 페이지 요청 1단계>> " + request.getRemoteAdd
 		<input type="radio" name="sub3" id="sub3no" checked="checked"/><label for="sub3no">동의안함</label>
 	</div>
 	<div class="confirmBox">
-		<img src="images/btn_next.gif" onclick="check1()" />&nbsp;&nbsp;&nbsp;
-		<img src="images/btn_mcancle.gif" onclick="window.location.href='?'" />
+		<img src="images/btn_next.gif" class="hand" onclick="check1()" />&nbsp;&nbsp;&nbsp;
+		<img src="images/btn_mcancle.gif" class="hand" onclick="window.location.href='?'" />
 	</div>
 </div>

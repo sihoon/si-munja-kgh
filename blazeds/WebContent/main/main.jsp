@@ -135,7 +135,7 @@
             		for (int m = 0; m < arrMms.size(); m++) {
             			hm = arrMms.get(m);
             			if (hm != null && !SLibrary.isNull( SLibrary.IfNull(hm, "msg") )) {
-            		%><div style="float:left;width:182px;text-align:center;padding-top:10px;">
+            		%><div style="float:left;width:188px;text-align:center;padding-top:10px;">
 							<img onclick="setPhoto(this.src)" src="<%= SLibrary.IfNull(hm, "msg") %>" class="potoimg" <%= m == (arrMms.size() -1) ? "style='margin-right:0px;'" : "" %> />
             				<p style="width:170px;overflow:hidden;height:20px" ><%= SLibrary.IfNull(hm, "title") %></p>
 						</div><%

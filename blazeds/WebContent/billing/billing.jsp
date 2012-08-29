@@ -64,7 +64,7 @@ finally {
 	<h2 class="txtMethod ti">결제 수단</h2>
 	<p class="selMethod">
 		<input type="radio" id="card" name="method" value="card" onclick="billingMethod()" checked /><label for="card">신용카드</label>&nbsp;&nbsp;
-		<input type="radio" id="online" name="method" value="online" onclick="billingMethod()" /><label for="online">계좌이체</label>&nbsp;&nbsp;
+<!-- 		<input type="radio" id="online" name="method" value="online" onclick="billingMethod()" /><label for="online">계좌이체</label>&nbsp;&nbsp; -->
 <!-- 		<input type="radio" id="mobile" name="method" value="mobile" onclick="billingMethod()" /><label for="mobile">휴대폰</label>&nbsp;&nbsp; -->
 		<input type="radio" id="cash" name="method" value="cash" onclick="billingMethod()" /><label for="cash">무통장입금</label>
 	</p>
@@ -143,10 +143,7 @@ finally {
 				
 				<p class="txtCash ti">계좌선택</p>
 				<ul class="cashList">
-					<li><input type="radio" name="cash" id="cash1" value="국민 - 최유진 517101-01-253003"  checked="checked" /><label for="cash1">국민 - 최유진 517101-01-253003</label></li>
-					<li><input type="radio" name="cash" id="cash2" value="농협 - 최유진 302-0270-9608-11" /><label for="cash2">농협 - 최유진 302-0270-9608-11</label></li>
-					<li><input type="radio" name="cash" id="cash3" value="신한 - 최유진 110-304-851796" /><label for="cash3">신한 - 최유진 110-304-851796</label></li>
-					<li><input type="radio" name="cash" id="cash4" value="우리 - 최유진 191-420251-02-001" /><label for="cash4">우리 - 최유진 191-420251-02-001</label></li>
+					<li><input type="radio" name="cash" id="cash1" value="국민 - 김경희 831801-04-007336"  checked="checked" /><label for="cash1">국민 - 김경희 831801-04-007336</label></li>
 				</ul>
 				<div style="width:421px;text-align:center;margin:10px 0px">
 				입금자명 <input type="text" name="cashName" /> 으로 <img src="images/reserve.gif" style="cursor:pointer" onclick="billingCashCheck()" />
