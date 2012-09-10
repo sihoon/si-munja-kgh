@@ -111,24 +111,24 @@ try {
 		%>
  
 </table>
-<table width="645" border="0" cellspacing="1" cellpadding="1" style="display:block;float:right">
-  <tr>
-    <td height="30">&nbsp;</td>
-  </tr>
-  <tr>
-    <td align="right"><table width="250" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td>
-          <input name="textfield" type="text" id="textfield" size="30" />
-        </td>
-        <td><img src="/images/bbs_search.gif"></td>
-      </tr>
-    </table></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-  </tr>
-</table>
+<!-- <table width="645" border="0" cellspacing="1" cellpadding="1" style="display:block;float:right"> -->
+<!--   <tr> -->
+<!--     <td height="30">&nbsp;</td> -->
+<!--   </tr> -->
+<!--   <tr> -->
+<!--     <td align="right"><table width="250" border="0" cellspacing="0" cellpadding="0"> -->
+<!--       <tr> -->
+<!--         <td> -->
+<!--           <input name="textfield" type="text" id="textfield" size="30" /> -->
+<!--         </td> -->
+<!--         <td><img src="/images/bbs_search.gif"></td> -->
+<!--       </tr> -->
+<!--     </table></td> -->
+<!--   </tr> -->
+<!--   <tr> -->
+<!--     <td>&nbsp;</td> -->
+<!--   </tr> -->
+<!-- </table> -->
 
 <%
 	
