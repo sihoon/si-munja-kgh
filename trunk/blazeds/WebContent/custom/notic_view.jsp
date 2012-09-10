@@ -29,7 +29,7 @@ try {
 		notic.updateCnt(conn, SLibrary.intValue(idx));
 		hm = notic.getContent(conn, SLibrary.intValue(idx));
 	}else {
-		out.println(SLibrary.alertScript("키가 없습니다.", "window.location.href='?contnet=notic'"));
+		out.println(SLibrary.alertScript("키가 없습니다.", "window.location.href='?content=notic'"));
 		return;
 	}
 	

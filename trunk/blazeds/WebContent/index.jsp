@@ -92,7 +92,7 @@
             		for (int i = 0; i < size; i++) {
             			hm = notihm.get(i);
             			%>
-            			<div class="content"><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "num") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
+            			<div class="content"><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "idx") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
             			<%
             		}
             	}
@@ -102,7 +102,7 @@
         <div id="etc">
             <a href="?content=my" class="card">신용카드영수증출력</a>
             <a href="?content=faq" class="faq">자주하는 질문</a>
-            <a href="?content=qna" class="cost">단가표</a>
+            <a href="?content=billing" class="cost">단가표</a>
         </div>
 	</div><!-- customer -->
 	
