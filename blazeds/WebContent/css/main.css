@@ -153,13 +153,14 @@ div.context {width:950px; height:auto; margin:0px auto;position: relative;}
 
 #companywrap {float:right;width:645px;height:auto;}
 
-#myBillingTitle {width:645px;height:35px;background:url("../images/mypage03.gif") no-repeat;font-size:14px;font-weight:bold}
+#myBillingTitle {width:645px;height:35px;background:url("../images/mypage_tit1.gif") no-repeat;font-size:14px;font-weight:bold}
 
 
 #companyTitle {float:right;margin-top:10px;width:645px;height:58px;background:url("../images/title_company.gif") no-repeat;border-bottom:2px solid red}
 #companyBox {float:right; margin-top:10px;width:645px;height:500px;background:url("../images/company.jpg") no-repeat;  }
 
-#myTitle {float:right;margin-top:10px;width:645px;height:58px;background:url("../images/title_mypage.gif") no-repeat;border-bottom:2px solid red}
+#myTitle {float:right;margin-top:10px;width:645px;height:48px;background:url("../images/mypage_tit.gif") no-repeat;}
+#myTitleSub {float:right;width:645px;height:80px;background:url("../images/jung.jpg") no-repeat;}
 #myBox {float:right; margin-top:10px;width:645px;height:600px;  }
 #myBox p{font-size:22px;font-weight:normal;width:100%;text-align:center;}
 #myBox p span{font-size:28px;font-weight:bold;color:#5F4910}

@@ -127,10 +127,11 @@
 </div>
 
 <p id="myTitle" class="ti">마이119</p>
+<p id="myTitleSub" class="ti">마이119</p>
 
 <div id="myBox" class="" >
 	<p><span><%=vo.getUser_name()%></span>님의 사용가능 건수는 <span><%=SLibrary.addComma(vo.getPoint())%></span>건 입니다.</p>
-	<table class="cntTable" width="721" border="0" cellpadding="0" cellspacing="0" >
+	<table class="cntTable" width="645" border="0" cellpadding="0" cellspacing="0" >
 		<tr><td colspan="5"><img src="images/mypage01.gif" /></td></tr>
 		<%
 			String style = "";
@@ -146,11 +147,10 @@
 		%>
 		<tr>
 			<td <%=style%> style="width:70px"><%=SLibrary.IfNull(hm, "num")%></td>
-			<td <%=style%> style="width:210px"><%=SLibrary.IfNull(hm, "memo")%></td>
+			<td <%=style%> style="width:150px"><%=SLibrary.IfNull(hm, "memo")%></td>
 			<td <%=style%> style="width:65px"><%=SLibrary.addComma(SLibrary.IfNull(hm, "point"))%></td>
-			<td <%=style%> style="width:110px"><%=SLibrary.addComma(SLibrary
-							.IfNull(hm, "now_point"))%></td>
-			<td <%=style%> style="width:256px"><%=SLibrary.IfNull(hm, "timeWrite").substring(0,
+			<td <%=style%> style="width:80px"><%=SLibrary.addComma(SLibrary.IfNull(hm, "now_point"))%></td>
+			<td <%=style%> style=""><%=SLibrary.IfNull(hm, "timeWrite").substring(0,
 							SLibrary.IfNull(hm, "timeWrite").length() - 2)%></td>
 		</tr>
 				<%
@@ -192,7 +192,7 @@
 	</table>
 	<p id="myBillingTitle" class="ti"> 결제내역 </p>
 	<script language="JavaScript" src="http://pgweb.uplus.co.kr/WEB_SERVER/js/receipt_link.js"></script>
-	<table class="cntTable" width="721" border="0" cellpadding="0" cellspacing="0" >
+	<table class="cntTable" width="645" border="0" cellpadding="0" cellspacing="0" >
 		<tr><td colspan="5"><img src="images/mypage02.gif" /></td></tr>
 		<%
 			if (alBilling.size() > 0) {
@@ -241,11 +241,11 @@
 					
 		%>
 		<tr>
-			<td <%=style%> style="width:70px"><%=SLibrary.IfNull(hm, "num")%></td>
-			<td <%=style%> style="width:100px"><%=SLibrary.IfNull(hm, "method").equals("cash") ? "무통장입금"
+			<td <%=style%> style="width:60px"><%=SLibrary.IfNull(hm, "num")%></td>
+			<td <%=style%> style="width:70px"><%=SLibrary.IfNull(hm, "method").equals("cash") ? "무통장입금"
 							: SLibrary.IfNull(hm, "method")%></td>
-			<td <%=style%> style="width:70px"><%=SLibrary.addComma(SLibrary.IfNull(hm, "amount"))%></td>
-			<td <%=style%> style="width:356px"><%=SLibrary.IfNull(hm, "timeWrite").substring(0,
+			<td <%=style%> style="width:60px"><%=SLibrary.addComma(SLibrary.IfNull(hm, "amount"))%></td>
+			<td <%=style%> style=""><%=SLibrary.IfNull(hm, "timeWrite").substring(0,
 							SLibrary.IfNull(hm, "timeWrite").length() - 2)%></td>
 			<td <%=style%> style="width:125px"><%=link%></td>
 		</tr>
