@@ -38,7 +38,7 @@
 	<meta http-equiv="Content-Script-Type" content="text/javascript" />
 	<meta http-equiv="Content-Style-Type" content="text/css" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>문자랑 :: High Performance, Low Price  </title>
+    <title>문자야 :: High Performance, Low Price  </title>
     <link type="text/css" rel="stylesheet" href="css/base.css?ver=1.0"/>
     <link type="text/css" rel="stylesheet" href="css/main.css?ver=1.2"/>
 	<script type="text/javascript"  language="javascript" src="js/jquery-1.7.1.min.js?ver=1.0"></script>
@@ -92,7 +92,7 @@
             		for (int i = 0; i < size; i++) {
             			hm = notihm.get(i);
             			%>
-            			<div class="content"><a href="?content=notic&idx=<%=SLibrary.IfNull(hm, "idx") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
+            			<div class="content"><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "num") %>" class="title"><%=SLibrary.IfNull(hm, "title") %></a><span class="notiDate"></span></div>
             			<%
             		}
             	}
