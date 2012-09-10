@@ -51,40 +51,37 @@ try {
 
 %>
 
-<% if (vo == null) { %>
-<form name="loginForm" method="post" target="nobody" action="member/_login.jsp" >
-<fieldset id="login">
-    <legend>로그인</legend>
-    <label class="idlabel ti" for="user_id">아이디</label><input type="text" id="user_id" name="user_id" />
-    <label class="pwlabel ti" for="user_pw">비밀번호</label><input type="password" id="user_pw" name="user_pw" />
-    <button class="loginBtn ti"  onclick="logincheck()">로그인</button>
-    <button class="joinBtn ti">회원가입</button>
-    <button class="findBtn ti">아이디찾기</button>
-</fieldset>
-</form>
-<% } else { %>
-<fieldset id="loginInfo">
-    <legend>로그인정보</legend>
-    <p><span class="name"><%=vo.getUser_name() %></span> 님 안녕하세요.</p>
-   	<div><img src="images/usenum.gif" />&nbsp;<span class="cnt"><%=SLibrary.addComma( vo.getPoint() ) %></span><img src="images/cnt.gif" /></div>
-   	<img src="images/btn_cashbuy.gif" class="hand" alt="충전하기" onclick="window.location.href='?content=billing'" />
-    <div class="function"><img src="images/edit.gif" class="hand" alt="정보수정"/>&nbsp;<img src="images/logout.gif" onclick="window.location.href='member/_logout.jsp'" class="hand" alt="로그아웃" /></div>
-    <div class="cuponBox"><input type="text" name="cupon" class="cuponInput" />&nbsp;&nbsp;<img src="images/btn_coupon.gif" class="hand" alt="쿠폰등록" /></div>
-</fieldset>
-<% }%>
+<script type="text/javascript" src="flexlib/swfobject.js"></script>
+<script type="text/javascript" src="member/member.js"></script>
+<div id="phone_flex">
+	<div id="flashContent" style="display:none;">
+	    <p>
+	        To view this page ensure that Adobe Flash Player version 
+	        10.2.0 or greater is installed. 
+	    </p>
+	    <script type="text/javascript"> 
+	        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+	        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+	                        + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+	    </script> 
+	</div>
+</div>
 
-<p id="noticTitle" class="ti">공지사항</p>
-
-<div id="noticBox" class="" >
-	<img alt="타이틀" src="images/notice_bar.gif"/>
-	<table class="cntTable" width="100%" border="0" cellpadding="0" cellspacing="0" >
-<!-- 		<tr> -->
-<!-- 			<th>번호</th> -->
-<!-- 			<th>제목</th> -->
-<!-- 			<th>날짜</th> -->
-<!-- 			<th>조회</th> -->
-<!-- 		</tr> -->
-		<%
+<table width="645" border="0" cellspacing="0" cellpadding="0" style="display:block;float:right">
+  <tr>
+    <td><img src="/images/notice_tit.gif"></td>
+  </tr>
+  <tr>
+    <td height="70"><img src="/images/notice_img.gif"></td>
+  </tr>
+</table>
+<table width="645" border="0" cellspacing="0" cellpadding="0" style="display:block;float:right" >
+  <tr>
+    <td width="150" height="30" align="center" background="/images/bbs_bg.gif"><b><font color="ffffff">번호</font></b></td>
+    <td background="/images/bbs_bg.gif"><b><font color="ffffff">제목</font></b></td>
+    <td width="100" align="center" background="/images/bbs_bg.gif"><b><font color="ffffff">조회수</font></b></td>
+  </tr>
+  <%
 		String style = "";
 		
 		if (al.size() > 0) {
@@ -97,61 +94,46 @@ try {
 				
 				if (idx.equals(SLibrary.IfNull(hm, "idx"))) viexIdx = p;
 				%>
-		<tr onclick="visible(document.getElementById('c<%=p%>'))" style="cursor:pointer">
-			<td <%=style %> style="width:70px;height:28px;"><%=SLibrary.IfNull(hm, "num") %></td>
-			<td <%=style %> style="width:430px" style="text-align:left;"><%=SLibrary.IfNull(hm, "title") %></td>
-			<td <%=style %> style="width:120px"><%=SLibrary.IfNull(hm, "timeWrite").substring(0, SLibrary.IfNull(hm, "timeWrite").length()-2)%></td>
-			<td <%=style %>><%=SLibrary.addComma( SLibrary.IfNull(hm, "cnt") )%></td>
+		<tr>
+			<td width="150" height="30" align="center"><%=SLibrary.IfNull(hm, "num") %></td>
+			<td><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "num") %>"><%=SLibrary.IfNull(hm, "title") %></a></td>
+			<td width="100" align="center"><%=SLibrary.addComma( SLibrary.IfNull(hm, "cnt") )%></td>
 		</tr>
-		<tr id="c<%=p%>" style="display:none;">
-			<td colspan="4" style="text-align:left;width:721px;height:auto"><textarea readonly style="padding:10px 0px; padding-left:50px;border:1px solid gray;width:671px;height:100px;"><%=SLibrary.IfNull(hm, "content") %></textarea></td>
+		<tr>
+		    <td height="1" colspan="3" bgcolor="bbbbbb"></td>
 		</tr>
-				<%
+		<%
 				
 			}
 		} else {
 				%>
-		<tr><td colspan="4">- 내역이 없습니다.</td></tr>
+		<tr><td colspan="3">- 내역이 없습니다.</td></tr>
 				<%
 		}
 		%>
-		
-		<tr><td colspan="5"><%
-		//pageing
-		Paging ppg = new Paging(nowPage , dateRowOfPage, dateRowOfPage , tcnt);
-		
-		ppg.pg = "pg";
-		ppg.linkPage = "";
-		ppg.queryString = url;
-		
-		ppg.firstOffLink = "<span style='color:gray'><< 처음</span>";
-		ppg.firstBlockOffLink = "<span style='color:gray'>< 이전</span>";
-		ppg.prevOffLink = "";   
-		ppg.nextOffLink = "";
-		ppg.lastBlockOffLink = "<span style='color:gray'>다음 ></span>";
-		ppg.lastOffLink = "<span style='color:gray'>마지막 >></span>";
-
-		ppg.firstLink = "<< 처음";
-		ppg.firstBlockLink = "< 이전";
-		ppg.prevLink = "";
-		ppg.nextLink = "";
-		ppg.lastBlockLink = "다음 >";
-		ppg.lastLink = "마지막 >>";
-		
-		ppg.delimiter = "|";
-
-		out.println( ppg.print() );
-		%></td></tr>
-	</table>
-	
-	
-</div>
-<a id="cost" class="ti" href="?content=billing">저렴하고 안정적인 문자서비스를 찾으십니까? 단가표 보기</a>
-<p id="custom" class="ti">Custom Center : 070-7510-8489, Fax: 031)970-8489</p>
+ 
+</table>
+<table width="645" border="0" cellspacing="1" cellpadding="1" style="display:block;float:right">
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="right"><table width="250" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td>
+          <input name="textfield" type="text" id="textfield" size="30" />
+        </td>
+        <td><img src="/images/bbs_search.gif"></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
 
 <%
-	if (!idx.equals(""))
-	out.println(SLibrary.alertScript("", "visible(document.getElementById('c"+Integer.toString(viexIdx)+"'));"));
+	
 }catch (Exception e) {}
 finally {
 

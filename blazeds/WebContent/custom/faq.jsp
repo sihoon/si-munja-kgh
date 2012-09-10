@@ -41,13 +41,18 @@ try {
 	}
 	
 	NoticDAO notic = new NoticDAO();
+	if (!SLibrary.isNull(idx) && SLibrary.intValue(idx) > 0) {
+		notic.updateCnt(conn, SLibrary.intValue(idx));
+	}
+	
+	
 	al = notic.getListFAQPage(conn, startPage, endPage);
 	tcnt = notic.totalCnt;
 
 %>
 
-<script type="text/javascript" src="/flexlib/swfobject.js"></script>
-<script type="text/javascript" src="/member/member.js"></script>
+<script type="text/javascript" src="flexlib/swfobject.js"></script>
+<script type="text/javascript" src="member/member.js"></script>
 <div id="phone_flex">
 	<div id="flashContent" style="display:none;">
 	    <p>
@@ -62,19 +67,20 @@ try {
 	</div>
 </div>
 
-<p id="faqTitle" class="ti">자주묻는질문</p>
-
-<div id="noticBox" class="" >
-	<img alt="타이틀" src="images/notice_bar.gif"/>
-	
-	<table class="cntTable" width="100%" border="0" cellpadding="0" cellspacing="0" >
-<!-- 		<tr> -->
-<!-- 			<th>번호</th> -->
-<!-- 			<th>제목</th> -->
-<!-- 			<th>날짜</th> -->
-<!-- 			<th>조회</th> -->
-<!-- 		</tr> -->
-		<%
+<table width="645" border="0" cellspacing="0" cellpadding="0" style="display:block;float:right">
+  <tr>
+    <td><img src="/images/faq_tit.gif"></td>
+  </tr>
+  <tr>
+    <td height="70"><img src="/images/faq_img.gif"></td>
+  </tr>
+</table>
+<table width="645" border="0" cellspacing="0" cellpadding="0" style="display:block;float:right" >
+  <tr>
+    <td width="130" height="30" align="center" background="/images/bbs_bg.gif"><b><font color="ffffff">번호</font></b></td>
+    <td background="/images/bbs_bg.gif"><b><font color="ffffff">제목</font></b></td>
+  </tr>
+  <%
 		String style = "";
 		
 		if (al.size() > 0) {
@@ -87,68 +93,52 @@ try {
 				
 				if (idx.equals(SLibrary.IfNull(hm, "idx"))) viexIdx = p;
 				%>
-		<tr onclick="visible(document.getElementById('c<%=p%>'))" style="cursor:pointer">
-			<td <%=style %> style="width:70px;height:28px;"><%=SLibrary.IfNull(hm, "num") %></td>
-			<td <%=style %> style="width:430px" style="text-align:left;"><%=SLibrary.IfNull(hm, "title") %></td>
-			<td <%=style %> style="width:120px"><%=SLibrary.IfNull(hm, "timeWrite").substring(0, SLibrary.IfNull(hm, "timeWrite").length()-2)%></td>
-			<td <%=style %>><%=SLibrary.addComma( SLibrary.IfNull(hm, "cnt") )%></td>
+		<tr>
+			<td width="150" height="30" align="center"><%=SLibrary.IfNull(hm, "num") %></td>
+			<td><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "num") %>"><%=SLibrary.IfNull(hm, "title") %></a></td>
 		</tr>
-		<tr id="c<%=p%>" style="display:none;">
-			<td colspan="4" style="text-align:left;width:721px;height:auto"><textarea readonly style="padding:10px 0px; padding-left:50px;border:1px solid gray;width:671px;height:100px;"><%=SLibrary.IfNull(hm, "content") %></textarea></td>
+		<tr>
+		    <td height="1" colspan="2" bgcolor="bbbbbb"></td>
 		</tr>
-				<%
+		<%
 				
 			}
 		} else {
 				%>
-		<tr><td colspan="4">- 내역이 없습니다.</td></tr>
+		<tr><td colspan="2">- 내역이 없습니다.</td></tr>
 				<%
 		}
 		%>
-		
-		<tr><td colspan="5"><%
-		//pageing
-		Paging ppg = new Paging(nowPage , dateRowOfPage, dateRowOfPage , tcnt);
-		
-		ppg.pg = "pg";
-		ppg.linkPage = "";
-		ppg.queryString = url;
-		
-		ppg.firstOffLink = "<span style='color:gray'><< 처음</span>";
-		ppg.firstBlockOffLink = "<span style='color:gray'>< 이전</span>";
-		ppg.prevOffLink = "";   
-		ppg.nextOffLink = "";
-		ppg.lastBlockOffLink = "<span style='color:gray'>다음 ></span>";
-		ppg.lastOffLink = "<span style='color:gray'>마지막 >></span>";
-
-		ppg.firstLink = "<< 처음";
-		ppg.firstBlockLink = "< 이전";
-		ppg.prevLink = "";
-		ppg.nextLink = "";
-		ppg.lastBlockLink = "다음 >";
-		ppg.lastLink = "마지막 >>";
-		
-		ppg.delimiter = "|";
-
-		out.println( ppg.print() );
-		%></td></tr>
-	</table>
-	
-	
-</div>
-<a id="cost" class="ti" href="?content=billing">저렴하고 안정적인 문자서비스를 찾으십니까? 단가표 보기</a>
-<p id="custom" class="ti">Custom Center : 070-7510-8489, Fax: 031)970-8489</p>
+ 
+</table>
+<table width="645" border="0" cellspacing="1" cellpadding="1" style="display:block;float:right">
+  <tr>
+    <td height="30">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="right"><table width="250" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td>
+          <input name="textfield" type="text" id="textfield" size="30" />
+        </td>
+        <td><img src="/images/bbs_search.gif"></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
 
 <%
-	if (!idx.equals(""))
-		out.println(SLibrary.alertScript("", "visible(document.getElementById('c"+Integer.toString(viexIdx)+"'));"));
+	
 }catch (Exception e) {}
 finally {
 
 try {
 	if ( conn != null )	conn.close();
 }catch(SQLException e) {
-	VbyP.errorLog("faq.jsp >> conn.close() Exception!"); 
+	VbyP.errorLog("notic.jsp >> conn.close() Exception!"); 
 }
 conn = null;
 }
