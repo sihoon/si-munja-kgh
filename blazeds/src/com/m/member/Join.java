@@ -166,4 +166,64 @@ public class Join {
 		
 		return count;
 	}
+	
+	
+	public MemberVO getMember(String name, String email) {
+		
+		MemberVO vo = new MemberVO();
+		
+		Connection conn = null;
+
+		try {
+			conn = VbyP.getDB();
+			PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+			pq.setPrepared( conn, VbyP.getSQL("getMemberNE") );
+			
+			pq.setString(1, SLibrary.IfNull(name));
+			pq.setString(2, SLibrary.IfNull(email));
+			
+			vo.setHashMap(pq.ExecuteQueryCols());
+			
+		}catch(Exception e) {}
+		finally {
+			try {
+				if ( conn != null )
+					conn.close();
+			}catch(SQLException e) {
+				VbyP.errorLog("getMember >> conn.close() Exception!"); 
+			}
+		}
+		
+		return vo;
+	}
+	
+	public MemberVO getMember(String id, String name, String email) {
+		
+		MemberVO vo = new MemberVO();
+		
+		Connection conn = null;
+
+		try {
+			conn = VbyP.getDB();
+			PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+			pq.setPrepared( conn, VbyP.getSQL("getMemberINE") );
+			
+			pq.setString(1, SLibrary.IfNull(id));
+			pq.setString(2, SLibrary.IfNull(name));
+			pq.setString(3, SLibrary.IfNull(email));
+			
+			vo.setHashMap(pq.ExecuteQueryCols());
+			
+		}catch(Exception e) {}
+		finally {
+			try {
+				if ( conn != null )
+					conn.close();
+			}catch(SQLException e) {
+				VbyP.errorLog("getMember >> conn.close() Exception!"); 
+			}
+		}
+		
+		return vo;
+	}
 }

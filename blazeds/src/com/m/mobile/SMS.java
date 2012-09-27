@@ -81,6 +81,9 @@ public class SMS implements SMSAble {
 		else if (SLibrary.IfNull(via).equals("it")) {
 			sql = VbyP.getSQL("insertClientIT");
 		}
+		else if (SLibrary.IfNull(via).equals("pp")) {
+			sql = VbyP.getSQL("insertClientPP");
+		}
 		else {
 			sql = VbyP.getSQL("insertClient");
 			//pq.setPrepared( connSMS, VbyP.getSQL("insertClient") );
