@@ -539,7 +539,7 @@
 			<s:Image source="images/btn_group.gif" buttonMode="true" useHandCursor="true"  click="modifyGroup='';groupName.text='';groupPanel.visible=true;" />
 			<s:Image source="images/btn_postadd.gif" buttonMode="true" useHandCursor="true"  click="addAddressBtn_clickHandler(event)" />
 			<s:Image source="images/btn_sendall.gif" buttonMode="true" useHandCursor="true"  click="allBtn_clickHandler(event)" />
-			<s:Image source="images/btn_download.gif" includeIn="AddrView" width.AddrView="50" buttonMode="true" useHandCursor="true"  
+			<s:Image source="images/btn_download.gif" includeIn="AddrView" buttonMode="true" useHandCursor="true"  
 					 click="excelButton_clickHandler(event)" />
 			
 			<s:Image source="images/guide.gif" verticalCenter="0" buttonMode="true" click="{navigateToURL(new URLRequest('usage_excel.html'), '_blank');}"/>
@@ -547,9 +547,9 @@
 		
 		<s:Group width="100%">
 			<s:Rect left="0" right="0" bottom="0" height="2" ><s:fill><s:SolidColor color="0xB65754"/></s:fill></s:Rect>
-			<s:HGroup width="100%" verticalAlign="middle" gap="0" bottom="2">
-				<s:Image source.GrpView="images/tit01_m01_.gif" source.AddrView="images/tit01_m01.gif" click="currentState='GrpView';getAddress();" />
-				<s:Image source.GrpView="images/tit01_m02.gif" source.AddrView="images/tit01_m02_.gif" click="currentState='AddrView';getAddress();" />				
+			<s:HGroup width="100%" verticalAlign="middle" gap="0" bottom="0">
+				<s:Image source.GrpView="images/post_m01_.gif" source.AddrView="images/post_m01.gif" click="currentState='GrpView';getAddress();" />
+				<s:Image source.GrpView="images/post_m02.gif" source.AddrView="images/post_m02_.gif" click="currentState='AddrView';getAddress();" />				
 			</s:HGroup>
 		</s:Group>
 
@@ -578,7 +578,7 @@
 		<s:HGroup includeIn="AddrView" verticalAlign="middle">
 			<s:TextInput id="search" focusThickness="0" text="" enter="search_clickHandler(null)"/>
 			<s:Image source="images/btn_search.gif" buttonMode="true" useHandCursor="true" click="search_clickHandler(event)"  />
-			<s:Image source="images/btn_selectadd.gif" buttonMode="true" useHandCursor="true"  click="selectAdd_clickHandler(event)" toolTip="Ctrl 을 누르고 선택 하실 수 있습니다." />	
+			<s:Image source="images/selectsend.gif" buttonMode="true" useHandCursor="true"  click="selectAdd_clickHandler(event)" toolTip="Ctrl 을 누르고 선택 하실 수 있습니다." />	
 		</s:HGroup>
 		
 	</s:VGroup>

@@ -3,6 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   width="950" height="750" xmlns:component="component.*"
+			   creationComplete="application1_creationCompleteHandler(event)"
 			   >
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -16,6 +17,7 @@
 	<fx:Script source="common.as" />
 	<fx:Script>
 		<![CDATA[
+			import flash.utils.setInterval;
 			public var appName:String = "Main";
 			
 			
@@ -33,11 +35,38 @@
 				obj2.cReturnPhone.getList();
 				
 			}
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				setInterval(bannerChange, 5000);
+			}
+			
+			
+			
+			private function bannerChange():void {
+				
+				if (this.currentState == "banner1") this.currentState = "banner2";
+				else this.currentState = "banner1";
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<s:states>
+		<s:State name="banner1" />
+		<s:State name="banner2" />
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition id="t1" autoReverse="true">
+			<s:CrossFade
+				target="{holder}" 
+				duration="1000" />
+		</s:Transition>
+	</s:transitions>
+	
 	<s:Group width="100%">
 		<s:VGroup left="0" top="0">
 			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)" />
@@ -46,7 +75,11 @@
 		</s:VGroup>
 		
 		<s:VGroup right="0" gap="0">
-			<s:Image source="images/banner1.jpg" />
+			<s:Group id="holder">
+				<s:Image source="images/banner1.jpg" visible="true" visible.banner2="false"/>
+				<s:Image source="images/banner2.jpg" visible="false" visible.banner2="true"/>	
+			</s:Group>
+			
 			<s:Image source="images/center_banner.jpg" />
 			<s:ModuleLoader id="mDef" url="module/MEmoticon.swf"/>
 		</s:VGroup>

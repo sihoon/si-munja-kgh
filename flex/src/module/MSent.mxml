@@ -3,7 +3,7 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  creationComplete="creationCompleteHandler()"
-		  width="645" height="500" xmlns:lib="lib.*">
+		  width="645" xmlns:lib="lib.*">
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";

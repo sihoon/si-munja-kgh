@@ -312,8 +312,8 @@
 				
 				if (mode.text != "SMS") {
 					if (a.isPlaying) a.stop();
-					asmp.valueFrom = 154;
-					asmp.valueTo = 257;
+					asmp.valueFrom = 180;
+					asmp.valueTo = 287;
 					a.play();
 				}
 				
@@ -325,8 +325,8 @@
 				IMessage.setStyle("contentBackgroundAlpha",0); */
 				if (mode.text != "SMS") {
 					if (a.isPlaying) a.stop();
-					asmp.valueFrom = 257;
-					asmp.valueTo = 154;
+					asmp.valueFrom = 287;
+					asmp.valueTo = 180;
 					a.play();
 				}
 				
@@ -339,19 +339,23 @@
 				   duration="550" 
 				   target="{msgGroup}"  
 				   repeatCount="1">
-			<s:SimpleMotionPath id="asmp" valueFrom="154"
-								valueTo="257"
+			<s:SimpleMotionPath id="asmp" valueFrom="180"
+								valueTo="287"
 								property="height" />
 		</s:Animate>
 	</fx:Declarations>
+	
 	<s:VGroup width="100%" height="100%" horizontalAlign="center" gap="5">
 		<s:Group id="msgGroup" width="100%" height="180">
-			<s:VGroup top="10" width="260" height="100%" horizontalCenter="0" horizontalAlign="center" gap="2">
-				<s:Scroller width="260" height="100%">
-					<s:VGroup id="mBox" width="100%" height="100%">
+			<s:BitmapImage source="@Embed('images/phone01.jpg')" fillMode="scale" left="0" right="0" top="0" bottom="0" />
+			<s:VGroup top="10" width="239" height="100%" horizontalCenter="0" horizontalAlign="center" gap="2">
+				<s:Scroller width="239" height="100%">
+					<s:VGroup id="mBox" width="100%" height="100%" horizontalAlign="center">
 						<s:Group width="100%" height="100%">
 							<s:Label id="mode" fontSize="40" text="SMS" fontWeight="bold" alpha="0.2" color="#D9D9D9" verticalCenter="0" horizontalCenter="0"/>
-							<s:TextArea id="IMessage" skinClass="skin.TextAreaSkinBG" width="260" height="100%" fontFamily="굴림체" fontSize="16" verticalScrollPolicy="off" enabled="{_enable}" color="0xFFFFFF"
+							<s:TextArea id="IMessage" skinClass="skin.TextAreaSkinBG" horizontalCenter="0" width="214" height="100%" fontFamily="굴림체" fontSize="16" 
+										verticalScrollPolicy="off" enabled="{_enable}" 
+										color="#FFFFFF"
 										keyUp="IMessage_keyUpHandler(event)"
 										focusIn="IMessage_focusInHandler(event)"
 										focusOut="IMessage_focusOutHandler(event)"></s:TextArea>
@@ -361,9 +365,9 @@
 				
 				
 				<s:Group width="100%" height="32">
-					<s:Image source="images/h_icon.gif" left="5" buttonMode="true" useHandCursor="true" click="clickHandler(event)" verticalCenter="0" />
+					<s:Image source="images/btn_emoticon.gif" left="5" buttonMode="true" useHandCursor="true" click="clickHandler(event)" verticalCenter="0" />
 					
-					<s:Image source="images/h_special.gif" left="60" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('char')" verticalCenter="0" />
+					<s:Image source="images/btn_ectmunja.gif" left="60" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('char')" verticalCenter="0" />
 					
 					<s:Label id="IByteLabel" right="35" fontSize="11" fontWeight="bold" text="90" textAlign="right" color="0xFFFFFF" verticalCenter="3"/>
 					<s:Label right="10" fontSize="11" text="byte" width="30" textAlign="right" color="0xFFFFFF" verticalCenter="3"/>
@@ -372,23 +376,23 @@
 		</s:Group>
 		<s:Group width="100%" height="23">
 			<s:Image source="images/h_photo.gif" click="this.fur.addFiles()" left="0" verticalCenter="0" buttonMode="true" useHandCursor="true"/>
-			<s:Image source="images/p_music.gif" toolTip="이름넣기"  verticalCenter="0" left="47" click="setMessageAdd('{이름}')" buttonMode="true" useHandCursor="true" />
+			<s:Image source="images/btn_name.gif" toolTip="이름넣기"  verticalCenter="0" left="47" click="setMessageAdd('{이름}')" buttonMode="true" useHandCursor="true" />
 			<!--<s:Image source="images/btn_preview.gif" left="110" buttonMode="true" useHandCursor="true"/>-->
-			<s:Image source="images/p_rewrite.gif" click="setMessage('');allDelPhoto();" left="95" verticalCenter="0" buttonMode="true" useHandCursor="true"/>
+			<s:Image source="images/p_rewrite.gif" click="setMessage('');allDelPhoto();" left="78" verticalCenter="0" buttonMode="true" useHandCursor="true"/>
 			<s:Image source="images/h_save.gif" right="3" buttonMode="true" useHandCursor="true" click="clickHandlerSave()" verticalCenter="0"/>
 		</s:Group>
 	</s:VGroup>
 	
-	<s:Panel id="confirm" visible="false" height="100" top="4" left="4" right="4" title="전송선택">
-		<s:layout>
-			<s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
-		</s:layout>
-		<s:Label text="LMS로 전환 하시겠습니까?" />
-		<s:Label text="전화번호당 3건 차감" />
-		<s:HGroup>
-			<s:Button label="전환" click="changeLMS()" />
-			<s:Button label="취소" click="cutBytes();confirm.visible=false;" />
-		</s:HGroup>
+	<s:Panel id="confirm" visible="false" height="100" verticalCenter="0" left="4" right="4" title="전송선택" depth="5">
+		<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+			<s:Label text="LMS로 전환 하시겠습니까?" />
+			<s:Label text="전화번호당 3건 차감" />
+			<s:HGroup height="30">
+				<s:Button label="전환" click="changeLMS()" />
+				<s:Button label="취소" click="cutBytes();confirm.visible=false;" />
+			</s:HGroup>
+		</s:VGroup>
+		
 	</s:Panel>
 	
 </s:Group>

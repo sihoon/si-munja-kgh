@@ -319,8 +319,9 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Image source="/images/hp.png" />
-	<s:Group left="10" top="40" width="268">
+	<s:Image source="/images/hp.jpg" />
+	<s:Image source="/images/hp_top.gif" top="21" left="23" />
+	<s:Group left="23" top="40" width="239">
 		<s:VGroup width="100%" top="212" gap="10">
 			<handphone:ReturnPhone id="cReturnPhone" validValue="validHandler(event)"/>
 			
@@ -338,7 +339,7 @@
 			</s:VGroup>
 			
 		</s:VGroup>
-		<handphone:Message id="cMessage" width="100%" alert="message1_alertHandler(event)" validValue="validHandler(event)"/>
+		<handphone:Message id="cMessage" width="239" alert="message1_alertHandler(event)" validValue="validHandler(event)"/>
 		
 	</s:Group> 
 	<handphone:ReservationLayer id="resLayer" visible="false" x="14" y="130" setReservation="resLayer_setReservationHandler(event)" cancelReservation="resLayer_cancelReservationHandler(event)" />

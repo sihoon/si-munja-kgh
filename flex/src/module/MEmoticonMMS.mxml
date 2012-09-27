@@ -47,7 +47,7 @@
 					getEmotiList();
 				}
 				else {
-					paging.viewDataCount = 12; 
+					paging.viewDataCount = 6; 
 					ro.set(RO_DESTINATION, cateList_ResultEventHandler);
 					ro.method.getEmotiCateListMMS(gubun);
 				}
@@ -181,8 +181,8 @@
 				</s:Group>
 				<s:Spacer height="20" />
 				
-				<s:List id="emotiList" rollOverColor="0xffffff" width="635" itemRenderer.thema="renderer.EmotiRendererMMS" itemRenderer.upjong="renderer.EmotiRendererMMS" itemRenderer.save="renderer.MyMsgRenderer" skinClass="skin.ListBg">
-					<s:layout><s:TileLayout horizontalGap="18" verticalGap="10" requestedColumnCount="3"/></s:layout>
+				<s:List id="emotiList" rollOverColor="0xEFEFEF" itemRenderer.thema="renderer.EmotiRendererMMS" itemRenderer.upjong="renderer.EmotiRendererMMS" itemRenderer.save="renderer.MyMsgRenderer" skinClass="skin.ListBg">
+					<s:layout><s:TileLayout horizontalGap="5" verticalGap="10" requestedColumnCount="3"/></s:layout>
 				</s:List>
 
 				<lib:Paging id="paging" height="30" clickPage="paging_clickPageHandler(event)" />
@@ -192,14 +192,14 @@
 		<s:Group width="100%">
 			<s:Rect bottom="0" left="0" right="0" height="2">
 				<s:fill>
-					<s:SolidColor color="0x449DC6" />
+					<s:SolidColor color="0x6D47C1" />
 				</s:fill>
 			</s:Rect>
 			<s:HGroup gap="0" width="100%">
 				<s:Image source="images/tit03.gif" />
-				<s:Image source="images/tit03_m02.gif" source.thema="images/tit03_m02_.gif" click="emti_changeHandler(1)" buttonMode="true" useHandCursor="true" />
 				<s:Image source="images/tit03_m01.gif" source.upjong="images/tit03_m01_.gif" click="emti_changeHandler(0)" buttonMode="true" useHandCursor="true" />
-				<s:Image source="images/tit03_m01.gif" source.save="images/tit03_m01_.gif" click="emti_changeHandler(2)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit03_m02.gif" source.thema="images/tit03_m02_.gif" click="emti_changeHandler(1)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit03_m03.gif" source.save="images/tit03_m03_.gif" click="emti_changeHandler(2)" buttonMode="true" useHandCursor="true" />
 			</s:HGroup>
 		</s:Group>
 	</s:Group>

@@ -42,7 +42,7 @@
 		<s:VGroup left="0" top="0">
 			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)" />
 			<s:ModuleLoader id="mPhone" url="module/MPhone.swf"/>
-			<s:Image source="images/sub_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=cost\'')}" />
+			<s:Image source="images/sub_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=billing\'')}" />
 		</s:VGroup>
 	</s:Group>
 	
