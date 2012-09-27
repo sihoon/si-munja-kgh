@@ -30,6 +30,6 @@
 	
 	
 	<s:Image source="images/pro_bg.gif" left="0"/>
-	<s:Label id="emt" left="16" right="16" top="30" bottom="4" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
+	<s:Label id="emt" left="16" right="16" top="30" bottom="4" buttonMode="true" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
 	<s:Button id="emtdel1" label="삭제" bottom="0" right="0" click="emtdel1_clickHandler(event)" />
 </s:ItemRenderer>

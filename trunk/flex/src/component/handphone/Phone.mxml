@@ -17,9 +17,9 @@
 			stretchCursor: Embed(source="assets/flex_skins.swf",symbol="DataGrid_stretchCursor");
 			*/
 			alternatingItemColors: #FFFFFF, #FFFFFF;
-			verticalGridLineColor: #464646;
+			verticalGridLineColor: #999999;
 			roll-over-color: #EEEEEE;
-			selection-color: #DDDDDD;
+			selection-color: #CECECE;
 			font-size: 12;
 		}
 
@@ -143,20 +143,21 @@
 			<s:Image source="images/h_ctrlv.gif" click="parentApplication.subLoad('copypaste')" toolTip="붙여넣기" buttonMode="true" useHandCursor="true" />
 		</s:VGroup>
 		
-		<s:VGroup gap="2">
+		<s:VGroup gap="5">
 			<s:HGroup width="100%" gap="4">
 				<s:Image source="@Embed('images/h_post.gif')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('address')"/>
 				<s:Image source="@Embed('images/h_excel.gif')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('excel')"/>
-				<s:Image source="@Embed('images/main_51.png')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('sent')"/>
+				<s:Image source="@Embed('images/btn_recent.gif')" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('sent')"/>
 			</s:HGroup>
 			<s:HGroup verticalAlign="middle" gap="10">
-				<s:TextInput id="phoneTextInput" width="158" borderColor="#DDDDDD" enter="addPhoneButton_clickHandler(null)" />
+				<s:TextInput id="phoneTextInput" width="129" borderColor="#bbbbbb" enter="addPhoneButton_clickHandler(null)" />
 				<s:Image id="addPhoneButton" source="images/h_add.gif" click="addPhoneButton_clickHandler(event)" useHandCursor="true" buttonMode="true"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>
-	<mx:DataGrid id="sendDG" width="100%" height="136" borderVisible="true" borderColor="0xDDDDDD" dataProvider="{al}" selectable="false" color="0x333333"
-				 showHeaders="false" styleName="dg" verticalGridLines="false" horizontalGridLines="true">
+	<mx:DataGrid id="sendDG" width="100%" height="134" borderVisible="true" borderColor="#bbbbbb" horizontalGridLines="true" horizontalGridLineColor="#bbbbbb"
+				 dataProvider="{al}" selectable="false" color="0x333333"
+				 showHeaders="false" styleName="dg" verticalGridLines="false">
 		<mx:columns>
 				<mx:DataGridColumn  headerText="이름" dataField="phoneName" width="60"></mx:DataGridColumn>
 				<mx:DataGridColumn  headerText="전화번호" labelFunction="phoneFomat" dataField="phoneNumber"></mx:DataGridColumn>

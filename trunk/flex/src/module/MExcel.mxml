@@ -171,6 +171,7 @@
 					
 					case FILEUPLOAD:
 						stepText.text = "엑셀 파일(.xls,.xlsx) 열기를 클릭하여 엑셀 파일을 선택 하세요.(csv 파일은 xls로 저장 후 사용)";
+						useageDw.visible = true;
 						useage.visible = true;
 						excelPhone.visible = false;
 						excelName.visible = false;
@@ -184,6 +185,7 @@
 					case METHOD:
 					case ADDON:
 						stepText.text = "전화번호 열을 선택 후 전송목록 또는 주소록을 선택 하세요.";
+						useageDw.visible = false;
 						useage.visible = false;
 						excelPhone.visible = true;
 						excelName.visible = true;
@@ -324,7 +326,7 @@
 	</fx:Declarations>
 	<s:VGroup width="100%">
 		<s:Group width="100%" height="40">
-			<s:HGroup gap="10" paddingLeft="5" top="0" width="100%" height="39" verticalAlign="middle">
+			<s:HGroup gap="2" paddingLeft="5" top="0" width="100%" height="39" verticalAlign="middle">
 				<s:Image source="images/btn_excel.gif" click="this.fur.addFiles()" toolTip="클릭하여 엑셀 파일을 선택 하십시요." buttonMode="true" useHandCursor="true" />
 				<s:DropDownList id="excelPhone" width="80"></s:DropDownList>
 				
@@ -345,7 +347,9 @@
 				
 				<s:Image source="images/btn_first.gif" click="{setStep(FILEUPLOAD)}" buttonMode="true" useHandCursor="true" />
 			</s:HGroup>
-			<s:Image id="useage" visible="false" right="0" source="images/guide.gif" verticalCenter="0" buttonMode="true" click="{navigateToURL(new URLRequest('usage_excel.html'), '_blank');}"/>
+			
+			<s:Image id="useageDw" visible="false" right="313" source="images/exceldown.jpg" verticalCenter="0" buttonMode="true" click="{navigateToURL(new URLRequest('/excel/_down.jsp'));}"/>
+			<s:Image id="useage" visible="false" right="100" source="images/guide.gif" verticalCenter="0" buttonMode="true" click="{navigateToURL(new URLRequest('usage_excel.html'), '_blank');}"/>
 		</s:Group>
 		<s:Label id="stepText" text="엑셀 파일 열기를 클릭하여 엑셀 파일을 선택 하세요."/>
 		<mx:DataGrid styleName="addrDg" id="excelDg" width="100%" height="370" headerHeight="25" verticalGridLines="false"></mx:DataGrid>

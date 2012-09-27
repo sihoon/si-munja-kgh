@@ -2,7 +2,7 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true" width="142" height="125">
+				autoDrawBackground="true" width="144" height="127">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -18,6 +18,6 @@
 		]]>
 	</fx:Script>
 
-	<s:Image source="images/munja_bg1.gif" left="0"/>
-	<s:Label id="emt" left="16" right="16" top="30" bottom="4" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
+	<s:Image source="images/munja_bg1.gif" left="1" top="1"/>
+	<s:Label id="emt" left="16" right="16" top="30" bottom="4" click="{parentApplication.phoneFunction('message',data.msg)}" buttonMode="true" useHandCursor="true" />
 </s:ItemRenderer>

@@ -176,7 +176,9 @@
 					<s:Rect left="0" right="0" bottom="0" height="2" ><s:fill><s:SolidColor color="0xDCDCDC"/></s:fill></s:Rect>
 				</s:Group>
 				<s:Spacer height="20" />
-				<s:List id="emotiList" width="620" itemRenderer.thema="renderer.EmotiRenderer" itemRenderer.upjong="renderer.EmotiRenderer" itemRenderer.save="renderer.MyMsgRenderer" skinClass="skin.ListBg">
+				<s:List id="emotiList" width="620"
+						rollOverColor="#333333"
+						itemRenderer.thema="renderer.EmotiRenderer" itemRenderer.upjong="renderer.EmotiRenderer" itemRenderer.save="renderer.MyMsgRenderer" skinClass="skin.ListBg">
 					<s:layout><s:TileLayout horizontalGap="12" verticalGap="10" requestedColumnCount="4"/></s:layout>
 				</s:List>
 				<lib:Paging id="paging" height="30" clickPage="paging_clickPageHandler(event)" />
@@ -191,9 +193,9 @@
 			</s:Rect>
 			<s:HGroup gap="0" width="100%">
 				<s:Image source="images/tit01.gif" />
-				<s:Image source="images/tit01_m02.gif" source.thema="images/tit01_m02_.gif" click="emti_changeHandler(1)" buttonMode="true" useHandCursor="true" />
 				<s:Image source="images/tit01_m01.gif" source.upjong="images/tit01_m01_.gif" click="emti_changeHandler(0)" buttonMode="true" useHandCursor="true" />
-				<s:Image source="images/tit01_m01.gif" source.save="images/tit01_m01_.gif" click="emti_changeHandler(2)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit01_m02.gif" source.thema="images/tit01_m02_.gif" click="emti_changeHandler(1)" buttonMode="true" useHandCursor="true" />
+				<s:Image source="images/tit01_m03.gif" source.save="images/tit01_m03_.gif" click="emti_changeHandler(2)" buttonMode="true" useHandCursor="true" />
 			</s:HGroup>
 		</s:Group>
 	</s:Group>

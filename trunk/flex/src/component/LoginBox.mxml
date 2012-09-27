@@ -195,11 +195,11 @@
 				<s:VGroup gap="10">
 					<s:Group width="180">
 						<s:Image source="/images/id.gif" verticalCenter="0" />
-						<s:TextInput id="login_id" width="120" prompt="id" contentBackgroundColor="#F7F7F7" right="0"/>
+						<s:TextInput id="login_id" fontFamily="Verdana" width="120" prompt="id" contentBackgroundColor="#F7F7F7" right="0"/>
 					</s:Group>
 					<s:Group width="180">
 						<s:Image source="/images/pw.gif" verticalCenter="0" />
-						<s:TextInput id="login_pw" width="120" prompt="password" displayAsPassword="true" enter="login_button_clickHandler(null)" contentBackgroundColor="#F7F7F7" right="0"/>
+						<s:TextInput id="login_pw" fontFamily="Verdana" width="120" prompt="password" displayAsPassword="true" enter="login_button_clickHandler(null)" contentBackgroundColor="#F7F7F7" right="0"/>
 					</s:Group>
 				</s:VGroup>
 				<s:Image id="login_button" source="/images/btn_login.jpg" click="login_button_clickHandler(event)" buttonMode="true" useHandCursor="true"/>
@@ -207,7 +207,7 @@
 			
 			<s:HGroup left="10" bottom="5">
 				<s:Image id="join_button" source="/images/btn_member.gif" click="{ExternalInterface.call('eval','window.location.href=\'?content=join\'')}" buttonMode="true" useHandCursor="true"/>
-				<s:Image id="idsearch_button" source="/images/btn_idsearch.gif" click="{ExternalInterface.call('alert','고객센터로 연락 주시기 바랍니다.')}" buttonMode="true" useHandCursor="true"/>
+				<s:Image id="idsearch_button" source="/images/btn_idsearch.gif" click="{ExternalInterface.call('eval','window.location.href=\'?content=find\'')}" buttonMode="true" useHandCursor="true"/>
 			</s:HGroup>
 		</s:Group>
 		<s:Group id="loginInfo" includeIn="userInfo" width="100%" height="100%" >
