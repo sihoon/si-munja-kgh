@@ -1017,6 +1017,7 @@ public class Web extends SessionManagement{
 			else if (line.equals("han")) mvo.setLine("ktmms");
 			else if (line.equals("hanr")) mvo.setLine("ktmms");
 			else if (line.equals("it")) mvo.setLine("ktmms");
+			else if (line.equals("pp")) mvo.setLine("ppmms");
 			else  mvo.setLine("mms");
 			
 			connLMS = VbyP.getDB("sms1");
@@ -1070,6 +1071,16 @@ public class Web extends SessionManagement{
 				try { if ( conn != null ) { conn.close(); conn = null; } } catch(Exception e) { VbyP.errorLog("sendSMS >> conn.close() timeout 방지"+e.toString());}
 				
 				clientResult = lms.insertClient(connLMS, alClientVO, "ktmms");
+				
+			}else if (line.equals("pp")) {
+				//step3	
+				alClientVO = lms.getMMSClientVOMeargeAndInterval(conn, mvo, bReservation, logKey, message, phoneAndNameArrayList, returnPhone, reservationDate, "", requestIp, cnt, minute, bMerge);
+				VbyP.accessLog(user_id+" >> LMS 전송 요청 : getLMSClientVO 생성" + "경과 시간 : "+sw.getTime());
+				
+				//timeout 방지를 위해 닫는다.
+				try { if ( conn != null ) { conn.close(); conn = null; } } catch(Exception e) { VbyP.errorLog("sendSMS >> conn.close() timeout 방지"+e.toString());}
+				
+				clientResult = lms.insertClient(connLMS, alClientVO, "ppmms");
 				
 			}else {
 				//step3	
@@ -1340,6 +1351,7 @@ public class Web extends SessionManagement{
 						throw new Exception("이미지가 없습니다.");
 				}
 				
+				
 				for (String img : arrImage) {
 					imagePath += img+";"; 
 				}
@@ -1401,6 +1413,16 @@ public class Web extends SessionManagement{
 			else if (line.equals("han")) mvo.setLine("ktmms");
 			else if (line.equals("hanr")) mvo.setLine("ktmms");
 			else if (line.equals("it")) mvo.setLine("ktmms");
+			else if (line.equals("pp")) {
+				mvo.setLine("ppmms");
+				
+				imagePath = "";
+				for (String img : arrImage) {
+					imagePath += img+"|"; 
+				}
+				if (imagePath.length() > 0)
+					imagePath = imagePath.substring(0, imagePath.length()-1);
+			}
 			else  mvo.setLine("ktmms");
 			
 			connLMS = VbyP.getDB("sms1");
@@ -1454,6 +1476,17 @@ public class Web extends SessionManagement{
 				try { if ( conn != null ) { conn.close(); conn = null; } } catch(Exception e) { VbyP.errorLog("sendSMS >> conn.close() timeout 방지"+e.toString());}
 				
 				clientResult = mms.insertClient(connLMS, alClientVO, "ktmms");
+				
+			}else if (line.equals("pp")) {
+				//step3	
+				alClientVO = mms.getMMSClientVOMeargeAndInterval(conn, mvo, bReservation, logKey, message, phoneAndNameArrayList, returnPhone, reservationDate, imagePath, requestIp, cnt, minute, bMerge);
+				
+				VbyP.accessLog(user_id+" >> MMS 전송 요청 : PP getSMSClientVOMeargeAndInterval 생성" + "경과 시간 : "+sw.getTime());
+				
+				//timeout 방지를 위해 닫는다.
+				try { if ( conn != null ) { conn.close(); conn = null; } } catch(Exception e) { VbyP.errorLog("sendSMS >> conn.close() timeout 방지"+e.toString());}
+				
+				clientResult = mms.insertClient(connLMS, alClientVO, "ppmms");
 				
 			}else {
 				//step3	
