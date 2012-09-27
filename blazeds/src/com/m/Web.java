@@ -2272,7 +2272,7 @@ public class Web extends SessionManagement{
 		if (isLogin()) {		
 		
 			try {
-				if (line.equals("mms") || line.equals("ktmms")) {	
+				if (line.equals("mms") || line.equals("ktmms")  || line.equals("ppmms")) {	
 					connSMS = VbyP.getDB("sms1");
 					sf = SentLMSFactory.getInstance();
 				}

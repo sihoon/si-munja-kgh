@@ -61,6 +61,8 @@ public class SentLMSFactory implements SentFactoryAble {
 		PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
 		if (SLibrary.IfNull(line).equals("ktmms")) {
 			pq.setPrepared( connSMS, VbyP.getSQL("selectLMSSentDataKTUser") );
+		}else if (SLibrary.IfNull(line).equals("ppmms")) {
+			pq.setPrepared( connSMS, VbyP.getSQL("selectLMSSentDataPP") );
 		}else
 			pq.setPrepared( connSMS, VbyP.getSQL("selectLMSSentData") );
 		
