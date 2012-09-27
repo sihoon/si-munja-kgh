@@ -566,4 +566,4 @@ public class SentLMSFactory implements SentFactoryAble {
 		
 		return pm.insertUserPoint(conn, mvo, 46, cnt * PointManager.DEFULT_POINT*3);
 	}
-}
+} 
