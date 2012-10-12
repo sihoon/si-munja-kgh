@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   width="950" height="980" xmlns:component="component.*"
+			   width="950" height="1460" xmlns:component="component.*"
 			   >
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -51,6 +51,7 @@
 			<component:LoginBox id="loginBox" left="0" login="loginCheckHandler(event)"  />
 			<s:ModuleLoader id="mPhone" url="module/MPhone.swf"/>
 			<s:Image source="images/sub_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=billing\'')}" />
+			<s:Image source="images/faq_banner.jpg" buttonMode="true" click="{ExternalInterface.call('eval','window.location.href=\'?content=faq\'')}" />
 		</s:VGroup>
 		
 		<s:VGroup width="100%">

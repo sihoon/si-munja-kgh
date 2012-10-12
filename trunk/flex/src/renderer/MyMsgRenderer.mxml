@@ -2,7 +2,7 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true" width="177" height="135">
+				autoDrawBackground="true" width="144" height="127">
 	
 	<fx:Script>
 		<![CDATA[
@@ -28,8 +28,7 @@
 		]]>
 	</fx:Script>
 	
-	
-	<s:Image source="images/pro_bg.gif" left="0"/>
-	<s:Label id="emt" left="16" right="16" top="30" bottom="4" buttonMode="true" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
-	<s:Button id="emtdel1" label="삭제" bottom="0" right="0" click="emtdel1_clickHandler(event)" />
+	<s:Image source="images/munja_bg1.gif" left="1" top="1"/>
+	<s:Label id="emt" left="16" right="16" top="30" bottom="5"  buttonMode="true" useHandCursor="true" click="{parentApplication.phoneFunction('message',data.msg)}" />
+	<s:Image id="emtdel1" source="images/sent_del.png" buttonMode="true"  bottom="0" right="0" click="emtdel1_clickHandler(event)"/>
 </s:ItemRenderer>

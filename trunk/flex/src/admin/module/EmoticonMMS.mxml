@@ -41,10 +41,13 @@
 			private var ac:ArrayCollection = new ArrayCollection();
 			[Binable] public var bMy:Boolean = false;
 			
+			private var bEmoti:Boolean = false;
+			private var uploadedImg:String = "";
+			
 			// 이미지 업로드 관련
 			private var fur:FileUploadByRemoteObject;
 			
-			protected function cateList_creationCompleteHandler():void {
+			public function cateList_creationCompleteHandler():void {
 				
 				// 저장문자시 카테고리 안가져옴
 				if (gubun == "my") {
@@ -155,6 +158,7 @@
 			}
 			
 			
+			
 			// mms 이미지 업로드 이벤트 핸들러
 			private function FileUploadByRemoteObjectCOMPLETEHandler(e:FileUploadByRemoteObjectEvent):void {
 				
@@ -162,7 +166,15 @@
 					this.fur.UploadFiles.pop();
 					SLibrary.alert("1MB 이상의 파일은 사용 하실 수 없습니다.");
 				}else {
-					this.fur.remoteObject.setMMSUpload( e.data, e.fileName );
+					if (bEmoti) {
+						if (uploadedImg != null && uploadedImg != "") {
+							this.fur.remoteObject.setMMSEmtUpload( e.data, uploadedImg );
+						}else {
+							ExternalInterface.call("alert", "발송이미지를 먼저 업로드 하세요.");
+						}
+							
+					}else 
+						this.fur.remoteObject.setMMSUpload( e.data, e.fileName );
 				}
 			}
 			
@@ -170,12 +182,44 @@
 				
 				var bvo:BooleanAndDescriptionVO = e.result as BooleanAndDescriptionVO;
 				
-				if (bvo.bResult) inputEmt.source = bvo.strDescription as String;
+				if (bvo.bResult) {
+					if (bEmoti) {
+						inputEmtMin.source = bvo.strDescription as String;
+					}
+					else { 
+						inputEmt.source = bvo.strDescription as String;
+						uploadedImg = bvo.strDescription as String;
+					}
+					
+				}
 				else SLibrary.alert(bvo.strDescription);
 				
 			}
 			private function FileUploadByRemoteObjectFAULTHandler(e:FileUploadByRemoteObjectEvent):void { SLibrary.alert(e.fault.toString()); }
 			
+			protected function mcate_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, mcate_ResultEventHandler);
+				var obj:Object = cbCate.selectedItem;
+				if (cbCate.selectedIndex < 0){
+					ExternalInterface.call("alert", "카테고리를 선택 하세요.");
+				}
+				else 
+					ro.method.updateEmotiCate("MMS", gubun, cbCate.selectedItem, modifyCate.text);
+			}
+			private function mcate_ResultEventHandler(event:ResultEvent):void {
+				
+				SLibrary.alert("수정되었습니다." );
+				modifyCate.text = "";
+				//IMessage_keyUpHandler(null);
+				cateList_creationCompleteHandler();
+			}
+			
+			protected function upload_clickHandler(bEmt:Boolean):void
+			{
+				bEmoti = bEmt;
+				this.fur.addFiles();
+			}
 			
 		]]>
 	</fx:Script>
@@ -187,17 +231,27 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:HGroup width="100%" height="100%">
+	<s:Scroller width="100%" height="800">
+		
+	<s:HGroup >
 		<s:VGroup width="200">
-			<s:Group width="142" height="200" >
-				<s:Image id="inputEmt" />
-			</s:Group>
-			<s:Label text="권장 사이즈 : 176 * 144" />
-			<s:Button label="업로드" width="100%"  click="this.fur.addFiles()"/>	
+			<s:Label text="발송 사이즈 : 480 * 720" />
+			<s:Button label="발송이미지업로드" width="100%"  click="upload_clickHandler(false)"/>
+			
+			<s:Label text="이모티콘 사이즈 : 215 * 300" />
+			<s:Button label="이모티콘이미지업로드" width="100%"  click="upload_clickHandler(true)"/>
 			<s:Label text="{gubun}"/>
 			<s:TextInput id="title" prompt="제목" />
 			<s:ComboBox id="cbCate" width="100%" prompt="카테고리입력 또는 선택"/>
-			<s:Button label="추가" width="100%" click="add_clickHandler(event)"/>
+			<s:TextInput id="modifyCate" prompt="수정 카테고리명 입력.." />
+			<s:HGroup>
+				<s:Button label="추가" click="add_clickHandler(event)"/>
+				<s:Button label="카테수정" click="mcate_clickHandler(event)"/>
+			</s:HGroup>
+			<s:Group>
+				<s:Image id="inputEmt" width="480" height="720" smooth="true" />
+				<s:Image id="inputEmtMin" width="215" height="300" smooth="true" />
+			</s:Group>
 		</s:VGroup>
 		
 		<s:Group top="20" width="100%">
@@ -224,9 +278,10 @@
 			
 			<s:HGroup gap="0">
 				<s:Image source="/images/pop_imo01.gif" source.thema="/images/pop_imo01_.gif" click="emti_changeHandler(1)" useHandCursor="true" />
-				<s:Image source="/images/pop_imo02.gif" source.upjong="/images/pop_imo02_.gif" click="emti_changeHandler(0)" useHandCursor="true" />
+				<!--<s:Image source="/images/pop_imo02.gif" source.upjong="/images/pop_imo02_.gif" click="emti_changeHandler(0)" useHandCursor="true" />-->
 			</s:HGroup>
 		</s:Group>
 		
 	</s:HGroup>
+	</s:Scroller>
 </s:Module>

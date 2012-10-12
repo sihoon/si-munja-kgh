@@ -2,18 +2,21 @@
 <s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
-				autoDrawBackground="true" width="215" height="312">
+				autoDrawBackground="true" width="215" height="318">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
+			
+			private var img:String = "";
 			
 			override public function set data(value:Object):void { 
 				super.data = value; 
 				
 				// Check to see if the data property is null. 
 				if (value== null) return; 
+				img = value.msg;
 				
-				emt.source = value.msg;
+				emt.source = img.replace("mmsImage", "mmsEmtImage");
 				
 				title.text = value.title;
 				//callLater(setImageSize);
@@ -22,8 +25,12 @@
 			
 		]]>
 	</fx:Script>
-	<s:VGroup horizontalAlign="center" width="100%" height="100%">
-		<s:Image id="emt" useHandCursor="true" width="215" height="290" click="{parentApplication.phoneFunction('addPhoto',emt.source)}"  buttonMode="true" />	
+	<s:VGroup horizontalAlign="center" width="100%" height="100%" paddingTop="6">
+		
+			<s:Image id="emt"
+					 useHandCursor="true" width="215" height="290" click="{parentApplication.phoneFunction('addPhoto',img)}" buttonMode="true" smooth="true" />	
+		
+			
 		<s:Label id="title" height="22"/>
 	</s:VGroup>
 	

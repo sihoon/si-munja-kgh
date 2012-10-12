@@ -138,6 +138,8 @@
 				removeImage();
 				var img:Image = new Image();
 				img.source = source;
+				img.width = 215;
+				img.height = 300;
 				img.buttonMode = true;
 				img.useHandCursor = true;
 				mBox.addElementAt(img,mBox.numElements-1);
@@ -149,9 +151,9 @@
 			
 			private function removeImage():void {
 				
-				if (arrImage.length > 2) {
+				if (arrImage.length > 1) {
 					arrImage.pop();
-					ExternalInterface.call("alert","3개까지만 추가 됩니다. 마지막 이미지가 지워졌습니다.");
+					ExternalInterface.call("alert","2개까지만 추가 됩니다. 마지막 이미지가 지워졌습니다.");
 					trace(arrImage.join(";"));
 				}
 				

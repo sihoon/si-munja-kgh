@@ -20,6 +20,11 @@
 	</fx:Script>
 	
 	<s:Image source="@Embed('images/munja_bg3.gif')" verticalCenter="0" horizontalCenter="0" />
-	<s:Label id="emt" left="16" right="16" top="34" bottom="15"  buttonMode="true"  useHandCursor="true"  click="{parentApplication.phoneFunction('message',data.msg)}" />
+	
+	<s:TextArea id="emt" left="16" right="16" top="34" bottom="15"
+				editable="false"
+				contentBackgroundAlpha="0"
+				borderVisible="false"
+				buttonMode="true"  useHandCursor="true"  click="{parentApplication.phoneFunction('message',data.msg)}" />
 
 </s:ItemRenderer>

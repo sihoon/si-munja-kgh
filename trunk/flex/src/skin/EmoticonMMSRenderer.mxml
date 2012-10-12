@@ -6,6 +6,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import admin.module.EmoticonMMS;
+			
 			import lib.RO;
 			
 			import mx.events.FlexEvent;
@@ -13,14 +15,16 @@
 			
 			private var ro:RO = new RO();
 			private var RO_DESTINATION:String = "ADMIN";
+			private var img:String = "";
 			
 			override public function set data(value:Object):void { 
 				super.data = value; 
 				
 				// Check to see if the data property is null. 
-				if (value== null) return; 
+				if (value== null) return;
 				
-				emt.source = value.msg;
+				img = value.msg;
+				emt.source = img.replace("mmsImage", "mmsEmtImage");
 				title.text = value.title;
 			} 
 			
@@ -34,6 +38,17 @@
 				
 				ExternalInterface.call("alert", "삭제되었습니다." );
 			}
+			protected function first_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, first_ResultEventHandler);
+				ro.method.firstEmotiMMS(data.idx);
+			}
+			
+			private function first_ResultEventHandler(event:ResultEvent):void {
+				
+				ExternalInterface.call("alert", "처음으로 보여 집니다." );
+				EmoticonMMS(parentDocument.parentDocument).cateList_creationCompleteHandler();
+			}
 			
 		]]>
 	</fx:Script>
@@ -41,6 +56,7 @@
 		<s:Image id="emt"  useHandCursor="true" fillMode="scale" width="176" height="144"/>
 		<s:Label id="title" />
 		<s:HGroup>
+			<s:Button id="first" label="처음으로" click="first_clickHandler(event)"  />
 			<s:Button id="delete" label="삭제" click="delete_clickHandler(event)"/>
 		</s:HGroup>
 		

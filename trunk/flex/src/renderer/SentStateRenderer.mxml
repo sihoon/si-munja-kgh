@@ -9,7 +9,7 @@
 			private function getState(data:String):String {
 				
 				var rslt:String = "";
-				if (data == "0") rslt = "munja119";
+				if (data == "0") rslt = "문자야";
 				else if (data == "1") rslt = "이동통신사";
 				else if (data == "2") rslt = "휴대폰";
 				
