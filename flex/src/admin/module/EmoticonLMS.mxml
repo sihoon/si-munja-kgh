@@ -39,7 +39,7 @@
 			private var ac:ArrayCollection = new ArrayCollection();
 			[Binable] public var bMy:Boolean = false;
 			
-			protected function cateList_creationCompleteHandler():void {
+			public function cateList_creationCompleteHandler():void {
 				
 				// 저장문자시 카테고리 안가져옴
 				if (gubun == "my") {
@@ -180,6 +180,23 @@
 				getEmotiList();
 			}
 			
+			
+			protected function mcate_clickHandler(event:MouseEvent):void
+			{
+				ro.set(RO_DESTINATION, mcate_ResultEventHandler);
+				var obj:Object = cbCate.selectedItem;
+				if (cbCate.selectedIndex < 0){
+					ExternalInterface.call("alert", "카테고리를 선택 하세요.");
+				}else 
+					ro.method.updateEmotiCate("LMS", gubun, cbCate.selectedItem, modifyCate.text);
+			}
+			private function mcate_ResultEventHandler(event:ResultEvent):void {
+				
+				SLibrary.alert("수정되었습니다." );
+				modifyCate.text = "";
+				IMessage_keyUpHandler(null);
+				cateList_creationCompleteHandler();
+			}
 		]]>
 	</fx:Script>
 	<s:states>
@@ -198,7 +215,11 @@
 			<s:Label id="IByteLabel" width="100%" text="2000" textAlign="right" fontSize="12" verticalCenter="0"/>	
 			<s:Label text="{gubun}"/>
 			<s:ComboBox id="cbCate" width="100%" prompt="카테고리입력 또는 선택"/>
-			<s:Button label="추가" width="100%" click="add_clickHandler(event)"/>
+			<s:TextInput id="modifyCate" prompt="수정 카테고리명 입력.." />
+			<s:HGroup>
+				<s:Button label="추가" click="add_clickHandler(event)"/>
+				<s:Button label="카테수정" click="mcate_clickHandler(event)"/>
+			</s:HGroup>
 		</s:VGroup>
 	
 		<s:Group top="20" width="100%">

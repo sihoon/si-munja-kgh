@@ -19,5 +19,5 @@
 	</fx:Script>
 
 	<s:Image source="images/munja_bg1.gif" left="1" top="1"/>
-	<s:Label id="emt" left="16" right="16" top="30" bottom="4" click="{parentApplication.phoneFunction('message',data.msg)}" buttonMode="true" useHandCursor="true" />
+	<s:Label id="emt" left="16" right="16" top="30" bottom="5" click="{parentApplication.phoneFunction('message',data.msg)}" buttonMode="true" useHandCursor="true" />
 </s:ItemRenderer>

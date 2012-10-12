@@ -18,7 +18,23 @@
 	<fx:Script>
 		<![CDATA[
 			import flash.utils.setInterval;
+			
+			import mx.collections.XMLListCollection;
 			public var appName:String = "Main";
+			
+			private var urlDataLoader:URLLoader;
+			private var dataXML:XMLListCollection;
+			private var icnt:int = 0;
+			private var showIdx:int = 0;
+			private var nextIdx:int = 1;
+			
+			private var href:String = "";
+			
+			[Bindable]
+			private var img:String = "";
+			
+			[Bindable]
+			private var img2:String = "";
 			
 			
 			// 로그인 되어 있을 경우 처리
@@ -38,21 +54,63 @@
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				setInterval(bannerChange, 5000);
+				var dataRequest:URLRequest = new URLRequest("main.xml");
+				urlDataLoader = new URLLoader();
+				urlDataLoader.addEventListener(Event.COMPLETE, loadDatasXML); 
+				urlDataLoader.load(dataRequest);
+				
 			}
 			
 			
 			
 			private function bannerChange():void {
 				
-				if (this.currentState == "banner1") this.currentState = "banner2";
-				else this.currentState = "banner1";
+				
+				if (this.currentState == "banner1") {
+					if (showIdx+1 == icnt) showIdx = 0;
+					img2 = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					this.currentState = "banner2";
+				}
+				else {
+					if (showIdx+1 == icnt) showIdx = 0;
+					img = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					this.currentState = "banner1";
+				}
+				
+				if (icnt-1 == showIdx) showIdx = 0;
+				else showIdx++;
+				
+				href = new XML(dataXML.getItemAt(showIdx)).@href;
+				
+			}
+			
+			
+			private function loadDatasXML(e:Event):void
+			{
+				
+				//dataXML = new XML(e.target).children();
+				dataXML = new XMLListCollection( new XML(urlDataLoader.data).children() );
+				if (dataXML && dataXML.length > 1) {
+					icnt = dataXML.length;
+					img = new XML(dataXML.getItemAt(showIdx)).@src;
+					img2 = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					
+					href = new XML(dataXML.getItemAt(showIdx)).@href;
+					setInterval(bannerChange, 5000);
+					
+				}
+				
+			}
+			
+			protected function gallery_clickHandler(event:MouseEvent):void
+			{
+				ExternalInterface.call('eval','window.location.href=\''+href+'\''); 
 			}
 			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:CrossFade id="xFade" target="{gallery}" duration="3000" />
 	</fx:Declarations>
 	<s:states>
 		<s:State name="banner1" />
@@ -65,6 +123,7 @@
 				target="{holder}" 
 				duration="1000" />
 		</s:Transition>
+		
 	</s:transitions>
 	
 	<s:Group width="100%">
@@ -76,8 +135,9 @@
 		
 		<s:VGroup right="0" gap="0">
 			<s:Group id="holder">
-				<s:Image source="images/banner1.jpg" visible="true" visible.banner2="false"/>
-				<s:Image source="images/banner2.jpg" visible="false" visible.banner2="true"/>	
+				<s:Image id="gallery" source="{img}" visible="true" visible.banner2="false" buttonMode="true" click="gallery_clickHandler(event)"/>
+				<s:Image id="gallery1" source="{img2}" visible="false" visible.banner2="true" buttonMode="true" click="gallery_clickHandler(event)"/>
+				<!--<s:Image source="images/banner2.jpg" visible="false" visible.banner2="true"/>-->	
 			</s:Group>
 			
 			<s:Image source="images/center_banner.jpg" />

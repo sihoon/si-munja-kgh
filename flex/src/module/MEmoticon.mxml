@@ -169,7 +169,7 @@
 			<s:VGroup top="0" left="0" right="0" horizontalAlign="center">
 				<s:Group id="cateBox" visible.save="false" width="100%" height.save="0" >
 					
-					<s:List id="cateList" change="cateList_changeHandler(event)" left="10" right="10" height="66" verticalCenter="0"
+					<s:List id="cateList" change="cateList_changeHandler(event)" left="10" right="10" height="70" verticalCenter="0"
 							selectionColor="0xffffff" rollOverColor="0xEEE3DD" skinClass="skin.ListBg" creationComplete="cateList_creationCompleteHandler()">
 						<s:layout><lib:FlowLayout /></s:layout>
 					</s:List>
