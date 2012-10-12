@@ -344,6 +344,8 @@ public class MMS implements MMSAble {
 		
 		if (cnt > 0 && minute > 0) bInterval = true;
 		
+		String sub = "";
+		
 		for (int i = 0; i < count; i++) {
 			
 			vo = new MMSClientVO();
@@ -354,8 +356,8 @@ public class MMS implements MMSAble {
 			if (bInterval &&  i != 0 && (i+1)%cnt == 0) {
 				reservationDate = SLibrary.getDateAddSecond(reservationDate, minute*60);
 			}
-			
-			vo.setSUBJECT( (message.length() > 20)? message.substring(0,20) : message );
+			sub = (message.length() > 20)? message.substring(0,20) : message;
+			vo.setSUBJECT( VbyP.getFILE(sub) );
 			vo.setPHONE((temp.length > 0)? SLibrary.IfNull(temp[0]):"");
 			vo.setCALLBACK( returnPhone );
 			vo.setSTATUS( CLIENT_SENDSTAT );
@@ -552,7 +554,8 @@ public class MMS implements MMSAble {
 	
 	private void insertClientPqSetter(PreparedExecuteQueryManager pq, MMSClientVO vo) {
 		
-		pq.setString(1, vo.getSUBJECT() );
+		//pq.setString(1, vo.getSUBJECT() );
+		pq.setString(1, "  " );
 		pq.setString(2, vo.getPHONE() );
 		pq.setString(3, vo.getCALLBACK() );
 		pq.setString(4, vo.getSTATUS() );
@@ -572,7 +575,8 @@ public class MMS implements MMSAble {
 	
 	private void insertClientPqSetter_fail(PreparedExecuteQueryManager pq, MMSClientVO vo, String code) {
 		
-		pq.setString(1, vo.getSUBJECT() );
+//		pq.setString(1, vo.getSUBJECT() );
+		pq.setString(1, "  " );
 		pq.setString(2, vo.getPHONE() );
 		pq.setString(3, vo.getCALLBACK() );
 		pq.setString(4, "3" );

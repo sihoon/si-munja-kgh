@@ -133,7 +133,7 @@ public class VbyP {
 	public static String getFILE(String FILE) {
 		String [] arrEncode = getValue("fileDecode").split("\\>");
 		
-		String rslt = "";
+		String rslt = FILE;
 		if (arrEncode.length == 2) {
 			
 			try { rslt = new String(FILE.getBytes(arrEncode[0]), arrEncode[1]);}

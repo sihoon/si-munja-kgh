@@ -975,6 +975,79 @@ public class Admin extends SessionManagement {
 		
 	}
 	
+	public void firstEmoti(int idx) {
+		
+		Connection conn = null;
+		VbyP.accessLog(getAdminSession()+" >> 이모티콘 처음으로 "+Integer.toString(idx));
+		
+		if (isLogin().getbResult()) {		
+		
+			try {
+				
+				conn = VbyP.getDB();
+				StringBuffer buf = new StringBuffer();
+				buf.append(VbyP.getSQL("adminEmoticonFirst"));
+				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+				pq.setPrepared( conn, buf.toString() );
+				pq.setInt(1, idx);
+				pq.executeUpdate();
+				
+			}catch (Exception e) {}	finally {			
+				try { if ( conn != null ) conn.close();
+				}catch(SQLException e) { VbyP.errorLog("firstEmoti >> conn.close() Exception!"); }
+			}
+		}
+		
+	}
+	public void firstEmotiLMS(int idx) {
+		
+		Connection conn = null;
+		VbyP.accessLog(getAdminSession()+" >> LMS 이모티콘 처음으로 "+Integer.toString(idx));
+		
+		if (isLogin().getbResult()) {		
+		
+			try {
+				
+				conn = VbyP.getDB();
+				StringBuffer buf = new StringBuffer();
+				buf.append(VbyP.getSQL("adminEmoticonFirstLMS"));
+				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+				pq.setPrepared( conn, buf.toString() );
+				pq.setInt(1, idx);
+				pq.executeUpdate();
+				
+			}catch (Exception e) {}	finally {			
+				try { if ( conn != null ) conn.close();
+				}catch(SQLException e) { VbyP.errorLog("firstEmoti >> conn.close() Exception!"); }
+			}
+		}
+		
+	}
+	public void firstEmotiMMS(int idx) {
+	
+		Connection conn = null;
+		VbyP.accessLog(getAdminSession()+" >> MMS 이모티콘 처음으로 "+Integer.toString(idx));
+		
+		if (isLogin().getbResult()) {		
+		
+			try {
+				
+				conn = VbyP.getDB();
+				StringBuffer buf = new StringBuffer();
+				buf.append(VbyP.getSQL("adminEmoticonFirstMMS"));
+				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+				pq.setPrepared( conn, buf.toString() );
+				pq.setInt(1, idx);
+				pq.executeUpdate();
+				
+			}catch (Exception e) {}	finally {			
+				try { if ( conn != null ) conn.close();
+				}catch(SQLException e) { VbyP.errorLog("firstEmoti >> conn.close() Exception!"); }
+			}
+		}
+		
+	}
+	
 	public void deleteEmoti(int idx) {
 		
 		Connection conn = null;
