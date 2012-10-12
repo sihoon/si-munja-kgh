@@ -13,6 +13,7 @@ import com.common.db.PreparedExecuteQueryManager;
 import com.common.util.SLibrary;
 import com.common.util.StopWatch;
 import com.common.util.Thumbnail;
+import com.common.util.Thumbnail2;
 import com.m.M;
 import com.m.address.Address;
 import com.m.address.AddressVO;
@@ -1417,11 +1418,17 @@ public class Web extends SessionManagement{
 				mvo.setLine("ppmms");
 				
 				imagePath = "";
-				for (String img : arrImage) {
-					imagePath += img+"|"; 
+				arrImage = image.split(";");
+				if (arrImage != null && arrImage.length > 0) {
+					for (int i = 0; i < arrImage.length; i++) {
+						imagePath += SLibrary.replaceAll(arrImage[i], "/mmsImage/", "") +"|"; 
+						
+						System.out.println(imagePath);
+					}
+					
+					if (imagePath.length() > 0)
+						imagePath = imagePath.substring(0, imagePath.length()-1);
 				}
-				if (imagePath.length() > 0)
-					imagePath = imagePath.substring(0, imagePath.length()-1);
 			}
 			else  mvo.setLine("ktmms");
 			
@@ -3115,9 +3122,39 @@ public class Web extends SessionManagement{
 			if ( !fileName.endsWith(".jpg") ) throw new Exception("jpg 확장자만 지원 합니다.");
 			
 			String uploadName = fu.doUploadRename(bytes, path, fileName);
-			Thumbnail tmb = new Thumbnail();
+			Thumbnail2 tmb = new Thumbnail2();
 			tmb.createThumbnail(path+uploadName, VbyP.getValue("mmsPath")+ uploadName, 176);
+			tmb.createThumbnail(path+uploadName, VbyP.getValue("mmsPathPP")+ uploadName, 176);
 			bvo.setstrDescription( VbyP.getValue("mmsURL")+uploadName );
+			bvo.setbResult(true);
+			
+		}catch(Exception e){
+			bvo.setbResult(false);
+			bvo.setstrDescription("이미지 파일이 업로드 되지 않았습니다.\r\n"+e.getMessage());
+		}
+	    
+		return bvo;
+	}
+	
+	public BooleanAndDescriptionVO setMMSEmtUpload(byte[] bytes, String fileName){
+		
+		VbyP.accessLog(" >> MMS 업로드 요청 ");
+		String path = VbyP.getValue("mmsEmtPath");
+		BooleanAndDescriptionVO bvo = new BooleanAndDescriptionVO();
+		bvo.setbResult(false);
+		String temp = "";
+		try {
+			FileUtils fu = new FileUtils();
+			//파일 확장자가 대분자일경우를 대비해서 소문자로 변환
+			temp = fileName.toLowerCase();
+			temp.endsWith(".jpg");
+			if ( !temp.endsWith(".jpg") ) throw new Exception("jpg 확장자만 지원 합니다.");
+			
+			fileName = SLibrary.replaceAll(fileName, VbyP.getValue("mmsURL"), "");
+			System.out.println(fileName);
+			fu.doUpload(bytes, path, fileName);
+			
+			bvo.setstrDescription( VbyP.getValue("mmsEmtURL")+fileName );
 			bvo.setbResult(true);
 			
 		}catch(Exception e){
@@ -3205,6 +3242,36 @@ public class Web extends SessionManagement{
 			}catch (Exception e) {}	finally {			
 				try { if ( conn != null ) conn.close();
 				}catch(SQLException e) { VbyP.errorLog("addEmotiCateMMS >> conn.close() Exception!"); }
+			}
+		}
+		
+	}
+	
+	public void updateEmotiCate(String mode, String gubun, String oldCate, String newCate) {
+		
+		Connection conn = null;
+		VbyP.accessLog(getAdminSession()+" >> 관리자 이모티콘 카테고리 수정 "+mode+":"+oldCate+"->"+newCate);
+		
+		if (isAdminLogin().getbResult()) {		
+		
+			try {
+				
+				conn = VbyP.getDB();
+				StringBuffer buf = new StringBuffer();
+				if (mode.equals("SMS")) buf.append(VbyP.getSQL("adminEmoticonUpdateCate"));
+				else if (mode.equals("LMS")) buf.append(VbyP.getSQL("adminEmoticonUpdateCateLMS"));
+				else if (mode.equals("MMS")) buf.append(VbyP.getSQL("adminEmoticonUpdateCateMMS"));
+				
+				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+				pq.setPrepared( conn, buf.toString() );
+				pq.setString(1, newCate);
+				pq.setString(2, gubun);
+				pq.setString(3, oldCate);
+				pq.executeUpdate();
+				
+			}catch (Exception e) {}	finally {			
+				try { if ( conn != null ) conn.close();
+				}catch(SQLException e) { VbyP.errorLog("updateEmotiCate >> conn.close() Exception!"); }
 			}
 		}
 		

@@ -68,7 +68,7 @@ public class AdminSMS {
 				throw new Exception("Admin - DB연결에 실패 하였습니다.");
 			
 			mvo = new UserInformationVO();
-			mvo.setLine("kt");
+			mvo.setLine("pp");
 			mvo.setUser_id(user_id);
 			
 			connSMS = VbyP.getDB(mvo.getLine());

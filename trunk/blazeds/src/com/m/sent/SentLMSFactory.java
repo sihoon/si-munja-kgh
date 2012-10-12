@@ -89,16 +89,17 @@ public class SentLMSFactory implements SentFactoryAble {
 					vo = new SentVO();
 					h = al.get(i);
 					
-					if ( SLibrary.IfNull(h, "STATUS").equals("1") || SLibrary.IfNull(h, "STATUS").equals("2") )
+					if ( SLibrary.IfNull(h, "STATUS").equals("1"))
 						strRslt = "Àü¼ÛÁß";
 					else {
 						if (SLibrary.IfNull(line).equals("ktmms")) strRslt = VbyP.getValue( "mmskt_"+SLibrary.IfNull(h, "RSLT"));
+						else if (SLibrary.IfNull(line).equals("ppmms")) strRslt = VbyP.getValue( "ppmms_"+SLibrary.IfNull(h, "RSLT"));
 						else strRslt = VbyP.getValue( "mms_"+SLibrary.IfNull(h, "RSLT"));
 					}
 					
 					if (SLibrary.IfNull(h, "STATUS").equals("0")) status = "0";
 					else if (SLibrary.IfNull(h, "STATUS").equals("1")) status = "1";
-					else if (SLibrary.IfNull(h, "STATUS").equals("2")) status = "1";
+					else if (SLibrary.IfNull(h, "STATUS").equals("2")) status = "2";
 					else if (SLibrary.IfNull(h, "STATUS").equals("3")) status = "2";
 					else if (SLibrary.IfNull(h, "STATUS").equals("-1")) status = "2";
 					else status = "0";
