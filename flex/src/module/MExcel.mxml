@@ -76,17 +76,17 @@
 			public function init():void {
 				
 				setStep(FILEUPLOAD);
-				if (!parentApplication.bLogin) {
-					SLibrary.alert("로그인 후 이용 가능합니다.");
-					//return;
-				} else {
+				//if (!parentApplication.bLogin) {
+				//	SLibrary.alert("로그인 후 이용 가능합니다.");
+				//	return;
+				//} else {
 					this.fur = new FileUploadByRemoteObject("WEB");
 					this.fur.addEventListener(FileUploadByRemoteObjectEvent.COMPLETE, FileUploadByRemoteObjectCOMPLETEHandler);
 					this.fur.addEventListener(FileUploadByRemoteObjectEvent.RESULT, FileUploadByRemoteObjectRESULTHandler);
 					this.fur.addEventListener(FileUploadByRemoteObjectEvent.FAULT, FileUploadByRemoteObjectFAULTHandler);
 					
 					getAddressGroup();
-				}
+				//}
 				
 				
 				
