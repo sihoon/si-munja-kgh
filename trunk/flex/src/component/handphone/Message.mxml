@@ -19,6 +19,8 @@
 			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			public var progressIdx:int = 0;
+			public var arrImageSize:Array = new Array;
 			public var arrImage:Array = new Array;
 			public function get mmsImage():String {
 				
@@ -140,24 +142,36 @@
 				img.source = source;
 				img.width = 215;
 				img.height = 300;
+				img.smooth = true;
 				img.buttonMode = true;
 				img.useHandCursor = true;
-				mBox.addElementAt(img,mBox.numElements-1);
+				img.addEventListener(ProgressEvent.PROGRESS, image1_progressHandler);
+				
+				mBox.addElementAt(img, mBox.numElements-1);
+				
+				//progressIdx = mBox.numElements-2;
+				/* if (mBox.getElementAt(0) is Image) {
+					ExternalInterface.call("alert",Image( mBox.getElementAt(0) ).loaderInfo.bytesTotal);
+				}
+				ExternalInterface.call("alert",img.loaderInfo.bytesLoaded);
+				
+				ExternalInterface.call("alert",source); */
 				arrImage.push(source);
 				trace(arrImage.join(";"));
 				
 				changeMMS();
 			}
 			
+			
 			private function removeImage():void {
 				
-				if (arrImage.length > 1) {
+				if (arrImage.length > 2) {
 					arrImage.pop();
 					ExternalInterface.call("alert","2개까지만 추가 됩니다. 마지막 이미지가 지워졌습니다.");
 					trace(arrImage.join(";"));
 				}
 				
-				if (mBox.numElements == 4) {
+				if (mBox.numElements == 3) {
 					mBox.removeElementAt(0);
 				}
 			}
@@ -334,6 +348,32 @@
 				
 			}
 			
+			protected function image1_progressHandler(event:ProgressEvent):void
+			{
+				event.currentTarget.removeEventListener(ProgressEvent.PROGRESS, image1_progressHandler);
+				
+				//setMessageAdd(event.bytesTotal.toString());
+				
+				arrImageSize.push(event.bytesTotal);
+				var total:int = 0;
+				for (var i:int = 0; i < arrImageSize.length; i++) {
+					total += arrImageSize[i];
+				}
+				if (total > 61439) {
+					arrImage = new Array;
+					arrImageSize = new Array;
+					
+					for (var j:int = 0; j < mBox.numElements; j++) {
+						if (mBox.getElementAt(j) is Image) {
+							mBox.removeElement(mBox.getElementAt(j));
+							j--;
+						}
+					}
+					
+					ExternalInterface.call("alert", "이미지 용량이 초과 되어 모두 삭제 되었습니다. "+total );
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -367,7 +407,7 @@
 				
 				
 				<s:Group width="100%" height="32">
-					<s:Image source="images/btn_emoticon.gif" left="5" buttonMode="true" useHandCursor="true" click="clickHandler(event)" verticalCenter="0" />
+					<s:Image source="images/btn_emoticon.gif"  left="5" buttonMode="true" useHandCursor="true" click="clickHandler(event)" verticalCenter="0" />
 					
 					<s:Image source="images/btn_ectmunja.gif" left="60" buttonMode="true" useHandCursor="true" click="parentApplication.subLoad('char')" verticalCenter="0" />
 					
