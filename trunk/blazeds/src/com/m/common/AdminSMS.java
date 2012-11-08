@@ -96,7 +96,7 @@ public class AdminSMS {
 			alClientVO = sms.getSMSClientVO(conn, mvo, false, logKey, message, phoneAndNameArrayList, returnPhone, reservationDate, requestIp);
 			VbyP.accessLog(user_id+"Admin - 전송 요청 : getSMSClientVO 생성" + "경과 시간 : ");
 			
-			int clientResult = sms.insertSMSClient(connSMS, alClientVO,mvo.getLine());
+			int clientResult = sms.insertSMSClient(connSMS, alClientVO, mvo.getLine());
 			VbyP.accessLog(user_id+"Admin - 전송 요청 : 전송테이블 삽입 성공" + "경과 시간 : ");
 			
 			if ( clientResult != sendCount)
@@ -170,7 +170,7 @@ public class AdminSMS {
 				throw new Exception("Admin - DB연결에 실패 하였습니다.");
 			
 			mvo = new UserInformationVO();
-			mvo.setLine("sms1");
+			mvo.setLine("pp");
 			mvo.setUser_id(user_id);
 			
 			connSMS = VbyP.getDB(mvo.getLine());
@@ -278,7 +278,7 @@ public class AdminSMS {
 				throw new Exception("Admin - DB연결에 실패 하였습니다.");
 			
 			mvo = new UserInformationVO();
-			mvo.setLine("sms1");
+			mvo.setLine("pp");
 			mvo.setUser_id(user_id);
 			
 			connSMS = VbyP.getDB(mvo.getLine());

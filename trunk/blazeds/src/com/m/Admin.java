@@ -19,6 +19,8 @@ import com.m.member.UserInformationVO;
 import com.m.notic.NoticDAO;
 import com.m.notic.NoticVO;
 
+import flex.messaging.FlexContext;
+
 public class Admin extends SessionManagement {
 
 	public Admin() {}
@@ -64,6 +66,26 @@ public class Admin extends SessionManagement {
 		}
 		else {
 			rvo.setbResult(false);
+		}
+		
+		return rvo;
+	}
+	
+	public BooleanAndDescriptionVO logout_session() {
+		
+		BooleanAndDescriptionVO rvo = new BooleanAndDescriptionVO();
+		String user_id = this.getSession();		
+		this.session_logout();		
+		if (!this.bSession()) {
+			
+			VbyP.accessLog(user_id+" >>"+FlexContext.getHttpRequest().getRemoteAddr()+" 로그아웃 성공");
+			rvo.setbResult(true);
+			rvo.setstrDescription("로그 아웃 되었습니다.");
+		}
+		else {
+			VbyP.accessLog(user_id+" >> 로그아웃 실패");
+			rvo.setbResult(false);
+			rvo.setstrDescription("로그 아웃 실패 입니다..");
 		}
 		
 		return rvo;
@@ -278,8 +300,8 @@ public class Admin extends SessionManagement {
 				
 				if (point * PointManager.DEFULT_POINT > 0 && !SLibrary.isNull( mvo.getHp() ) ) {
 					AdminSMS asms = AdminSMS.getInstance();
-					String tempMessage = "[munja119] "+SLibrary.addComma( point * PointManager.DEFULT_POINT )+" 건 충전이 완료 되었습니다.";
-					asms.sendAdmin(conn, tempMessage , mvo.getHp() , "16000816");
+					String tempMessage = "[munjaya] "+SLibrary.addComma( point * PointManager.DEFULT_POINT )+" 건 충전이 완료 되었습니다.";
+					asms.sendAdmin(conn, tempMessage , mvo.getHp() , "07040705198");
 				}
 				
 			}catch (Exception e) {}	finally {			
@@ -486,7 +508,9 @@ public class Admin extends SessionManagement {
 					else if (SLibrary.IfNull(line).equals("ktmms")) pq.setPrepared( connSMS, VbyP.getSQL("selectLMSSentDataKT") );
 					else if (SLibrary.IfNull(line).equals("han")) pq.setPrepared( connSMS, VbyP.getSQL("selectSentDataHN") );
 					else if (SLibrary.IfNull(line).equals("hanr")) pq.setPrepared( connSMS, VbyP.getSQL("selectSentDataHNR") );
-					else if (SLibrary.IfNull(line).equals("it")) pq.setPrepared( connSMS, VbyP.getSQL("selectSentDataIT") );
+					else if (SLibrary.IfNull(line).equals("pp")) pq.setPrepared( connSMS, VbyP.getSQL("selectSentDataPP") );
+					else if (SLibrary.IfNull(line).equals("ppmms")) pq.setPrepared( connSMS, VbyP.getSQL("selectLMSSentDataPP2") );
+					else if (SLibrary.IfNull(line).equals("han")) pq.setPrepared( connSMS, VbyP.getSQL("selectSentDataHN") );
 					else pq.setPrepared( connSMS, VbyP.getSQL("selectSentData") );
 					pq.setString(1, user_id);
 					pq.setString(2, Integer.toString(groupIndex));

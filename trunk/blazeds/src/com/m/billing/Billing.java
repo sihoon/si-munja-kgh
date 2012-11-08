@@ -141,8 +141,8 @@ public class Billing {
 			if (bSMS == true && !SLibrary.isNull( uvo.getHp() ) ) {
 
 				AdminSMS asms = AdminSMS.getInstance();
-				String tempMessage = "[munja119] 무통장 입금 "+SLibrary.addComma( bvo.getAmount() )+" 원 충전이 완료 되었습니다.";
-				asms.sendAdmin(conn, tempMessage , uvo.getHp() , "16000816");
+				String tempMessage = "[munjaya] 무통장 입금 "+SLibrary.addComma( bvo.getAmount() )+" 원 충전이 완료 되었습니다.";
+				asms.sendAdmin(conn, tempMessage , uvo.getHp() , "07040705198");
 			}
 			
 		}catch (Exception e) {
