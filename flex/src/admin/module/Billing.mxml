@@ -55,6 +55,18 @@
 				if (tiIdFilter.text.length > 0) {
 					tiIdFilter_keyUpHandler(new KeyboardEvent(""));
 				}
+				
+				if (al) {
+					var cnt:int = al.length;
+					var tmp:Object = null;
+					var amt:int = 0;
+					
+					for (var i:int = 0; i < cnt; i++) {
+						amt += int(al.getItemAt(i).amount);
+					}
+					tamt.text = amt.toString();
+				}
+				
 			}
 			
 			// 결제 수정
@@ -130,6 +142,9 @@
 		<s:HGroup top="2">
 			<s:TextInput id="tiIdFilter" keyUp="tiIdFilter_keyUpHandler(event)" toolTip="아이디 검색" />
 			<s:Button id="refresh" label="다시가져오기" click="spinnerStart();submit();" />
+			<s:Label text="총결제 금액:"/>
+			<s:Label id="tamt" />
+			<s:Label text=" 원" />
 		</s:HGroup>
 		<mx:DataGrid id="dgGroup" left="0" right="0" top="25" bottom="0" draggableColumns="false"
 					 resizableColumns="false">
@@ -138,6 +153,7 @@
 				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
 				<mx:DataGridColumn dataField="timeWrite" headerText="결제시간"></mx:DataGridColumn>
 				<mx:DataGridColumn dataField="user_id" headerText="아이디"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="user_name" headerText="이름"></mx:DataGridColumn>
 				<mx:DataGridColumn dataField="method" headerText="방식"></mx:DataGridColumn>
 				<mx:DataGridColumn dataField="amount" headerText="금액"></mx:DataGridColumn>
 				<mx:DataGridColumn dataField="order_no" headerText="주문번호"></mx:DataGridColumn>
