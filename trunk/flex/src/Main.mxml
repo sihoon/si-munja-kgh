@@ -35,6 +35,8 @@
 			
 			[Bindable]
 			private var img2:String = "";
+			[Bindable]
+			private var img3:String = "";
 			
 			
 			// 로그인 되어 있을 경우 처리
@@ -67,13 +69,18 @@
 				
 				
 				if (this.currentState == "banner1") {
-					if (showIdx+1 == icnt) showIdx = 0;
-					img2 = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					if (showIdx+2 >= icnt) showIdx = 0;
+					img3 = new XML(dataXML.getItemAt(showIdx+2)).@src;
 					this.currentState = "banner2";
 				}
+				else if (this.currentState == "banner2") {
+					if (showIdx+2 >= icnt) showIdx = 0;
+					img = new XML(dataXML.getItemAt(showIdx+2)).@src;
+					this.currentState = "banner3";
+				}
 				else {
-					if (showIdx+1 == icnt) showIdx = 0;
-					img = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					if (showIdx+2 >= icnt) showIdx = 0;
+					img2 = new XML(dataXML.getItemAt(showIdx+2)).@src;
 					this.currentState = "banner1";
 				}
 				
@@ -94,6 +101,7 @@
 					icnt = dataXML.length;
 					img = new XML(dataXML.getItemAt(showIdx)).@src;
 					img2 = new XML(dataXML.getItemAt(showIdx+1)).@src;
+					img3 = new XML(dataXML.getItemAt(showIdx+2)).@src;
 					
 					href = new XML(dataXML.getItemAt(showIdx)).@href;
 					setInterval(bannerChange, 5000);
@@ -115,6 +123,7 @@
 	<s:states>
 		<s:State name="banner1" />
 		<s:State name="banner2" />
+		<s:State name="banner3" />
 	</s:states>
 	
 	<s:transitions>
@@ -135,8 +144,9 @@
 		
 		<s:VGroup right="0" gap="0">
 			<s:Group id="holder">
-				<s:Image id="gallery" source="{img}" visible="true" visible.banner2="false" buttonMode="true" click="gallery_clickHandler(event)"/>
-				<s:Image id="gallery1" source="{img2}" visible="false" visible.banner2="true" buttonMode="true" click="gallery_clickHandler(event)"/>
+				<s:Image id="gallery" source="{img}" visible="true" visible.banner2="false" visible.banner3="false" buttonMode="true" click="gallery_clickHandler(event)"/>
+				<s:Image id="gallery1" source="{img2}" visible="false" visible.banner2="true" visible.banner3="false" buttonMode="true" click="gallery_clickHandler(event)"/>
+				<s:Image id="gallery2" source="{img3}" visible="false" visible.banner2="false" visible.banner3="true" buttonMode="true" click="gallery_clickHandler(event)"/>
 				<!--<s:Image source="images/banner2.jpg" visible="false" visible.banner2="true"/>-->	
 			</s:Group>
 			
