@@ -224,9 +224,13 @@
 				
 				if (bvo.bResult) {
 					SLibrary.alert("삭제 되었습니다.");
-					if (bRes)
-						parentApplication.userInfoInit();
-					creationCompleteHandler();
+					if (bRes) {
+						//parentApplication.userInfoInit();
+						reservation_submit();
+					} else {
+						submit();
+					}
+					
 				}else {
 					SLibrary.alert(bvo.strDescription);
 				}
