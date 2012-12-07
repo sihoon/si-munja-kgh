@@ -2375,7 +2375,7 @@ public class Web extends SessionManagement{
 					
 				UserInformationVO vo = getUserInformation();
 				
-				if (sendLine.equals("mms")||sendLine.equals("ktmms")) {	
+				if (sendLine.equals("mms")||sendLine.equals("ppmms")) {	
 					connSMS = VbyP.getDB("sms1");
 					sf = SentLMSFactory.getInstance();
 				}else connSMS = VbyP.getDB(sendLine);
