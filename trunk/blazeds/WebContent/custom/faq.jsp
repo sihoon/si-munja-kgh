@@ -46,8 +46,10 @@ try {
 	}
 	
 	
-	al = notic.getListFAQPage(conn, startPage, endPage);
-	tcnt = notic.totalCnt;
+	al = notic.getListFAQPage(conn, startPage, dateRowOfPage);
+	if (al != null && al.size() > 0) {
+		tcnt =SLibrary.intValue( SLibrary.IfNull(al.get(0), "tcnt") );
+	}
 
 %>
 
@@ -95,7 +97,7 @@ try {
 				%>
 		<tr>
 			<td width="150" height="30" align="center"><%=SLibrary.IfNull(hm, "num") %></td>
-			<td><a href="?content=notic_view&idx=<%=SLibrary.IfNull(hm, "num") %>"><%=SLibrary.IfNull(hm, "title") %></a></td>
+			<td><a href="?content=faq_view&idx=<%=SLibrary.IfNull(hm, "num") %>"><%=SLibrary.IfNull(hm, "title") %></a></td>
 		</tr>
 		<tr>
 		    <td height="1" colspan="2" bgcolor="bbbbbb"></td>
@@ -109,6 +111,32 @@ try {
 				<%
 		}
 		%>
+		<tr><td colspan="2"><%
+		//pageing
+		Paging ppg = new Paging(nowPage , dateRowOfPage, dateRowOfPage , tcnt);
+		
+		ppg.pg = "pg";
+		ppg.linkPage = "";
+		ppg.queryString = url;
+		
+		ppg.firstOffLink = "<span style='color:gray'><< 처음</span>";
+		ppg.firstBlockOffLink = "<span style='color:gray'>< 이전</span>";
+		ppg.prevOffLink = "";   
+		ppg.nextOffLink = "";
+		ppg.lastBlockOffLink = "<span style='color:gray'>다음 ></span>";
+		ppg.lastOffLink = "<span style='color:gray'>마지막 >></span>";
+
+		ppg.firstLink = "<< 처음";
+		ppg.firstBlockLink = "< 이전";
+		ppg.prevLink = "";
+		ppg.nextLink = "";
+		ppg.lastBlockLink = "다음 >";
+		ppg.lastLink = "마지막 >>";
+		
+		ppg.delimiter = "|";
+
+		out.println( ppg.print() );
+		%></td></tr>
  
 </table>
 <!-- <table width="645" border="0" cellspacing="1" cellpadding="1" style="display:block;float:right"> -->
