@@ -163,5 +163,18 @@
 		}
 	}
 
+
+</script>
+<script type="text/javascript" >
+function setMsg(msg) {
+	
+	var flex = document.getElementById("Mainflex");
+	flex.phoneFlexFunction("setMessage", msg);
+}
+function setPhoto(msg) {
+	
+	var flex = document.getElementById("Mainflex");
+	flex.phoneFlexFunction("setPhoto", msg);
+}
 </script>
 

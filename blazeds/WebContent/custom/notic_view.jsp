@@ -74,7 +74,7 @@ try {
   </tr>
    <tr>
     <td style="padding:15px;"><p><%=SLibrary.IfNull(hm, "title") %><br /></p>
-    <%=SLibrary.IfNull(hm, "content") %>
+    <%=SLibrary.replaceAll(SLibrary.IfNull(hm, "content"), "\r\n", "<br/>")  %>
     </td>
   </tr>
    <tr>
