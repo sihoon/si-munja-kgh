@@ -1,0 +1,715 @@
+CREATE TABLE `address` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `grp` int(1) NOT NULL default '0',
+  `grpName` varchar(30) NOT NULL default '',
+  `name` varchar(20) NOT NULL default '',
+  `phone` varchar(13) NOT NULL default '',
+  `memo` varchar(255) NOT NULL default '',
+  `writedate` datetime NOT NULL,
+  `etcInfo` varchar(255) default NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`),
+  KEY `search1` (`user_id`,`grpName`),
+  KEY `name` (`user_id`,`grpName`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `billing` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `method` varchar(10) default NULL,
+  `amount` int(11) NOT NULL default '0',
+  `order_no` varchar(100) default NULL,
+  `unit_cost` varchar(5) default NULL,
+  `point` int(11) unsigned default NULL,
+  `remain_point` int(11) unsigned default NULL,
+  `memo` varchar(255) default NULL,
+  `admin_id` varchar(13) default NULL,
+  `timeWrite` datetime NOT NULL,
+  `delYN` char(1) default 'N',
+  `tid` varchar(200) default NULL COMMENT 'tid',
+  `timestamp` varchar(200) default NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`),
+  KEY `method` (`method`),
+  KEY `timeWrite` (`timeWrite`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `cash_req` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `account` varchar(500) default NULL,
+  `amount` int(11) NOT NULL default '0',
+  `method` varchar(30) NOT NULL default '',
+  `name` varchar(40) default NULL,
+  `timeWrite` datetime NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `emoticon` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `gubun` varchar(30) default NULL,
+  `category` varchar(20) NOT NULL default '',
+  `msg` text NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `category` (`category`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `emoticon_lms` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `gubun` varchar(30) default NULL,
+  `category` varchar(20) NOT NULL default '',
+  `msg` text NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `category` (`category`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `emoticon_mms` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `gubun` varchar(30) default NULL,
+  `category` varchar(20) NOT NULL default '',
+  `title` varchar(200) default NULL COMMENT 'title',
+  `msg` text NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `category` (`category`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `faq` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `title` varchar(500) NOT NULL,
+  `content` text,
+  `writer` varchar(100) default NULL,
+  `timeWrite` datetime NOT NULL,
+  `cnt` int(11) unsigned default '0',
+  PRIMARY KEY  (`idx`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `member` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `passwd` varchar(20) NOT NULL default '',
+  `user_name` varchar(20) default NULL,
+  `jumin_no` varchar(13) NOT NULL default '',
+  `email` varchar(50) default NULL,
+  `phone_return` varchar(20) NOT NULL default '',
+  `hp` varchar(20) default NULL,
+  `unit_cost` varchar(5) default '0',
+  `line` varchar(10) default 'kt',
+  `memo` varchar(3000) default NULL,
+  `timeLogin` datetime default NULL,
+  `timeJoin` datetime default NULL,
+  `leaveYN` char(1) default 'N',
+  `emailYN` char(1) character set latin1 default 'N' COMMENT 'emailYN',
+  `hpYN` char(1) character set latin1 default 'N' COMMENT 'hpYN',
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `member_admin` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(13) NOT NULL default '',
+  `passwd` varchar(20) NOT NULL default '',
+  `user_name` varchar(20) default NULL,
+  `timeLogin` datetime default NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `member_log` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(13) NOT NULL default '',
+  `passwd` varchar(20) NOT NULL default '',
+  `user_name` varchar(20) default NULL,
+  `jumin_no` varchar(13) NOT NULL default '',
+  `email` varchar(50) default NULL,
+  `phone_return` varchar(20) NOT NULL default '',
+  `hp` varchar(20) default NULL,
+  `unit_cost` varchar(5) default '18',
+  `line` varchar(10) default 'sms1',
+  `memo` varchar(3000) default NULL,
+  `timeLogin` datetime default NULL,
+  `timeJoin` datetime default NULL,
+  `leaveYN` char(1) default 'N',
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `mymsg` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `msg` text NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `notic` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `title` varchar(500) NOT NULL,
+  `content` text,
+  `writer` varchar(100) default NULL,
+  `timeWrite` datetime NOT NULL,
+  `cnt` int(11) unsigned default '0',
+  PRIMARY KEY  (`idx`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `point` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `point` int(11) NOT NULL default '0',
+  `timeWrite` datetime NOT NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`),
+  KEY `timeWrite` (`timeWrite`),
+  KEY `point` (`point`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `point_log` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `point` int(11) NOT NULL default '0',
+  `code` char(2) NOT NULL default '',
+  `memo` varchar(255) NOT NULL default '',
+  `timeWrite` datetime NOT NULL,
+  `old_point` int(11) NOT NULL default '0',
+  `now_point` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`),
+  KEY `code` (`code`),
+  KEY `timeWrite` (`timeWrite`),
+  KEY `point` (`point`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `refuse` (
+  `user_id` varchar(20) default NULL,
+  `phone` varchar(20) NOT NULL,
+  `reg_date` datetime NOT NULL,
+  KEY `user_id` (`user_id`),
+  KEY `phone` (`user_id`,`phone`)
+) ENGINE=MyISAM DEFAULT DEFAULT CHARSET=utf8;
+
+CREATE TABLE `return_phone` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `phone` varchar(13) NOT NULL,
+  `timeWrite` datetime default NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `sent_log` (
+  `idx` int(11) NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `line` varchar(10) NOT NULL default 'sms1',
+  `reservation` char(1) default 'N',
+  `tranType` char(2) NOT NULL,
+  `returnPhone` varchar(13) NOT NULL,
+  `count` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `user_ip` varchar(15) NOT NULL,
+  `timeSend` datetime NOT NULL,
+  `timeWrite` datetime NOT NULL,
+  `ynDel` enum('Y','N') NOT NULL default 'N',
+  `delType` enum('none','cancel','logdel') NOT NULL default 'none',
+  `timeDel` datetime default NULL,
+  PRIMARY KEY  (`idx`),
+  KEY `user_id` (`user_id`,`ynDel`),
+  KEY `timeSend` (`timeSend`,`timeWrite`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tax` (
+  `idx` int(11) unsigned NOT NULL auto_increment,
+  `user_id` varchar(20) NOT NULL,
+  `billing_idx` int(11) unsigned NOT NULL,
+  `comp_name` varchar(100) NOT NULL,
+  `comp_no` varchar(16) NOT NULL,
+  `name` varchar(100) default NULL,
+  `addr` varchar(500) default NULL,
+  `upte` varchar(500) default NULL,
+  `upjong` varchar(500) default NULL,
+  `email` varchar(500) default NULL,
+  `yn` varchar(1) default 'N',
+  `timeWrite` datetime NOT NULL,
+  PRIMARY KEY  (`idx`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+================= SMS ======================================
+
+CREATE TABLE `SDK_MMS_REPORT` (
+  `MSG_ID` int(11) NOT NULL,
+  `USER_ID` varchar(20) default NULL,
+  `JOB_ID` int(11) NOT NULL default '0',
+  `SCHEDULE_TYPE` int(11) NOT NULL default '0',
+  `SUBJECT` varchar(64) default NULL,
+  `NOW_DATE` varchar(16) default NULL,
+  `SEND_DATE` varchar(16) NOT NULL,
+  `CALLBACK` varchar(20) NOT NULL,
+  `MMS_MSG` text,
+  `CONTENT_COUNT` int(11) NOT NULL default '0',
+  `CONTENT_DATA` varchar(250) default NULL,
+  `DEST_COUNT` int(11) NOT NULL default '0',
+  `DEST_INFO` text NOT NULL,
+  `KT_OFFICE_CODE` varchar(20) default NULL,
+  `CDR_ID` varchar(20) default NULL,
+  `RESERVED1` varchar(50) default NULL,
+  `RESERVED2` varchar(50) default NULL,
+  `RESERVED3` varchar(50) default NULL,
+  `RESERVED4` varchar(50) default NULL,
+  `RESERVED5` varchar(50) default NULL,
+  `RESERVED6` varchar(50) default NULL,
+  `SUCC_COUNT` int(11) NOT NULL default '0',
+  `FAIL_COUNT` int(11) NOT NULL default '0',
+  `MSG_TYPE` int(11) NOT NULL default '0',
+  `STD_ID` int(11) default NULL,
+  PRIMARY KEY  (`MSG_ID`),
+  KEY `IDX_SDK_M_R_1` (`JOB_ID`),
+  KEY `IDX_SDK_M_R_2` (`SEND_DATE`),
+  KEY `IDX_SDK_M_R_3` (`SCHEDULE_TYPE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_MMS_REPORT_DETAIL` (
+  `MSG_ID` int(11) NOT NULL,
+  `USER_ID` varchar(20) NOT NULL,
+  `JOB_ID` int(11) NOT NULL default '0',
+  `SUBJOB_ID` int(11) NOT NULL,
+  `SEND_DATE` varchar(16) default NULL,
+  `DEST_NAME` varchar(20) default NULL,
+  `PHONE_NUMBER` varchar(20) default NULL,
+  `RESULT` int(11) NOT NULL default '0',
+  `TCS_RESULT` int(11) default NULL,
+  `DELIVER_DATE` varchar(20) default NULL,
+  `READ_TIME` varchar(20) default NULL,
+  `MOBILE_INFO` int(11) default NULL,
+  `FEE` int(11) default NULL,
+  `REPORT_RES_DATE` varchar(20) default NULL,
+  `STAT_STATUS` int(11) NOT NULL default '0',
+  `STIME` varchar(16) default NULL,
+  `RTIME` varchar(16) default NULL,
+  PRIMARY KEY  (`MSG_ID`,`SUBJOB_ID`),
+  KEY `IDX_SDK_M_RD_1` (`JOB_ID`),
+  KEY `IDX_SDK_M_RD_2` (`SEND_DATE`),
+  KEY `IDX_SDK_M_RD_3` (`RESULT`),
+  KEY `IDX_SDK_M_RD_4` (`TCS_RESULT`),
+  KEY `IDX_SDK_M_RD_5` (`STAT_STATUS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_MMS_SEND` (
+  `MSG_ID` int(11) NOT NULL auto_increment,
+  `USER_ID` varchar(20) NOT NULL,
+  `SCHEDULE_TYPE` int(11) NOT NULL default '0',
+  `SUBJECT` varchar(64) default NULL,
+  `NOW_DATE` varchar(16) NOT NULL,
+  `SEND_DATE` varchar(16) NOT NULL,
+  `CALLBACK` varchar(20) NOT NULL,
+  `DEST_COUNT` int(11) NOT NULL default '0',
+  `DEST_INFO` text NOT NULL,
+  `MMS_MSG` text,
+  `CONTENT_COUNT` int(11) NOT NULL default '0',
+  `CONTENT_DATA` varchar(250) default NULL,
+  `KT_OFFICE_CODE` varchar(20) default NULL,
+  `CDR_ID` varchar(20) default NULL,
+  `RESERVED1` varchar(50) default NULL,
+  `RESERVED2` varchar(50) default NULL,
+  `RESERVED3` varchar(50) default NULL,
+  `RESERVED4` varchar(50) default NULL,
+  `RESERVED5` varchar(50) default NULL,
+  `RESERVED6` varchar(50) default NULL,
+  `SEND_STATUS` int(11) NOT NULL default '0',
+  `SEND_COUNT` int(11) NOT NULL default '0',
+  `SEND_RESULT` int(11) NOT NULL default '0',
+  `SEND_PROC_TIME` varchar(20) default NULL,
+  `MSG_TYPE` int(11) NOT NULL default '0',
+  `STD_ID` int(11) default NULL,
+  PRIMARY KEY  (`MSG_ID`),
+  KEY `IDX_SDK_M_S_1` (`SEND_STATUS`),
+  KEY `IDX_SDK_M_S_2` (`SEND_DATE`),
+  KEY `IDX_SDK_M_S_3` (`SCHEDULE_TYPE`),
+  KEY `IDX_SDK_M_S_0` (`SEND_STATUS`,`SCHEDULE_TYPE`,`SEND_DATE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_RECV_STAT` (
+  `RECV_YEAR` char(4) NOT NULL,
+  `RECV_MONTH` char(2) NOT NULL,
+  `RECV_DAY` char(2) NOT NULL,
+  `RECV_HOUR` char(2) NOT NULL,
+  `SMS_TOTAL` int(11) NOT NULL default '0',
+  `FMS_TOTAL` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`RECV_YEAR`,`RECV_MONTH`,`RECV_DAY`,`RECV_HOUR`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_SEND_STAT` (
+  `SEND_YEAR` char(4) NOT NULL,
+  `SEND_MONTH` char(2) NOT NULL,
+  `SEND_DAY` char(2) NOT NULL,
+  `SEND_HOUR` char(2) NOT NULL,
+  `USER_ID` varchar(20) NOT NULL,
+  `SMS_TOTAL` int(11) NOT NULL default '0',
+  `SMS_SUCC` int(11) NOT NULL default '0',
+  `VMS_TTS_TOTAL` int(11) NOT NULL default '0',
+  `VMS_TTS_SUCC` int(11) NOT NULL default '0',
+  `VMS_FILE_TOTAL` int(11) NOT NULL default '0',
+  `VMS_FILE_SUCC` int(11) NOT NULL default '0',
+  `VMS_MSTG_TOTAL` int(11) NOT NULL default '0',
+  `VMS_MSTG_SUCC` int(11) NOT NULL default '0',
+  `VMS_SP_TOTAL` int(11) NOT NULL default '0',
+  `VMS_SP_SUCC` int(11) NOT NULL default '0',
+  `FMS_TOTAL` int(11) NOT NULL default '0',
+  `FMS_SUCC` int(11) NOT NULL default '0',
+  `MMS_TOTAL` int(11) NOT NULL default '0',
+  `MMS_SUCC` int(11) NOT NULL default '0',
+  `THREAD_NO` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`SEND_YEAR`,`SEND_MONTH`,`SEND_DAY`,`SEND_HOUR`,`USER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_SMS_RECEIVE` (
+  `JOB_ID` int(11) NOT NULL default '0',
+  `MSG_ID` int(11) NOT NULL default '0',
+  `CALLBACK` varchar(20) NOT NULL,
+  `ANI_NUMBER` varchar(20) NOT NULL,
+  `DEST_NUMBER` varchar(20) NOT NULL,
+  `SMS_MSG` varchar(200) NOT NULL,
+  `RECV_DATE` varchar(20) NOT NULL,
+  `REPORT_STATUS` int(11) NOT NULL default '0',
+  `REPORT_COUNT` int(11) NOT NULL default '0',
+  `REPORT_PROC_TIME` varchar(20) default NULL,
+  `REPORT_RESULT` int(11) NOT NULL default '0',
+  `STAT_STATUS` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`JOB_ID`),
+  KEY `IDX_SDK_S_RC_1` (`MSG_ID`),
+  KEY `IDX_SDK_S_RC_2` (`CALLBACK`),
+  KEY `IDX_SDK_S_RC_3` (`ANI_NUMBER`),
+  KEY `IDX_SDK_S_RC_4` (`RECV_DATE`),
+  KEY `IDX_SDK_S_RC_5` (`REPORT_STATUS`),
+  KEY `IDX_SDK_S_RC_6` (`STAT_STATUS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_SMS_REPORT` (
+  `MSG_ID` int(11) NOT NULL,
+  `USER_ID` varchar(20) NOT NULL,
+  `JOB_ID` int(11) NOT NULL default '0',
+  `SCHEDULE_TYPE` int(11) NOT NULL default '0',
+  `SUBJECT` varchar(50) default NULL,
+  `SMS_MSG` varchar(200) default NULL,
+  `CALLBACK_URL` varchar(200) default NULL,
+  `NOW_DATE` varchar(20) default NULL,
+  `SEND_DATE` varchar(20) NOT NULL,
+  `CALLBACK` varchar(20) default NULL,
+  `DEST_TYPE` int(11) NOT NULL default '0',
+  `DEST_COUNT` int(11) NOT NULL default '0',
+  `DEST_INFO` text NOT NULL,
+  `KT_OFFICE_CODE` varchar(20) default NULL,
+  `CDR_ID` varchar(20) default NULL,
+  `RESERVED1` varchar(64) default NULL,
+  `RESERVED2` varchar(50) default NULL,
+  `RESERVED3` varchar(50) default NULL,
+  `RESERVED4` varchar(50) default NULL,
+  `RESERVED5` varchar(50) default NULL,
+  `RESERVED6` varchar(50) default NULL,
+  `SUCC_COUNT` int(11) NOT NULL default '0',
+  `FAIL_COUNT` int(11) NOT NULL default '0',
+  `CANCEL_STATUS` int(11) NOT NULL default '0',
+  `CANCEL_COUNT` int(11) NOT NULL default '0',
+  `CANCEL_REQ_DATE` varchar(20) default NULL,
+  `CANCEL_RESULT` int(11) NOT NULL default '0',
+  `DELIVER_STATUS` int(11) NOT NULL default '0',
+  `DELIVER_COUNT` int(11) NOT NULL default '0',
+  `DELIVER_REQ_DATE` varchar(20) default NULL,
+  `DELIVER_RESULT` int(11) NOT NULL default '0',
+  `STD_ID` int(11) default NULL,
+  PRIMARY KEY  (`MSG_ID`),
+  KEY `IDX_SDK_S_R_1` (`JOB_ID`),
+  KEY `IDX_SDK_S_R_2` (`CANCEL_STATUS`,`CANCEL_COUNT`),
+  KEY `IDX_SDK_S_R_3` (`DELIVER_STATUS`,`DELIVER_COUNT`),
+  KEY `IDX_SDK_S_R_4` (`SEND_DATE`),
+  KEY `IDX_SDK_S_R_5` (`SCHEDULE_TYPE`),
+  KEY `search_user` (`RESERVED2`,`RESERVED6`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_SMS_REPORT_DETAIL` (
+  `MSG_ID` int(11) NOT NULL,
+  `USER_ID` varchar(20) NOT NULL,
+  `JOB_ID` int(11) NOT NULL default '0',
+  `SUBJOB_ID` int(11) NOT NULL,
+  `SEND_DATE` varchar(20) NOT NULL,
+  `DEST_NAME` varchar(20) NOT NULL,
+  `PHONE_NUMBER` varchar(20) NOT NULL,
+  `RESULT` int(11) NOT NULL default '0',
+  `TCS_RESULT` int(11) default NULL,
+  `FEE` float default NULL,
+  `DELIVER_DATE` varchar(20) default NULL,
+  `REPORT_RES_DATE` varchar(20) default NULL,
+  `MSG_SUBJOB_TYPE` int(11) default NULL,
+  `STAT_STATUS` int(11) NOT NULL default '0',
+  `TELCOINFO` varchar(8) default NULL,
+  PRIMARY KEY  (`MSG_ID`,`SUBJOB_ID`),
+  KEY `IDX_SDK_S_RD_1` (`JOB_ID`),
+  KEY `IDX_SDK_S_RD_2` (`SEND_DATE`),
+  KEY `IDX_SDK_S_RD_3` (`RESULT`),
+  KEY `IDX_SDK_S_RD_4` (`TCS_RESULT`),
+  KEY `IDX_SDK_S_RD_5` (`STAT_STATUS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `SDK_SMS_SEND` (
+  `MSG_ID` int(11) NOT NULL auto_increment,
+  `USER_ID` varchar(20) NOT NULL,
+  `SCHEDULE_TYPE` int(11) NOT NULL default '0',
+  `SUBJECT` varchar(50) default NULL,
+  `SMS_MSG` varchar(200) default NULL,
+  `CALLBACK_URL` varchar(200) default NULL,
+  `NOW_DATE` varchar(20) default NULL,
+  `SEND_DATE` varchar(20) NOT NULL,
+  `CALLBACK` varchar(20) default NULL,
+  `DEST_TYPE` int(11) NOT NULL default '0',
+  `DEST_COUNT` int(11) NOT NULL default '0',
+  `DEST_INFO` text NOT NULL,
+  `KT_OFFICE_CODE` varchar(20) default NULL,
+  `CDR_ID` varchar(20) default NULL,
+  `RESERVED1` varchar(64) default NULL,
+  `RESERVED2` varchar(50) default NULL,
+  `RESERVED3` varchar(50) default NULL,
+  `RESERVED4` varchar(50) default NULL,
+  `RESERVED5` varchar(50) default NULL,
+  `RESERVED6` varchar(50) default NULL,
+  `SEND_STATUS` int(11) NOT NULL default '0',
+  `SEND_COUNT` int(11) NOT NULL default '0',
+  `SEND_RESULT` int(11) NOT NULL default '0',
+  `SEND_PROC_TIME` varchar(20) default NULL,
+  `STD_ID` int(11) default NULL,
+  PRIMARY KEY  (`MSG_ID`),
+  KEY `IDX_SDK_S_S_1` (`SEND_STATUS`),
+  KEY `IDX_SDK_S_S_2` (`SEND_DATE`),
+  KEY `IDX_SDK_S_S_3` (`SCHEDULE_TYPE`),
+  KEY `IDX_SDK_S_S_0` (`SEND_STATUS`,`SCHEDULE_TYPE`,`SEND_DATE`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `TBL_MSG_HIST` (
+  `CMP_MSG_ID` int(10) unsigned NOT NULL auto_increment,
+  `CMP_MSG_GROUP_ID` varchar(20) default NULL,
+  `USR_ID` varchar(16) NOT NULL,
+  `SMS_GB` char(1) default '1',
+  `USED_CD` char(2) NOT NULL,
+  `RESERVED_FG` char(1) NOT NULL,
+  `RESERVED_DTTM` char(14) default NULL,
+  `SAVED_FG` char(1) default '0',
+  `RCV_PHN_ID` varchar(24) NOT NULL,
+  `SND_PHN_ID` varchar(24) default NULL,
+  `NAT_CD` varchar(8) default NULL,
+  `ASSIGN_CD` varchar(5) default '00000',
+  `SND_MSG` varchar(2000) default NULL,
+  `CALLBACK_URL` varchar(120) default NULL,
+  `CONTENT_CNT` int(11) default '0',
+  `CONTENT_MIME_TYPE` varchar(128) default NULL,
+  `CONTENT_PATH` varchar(1024) default NULL,
+  `CMP_SND_DTTM` char(14) default NULL,
+  `CMP_RCV_DTTM` char(14) default NULL,
+  `REG_SND_DTTM` char(14) default NULL,
+  `REG_RCV_DTTM` char(14) default NULL,
+  `MACHINE_ID` char(2) default NULL,
+  `SMS_STATUS` char(1) default '0',
+  `RSLT_VAL` char(4) default NULL,
+  `MSG_TITLE` varchar(200) default NULL,
+  `TELCO_ID` char(4) default NULL,
+  `ETC_CHAR_1` varchar(100) default NULL,
+  `ETC_CHAR_2` varchar(100) default NULL,
+  `ETC_CHAR_3` varchar(100) default NULL,
+  `ETC_CHAR_4` varchar(100) default NULL,
+  `ETC_INT_5` int(11) default NULL,
+  `ETC_INT_6` int(11) default NULL,
+  PRIMARY KEY  (`CMP_MSG_ID`),
+  KEY `SC_LOG_IDX1` (`RESERVED_DTTM`,`SMS_STATUS`),
+  KEY `SC_LOG_IDX3` (`RCV_PHN_ID`),
+  KEY `id_key` (`ETC_CHAR_2`,`ETC_INT_6`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `TBL_MSG_HIST_ORG` (
+  `CMP_MSG_ID` varchar(20) NOT NULL,
+  `CMP_MSG_GROUP_ID` varchar(20) default NULL,
+  `USR_ID` varchar(16) NOT NULL,
+  `SMS_GB` char(1) default '1',
+  `USED_CD` char(2) NOT NULL,
+  `RESERVED_FG` char(1) NOT NULL,
+  `RESERVED_DTTM` char(14) default NULL,
+  `SAVED_FG` char(1) default '0',
+  `RCV_PHN_ID` varchar(24) NOT NULL,
+  `SND_PHN_ID` varchar(24) default NULL,
+  `NAT_CD` varchar(8) default NULL,
+  `ASSIGN_CD` varchar(5) default '00000',
+  `SND_MSG` varchar(2000) default NULL,
+  `CALLBACK_URL` varchar(120) default NULL,
+  `CONTENT_CNT` int(11) default '0',
+  `CONTENT_MIME_TYPE` varchar(128) default NULL,
+  `CONTENT_PATH` varchar(1024) default NULL,
+  `CMP_SND_DTTM` char(14) default NULL,
+  `CMP_RCV_DTTM` char(14) default NULL,
+  `REG_SND_DTTM` char(14) default NULL,
+  `REG_RCV_DTTM` char(14) default NULL,
+  `MACHINE_ID` char(2) default NULL,
+  `SMS_STATUS` char(1) default '0',
+  `RSLT_VAL` char(4) default NULL,
+  `MSG_TITLE` varchar(200) default NULL,
+  `TELCO_ID` char(4) default NULL,
+  `ETC_CHAR_1` varchar(100) default NULL,
+  `ETC_CHAR_2` varchar(100) default NULL,
+  `ETC_CHAR_3` varchar(100) default NULL,
+  `ETC_CHAR_4` varchar(100) default NULL,
+  `ETC_INT_5` int(11) default NULL,
+  `ETC_INT_6` int(11) default NULL,
+  PRIMARY KEY  (`CMP_MSG_ID`),
+  KEY `SC_LOG_IDX1` (`RESERVED_DTTM`,`SMS_STATUS`),
+  KEY `SC_LOG_IDX3` (`RCV_PHN_ID`),
+  KEY `id_key` (`ETC_CHAR_2`,`ETC_INT_6`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `TBL_SUBMIT_QUEUE` (
+  `CMP_MSG_ID` int(10) unsigned NOT NULL auto_increment,
+  `CMP_MSG_GROUP_ID` varchar(20) default NULL,
+  `USR_ID` varchar(16) NOT NULL,
+  `SMS_GB` char(1) default '1',
+  `USED_CD` char(2) NOT NULL,
+  `RESERVED_FG` char(1) NOT NULL,
+  `RESERVED_DTTM` char(14) NOT NULL,
+  `SAVED_FG` char(1) default '0',
+  `RCV_PHN_ID` varchar(24) NOT NULL,
+  `SND_PHN_ID` varchar(24) default NULL,
+  `NAT_CD` varchar(8) default NULL,
+  `ASSIGN_CD` varchar(5) default '00000',
+  `SND_MSG` varchar(2000) default NULL,
+  `CALLBACK_URL` varchar(120) default NULL,
+  `CONTENT_CNT` int(11) default '0',
+  `CONTENT_MIME_TYPE` varchar(128) default NULL,
+  `CONTENT_PATH` varchar(1024) default NULL,
+  `CMP_SND_DTTM` char(14) default NULL,
+  `CMP_RCV_DTTM` char(14) default NULL,
+  `REG_SND_DTTM` char(14) default NULL,
+  `REG_RCV_DTTM` char(14) default NULL,
+  `MACHINE_ID` char(2) default NULL,
+  `SMS_STATUS` char(1) default '0',
+  `RSLT_VAL` char(4) default NULL,
+  `MSG_TITLE` varchar(200) default NULL,
+  `TELCO_ID` char(4) default NULL,
+  `ETC_CHAR_1` varchar(100) default NULL,
+  `ETC_CHAR_2` varchar(100) default NULL,
+  `ETC_CHAR_3` varchar(100) default NULL,
+  `ETC_CHAR_4` varchar(100) default NULL,
+  `ETC_INT_5` int(11) default NULL,
+  `ETC_INT_6` int(11) default NULL,
+  PRIMARY KEY  (`CMP_MSG_ID`),
+  KEY `IDX_SUBMIT_QUEUE_1` (`SMS_STATUS`,`RESERVED_FG`),
+  KEY `IDX_SUBMIT_QUEUE_2` (`CMP_MSG_ID`,`SMS_STATUS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `TBL_SUBMIT_QUEUE_ORG` (
+  `CMP_MSG_ID` varchar(20) NOT NULL,
+  `CMP_MSG_GROUP_ID` varchar(20) default NULL,
+  `USR_ID` varchar(16) NOT NULL,
+  `SMS_GB` char(1) default '1',
+  `USED_CD` char(2) NOT NULL,
+  `RESERVED_FG` char(1) NOT NULL,
+  `RESERVED_DTTM` char(14) NOT NULL,
+  `SAVED_FG` char(1) default '0',
+  `RCV_PHN_ID` varchar(24) NOT NULL,
+  `SND_PHN_ID` varchar(24) default NULL,
+  `NAT_CD` varchar(8) default NULL,
+  `ASSIGN_CD` varchar(5) default '00000',
+  `SND_MSG` varchar(2000) default NULL,
+  `CALLBACK_URL` varchar(120) default NULL,
+  `CONTENT_CNT` int(11) default '0',
+  `CONTENT_MIME_TYPE` varchar(128) default NULL,
+  `CONTENT_PATH` varchar(1024) default NULL,
+  `CMP_SND_DTTM` char(14) default NULL,
+  `CMP_RCV_DTTM` char(14) default NULL,
+  `REG_SND_DTTM` char(14) default NULL,
+  `REG_RCV_DTTM` char(14) default NULL,
+  `MACHINE_ID` char(2) default NULL,
+  `SMS_STATUS` char(1) default '0',
+  `RSLT_VAL` char(4) default NULL,
+  `MSG_TITLE` varchar(200) default NULL,
+  `TELCO_ID` char(4) default NULL,
+  `ETC_CHAR_1` varchar(100) default NULL,
+  `ETC_CHAR_2` varchar(100) default NULL,
+  `ETC_CHAR_3` varchar(100) default NULL,
+  `ETC_CHAR_4` varchar(100) default NULL,
+  `ETC_INT_5` int(11) default NULL,
+  `ETC_INT_6` int(11) default NULL,
+  PRIMARY KEY  (`CMP_MSG_ID`),
+  KEY `IDX_SUBMIT_QUEUE_1` (`SMS_STATUS`,`RESERVED_FG`),
+  KEY `IDX_SUBMIT_QUEUE_2` (`CMP_MSG_ID`,`SMS_STATUS`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `sms_log` (
+  `sms_seq` bigint(10) unsigned NOT NULL,
+  `sms_senddate` datetime NOT NULL,
+  `sms_sendstat` varchar(1) default '0',
+  `sms_rsltstat` varchar(2) default '00',
+  `sms_target` varchar(20) NOT NULL,
+  `sms_callback` varchar(20) NOT NULL,
+  `sms_rsltdate` datetime default NULL,
+  `sms_msg` varchar(160) NOT NULL,
+  `sms_agency` varchar(4) default NULL,
+  `sms_etc1` varchar(160) default NULL,
+  `sms_etc2` varchar(160) default NULL,
+  `sms_etc3` varchar(160) default NULL,
+  `sms_etc4` varchar(160) default NULL,
+  `sms_etc5` varchar(160) default NULL,
+  `sms_etc6` varchar(160) default NULL,
+  `sms_realsenddate` datetime default NULL,
+  `sms_id` varchar(160) default NULL,
+  PRIMARY KEY  (`sms_seq`),
+  KEY `idx1_sms_log` (`sms_seq`,`sms_senddate`,`sms_sendstat`),
+  KEY `idx2_sms_log` (`sms_senddate`,`sms_sendstat`),
+  KEY `idx3_sms_log` (`sms_seq`),
+  KEY `idx4_sms_log` (`sms_target`),
+  KEY `id_key` (`sms_etc2`,`sms_etc6`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `sms_msg` (
+  `sms_seq` bigint(10) unsigned NOT NULL auto_increment,
+  `sms_senddate` datetime NOT NULL,
+  `sms_sendstat` varchar(1) default '0',
+  `sms_rsltstat` varchar(2) default '00',
+  `sms_target` varchar(20) NOT NULL,
+  `sms_callback` varchar(20) NOT NULL,
+  `sms_rsltdate` datetime default NULL,
+  `sms_msg` varchar(160) NOT NULL,
+  `sms_agency` varchar(4) default NULL,
+  `sms_etc1` varchar(160) default NULL,
+  `sms_etc2` varchar(160) default NULL,
+  `sms_etc3` varchar(160) default NULL,
+  `sms_etc4` varchar(160) default NULL,
+  `sms_etc5` varchar(160) default NULL,
+  `sms_etc6` varchar(160) default NULL,
+  `sms_realsenddate` datetime default NULL,
+  `sms_id` varchar(160) default NULL,
+  PRIMARY KEY  (`sms_seq`),
+  KEY `idx1_sms_msg` (`sms_seq`,`sms_senddate`,`sms_sendstat`),
+  KEY `idx2_sms_msg` (`sms_senddate`,`sms_sendstat`),
+  KEY `idx3_sms_msg` (`sms_seq`),
+  KEY `idx4_sms_msg` (`sms_target`),
+  KEY `id_key` (`sms_etc2`,`sms_etc6`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
