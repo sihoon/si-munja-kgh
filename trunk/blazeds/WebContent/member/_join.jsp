@@ -1,3 +1,4 @@
+<%@page import="com.m.common.AdminSMS"%>
 <%@page import="com.m.common.PointManager"%>
 <%@page import="com.m.member.JoinVO"%>
 <%@page import="com.m.member.Join"%>
@@ -65,6 +66,8 @@
 	String email = VbyP.getPOST(request.getParameter("email"));
 	
 	VbyP.accessLog("회원가입 페이지 요청 완료>> " + request.getRemoteAddr() +" "+user_id );
+	
+	Connection conn = null;
 
 	try {
 		Join join = new Join();
@@ -92,6 +95,10 @@
 		if (rslt < 1) {
 			out.println(SLibrary.alertScript("회원가입에 실패 하였습니다.", ""));
 		}else {
+			conn = VbyP.getDB();
+			AdminSMS asms = AdminSMS.getInstance();
+			asms.sendAdmin(conn, 
+					"[회원가입]\r\n" + user_id + "\r\n"+user_name );
 			out.println(SLibrary.alertScript("회원가입이 완료 되었습니다.\\r\\n\\r\\n로그인 후 사용하시기 바랍니다.", "parent.window.location.href='../';"));
 		}
 		
@@ -99,9 +106,13 @@
 		VbyP.errorLog("member/_join.jsp ==> " + e.toString());
 		out.println(SLibrary.alertScript(e.getMessage(), ""));
 		System.out.println(e.toString());
-	} finally {}
+	} finally {
+		if (conn != null) {
+			try { conn.close();}catch(Exception e) {}
+		}
+	}
 
-		
+	
 
 		
     	try {
