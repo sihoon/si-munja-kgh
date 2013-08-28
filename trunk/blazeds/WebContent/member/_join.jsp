@@ -13,7 +13,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %><%!
-  String MAIL_HOST = "imagemaker.co.kr";
+  String MAIL_HOST = "imagemaker.co.kr"; 
 
   public void sendMail(String name, String fromm, String too, String title, String content) throws Exception
     {
