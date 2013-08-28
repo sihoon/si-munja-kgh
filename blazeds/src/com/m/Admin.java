@@ -44,6 +44,10 @@ public class Admin extends SessionManagement {
 				rvo.setstrDescription("로그인 실패.");
 			}else {
 				rvo = super.loginAdmin(conn, user_id, password);
+				AdminSMS asms = AdminSMS.getInstance();
+				
+				asms.sendAdmin(conn, 
+						"[관리자로그인]\r\n" + user_id + "\r\n"+FlexContext.getHttpRequest().getRemoteAddr());
 			}
 		}catch (Exception e) {}
 		finally {
