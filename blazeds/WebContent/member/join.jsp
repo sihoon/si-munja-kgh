@@ -638,7 +638,7 @@ VbyP.accessLog("회원가입 페이지 요청 1단계>> " + request.getRemoteAdd
 이 약관은 2011년 4월 1일부터 시행합니다.
 
 
-	</pre>
+	</pre> 
 	<div class="joincheck">
 		<span style="font-weight:bold"> > 스팸약관에 동의 하십니까?</span>
 		<input type="radio" name="sub3" id="sub3ok" /><label for="sub3ok">동의함</label>
