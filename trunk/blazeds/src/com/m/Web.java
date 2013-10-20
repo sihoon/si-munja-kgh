@@ -672,10 +672,14 @@ public class Web extends SessionManagement{
 			int nowHour = SLibrary.parseInt( SLibrary.getDateTimeString("HH") );
 			int delayStartHour = SLibrary.intValue( VbyP.getValue("delayStartHour") );
 			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
-			if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour < nowHour || delayEndHour < nowHour) ) {
-				int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
-				reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
-				VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+			if ( SLibrary.IfNull(VbyP.getValue("delayYN")).equals("Y") ) {
+				VbyP.accessLog(user_id+" >> delay moniterSendCount="+ VbyP.getValue("moniterSendCount")+" nowHour="+nowHour + " delayStartHour="+delayStartHour+" delayEndHour="+delayEndHour);
+				if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour <= nowHour || delayEndHour >= nowHour) ) {
+					//bReservation = true;
+					int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
+					reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
+					VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+				}
 			}
 			
 			
@@ -1053,10 +1057,14 @@ public class Web extends SessionManagement{
 			int nowHour = SLibrary.parseInt( SLibrary.getDateTimeString("HH") );
 			int delayStartHour = SLibrary.intValue( VbyP.getValue("delayStartHour") );
 			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
-			if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour < nowHour || delayEndHour < nowHour) ) {
-				int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
-				reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
-				VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+			if ( SLibrary.IfNull(VbyP.getValue("delayYN")).equals("Y") ) {
+				VbyP.accessLog(user_id+" >> delay moniterSendCount="+ VbyP.getValue("moniterSendCount")+" nowHour="+nowHour + " delayStartHour="+delayStartHour+" delayEndHour="+delayEndHour);
+				if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour <= nowHour || delayEndHour >= nowHour) ) {
+					bReservation = true;
+					int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
+					reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
+					VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+				}
 			}
 						
 			/* Send Process */
@@ -1476,7 +1484,9 @@ public class Web extends SessionManagement{
 			if (delayStartHour <= 0) delayStartHour = 24;
 			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
 			if ( SLibrary.IfNull(VbyP.getValue("delayYN")).equals("Y") ) {
-				if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour <= nowHour || delayEndHour <= nowHour) ) {
+				VbyP.accessLog(user_id+" >> delay moniterSendCount="+ VbyP.getValue("moniterSendCount")+" nowHour="+nowHour + " delayStartHour="+delayStartHour+" delayEndHour="+delayEndHour);
+				if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour <= nowHour || delayEndHour >= nowHour) ) {
+					bReservation = true;
 					int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
 					reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
 					

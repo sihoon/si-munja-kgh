@@ -231,6 +231,8 @@ public class SentFactory implements SentFactoryAble {
 			tranResultCount = deleteSentDataOfTranTableHNR(connSMS, user_id, idx);
 		}else if(SLibrary.IfNull(line).equals("it")){
 			tranResultCount = deleteSentDataOfTranTableIT(connSMS, user_id, idx);
+		}else if(SLibrary.IfNull(line).equals("pp")){
+			tranResultCount = deleteSentDataOfTranTablePP(connSMS, user_id, idx);
 		}else {
 			tranResultCount = deleteSentDataOfTranTable(connSMS, user_id, idx);
 		}
@@ -310,7 +312,7 @@ public class SentFactory implements SentFactoryAble {
 	
 	public BooleanAndDescriptionVO cancelSentGroupList(Connection conn, Connection connSMS, UserInformationVO mvo, int idx, String sendLine) throws Exception {
 		
-		VbyP.debugLog(mvo.getUser_id() + " >> 예약취소 시작 "+Integer.toString(idx));
+		VbyP.debugLog(mvo.getUser_id() + " >> 예약취소 시작 "+Integer.toString(idx)+" sendLine="+sendLine);
 		BooleanAndDescriptionVO rvo = new BooleanAndDescriptionVO();
 		rvo.setbResult(false);
 		
