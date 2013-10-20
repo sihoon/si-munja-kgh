@@ -668,6 +668,17 @@ public class Web extends SessionManagement{
 			
 			checkSMSSend( conn, sendCount, mvo, message, requestIp );
 			
+			// delay send
+			int nowHour = SLibrary.parseInt( SLibrary.getDateTimeString("HH") );
+			int delayStartHour = SLibrary.intValue( VbyP.getValue("delayStartHour") );
+			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
+			if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour < nowHour || delayEndHour < nowHour) ) {
+				int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
+				reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
+				VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+			}
+			
+			
 			/* Send Process */
 			//step1
 			lvo = sms.getLogVO( mvo, bReservation, message, phoneAndNameArrayList, returnPhone, reservationDate, requestIp);
@@ -1038,6 +1049,16 @@ public class Web extends SessionManagement{
 			
 			checkLMSSend( conn, sendCount, mvo, message, requestIp );
 			
+			// delay send
+			int nowHour = SLibrary.parseInt( SLibrary.getDateTimeString("HH") );
+			int delayStartHour = SLibrary.intValue( VbyP.getValue("delayStartHour") );
+			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
+			if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour < nowHour || delayEndHour < nowHour) ) {
+				int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
+				reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
+				VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+			}
+						
 			/* Send Process */
 			//step1
 			lvo = lms.getLogVO( mvo, bReservation, message, phoneAndNameArrayList, returnPhone, reservationDate, requestIp);
@@ -1448,6 +1469,21 @@ public class Web extends SessionManagement{
 			message = SLibrary.replaceAll(message, "\r", "\n");
 			
 			checkMMSSend( conn, sendCount, mvo, message, requestIp, imagePath );
+			
+			// delay send
+			int nowHour = SLibrary.parseInt( SLibrary.getDateTimeString("HH") );
+			int delayStartHour = SLibrary.intValue( VbyP.getValue("delayStartHour") );
+			if (delayStartHour <= 0) delayStartHour = 24;
+			int delayEndHour = SLibrary.intValue( VbyP.getValue("delayEndHour") );
+			if ( SLibrary.IfNull(VbyP.getValue("delayYN")).equals("Y") ) {
+				if ( Integer.parseInt(VbyP.getValue("moniterSendCount")) < sendCount && (delayStartHour <= nowHour || delayEndHour <= nowHour) ) {
+					int delayMin = SLibrary.intValue( VbyP.getValue("delayMin") );
+					reservationDate = SLibrary.getDateAddSecond(reservationDate, delayMin*60);
+					
+					VbyP.accessLog(user_id+" >> delay Send "+ reservationDate);
+				}
+			}
+			
 			
 			/* Send Process */
 			//step1
