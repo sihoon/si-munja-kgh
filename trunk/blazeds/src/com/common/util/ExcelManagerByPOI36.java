@@ -3,9 +3,19 @@ package com.common.util;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -23,6 +33,7 @@ public class ExcelManagerByPOI36 {
 	boolean bLimitRow = false;
 	int lastRow = 0;
 	boolean bLimitColumn = false;
+	String [] arrTitle = null;
 	
 	public ExcelManagerByPOI36() {
 		
@@ -40,6 +51,7 @@ public class ExcelManagerByPOI36 {
 	public int getlimitRow(){ return this.limitRow; }
 	public boolean getbLimitColumn() { return this.bLimitColumn; }
 	public boolean getbLimitRow() { return this.bLimitRow; }
+	public void setTitle(String [] arr) { this.arrTitle = arr;}
 	
 	public int getmaxCountColumn(){ return this.maxCountColumn;}
 	
@@ -102,11 +114,11 @@ public class ExcelManagerByPOI36 {
 
 				int cellType = cell.getCellType();
 				
-				// cell Å¸ÀÔ¿¡ µû¸¥ °ªÀ» Ãâ·Â½ÃÅ²´Ù
+				// cell Å¸ï¿½Ô¿ï¿½ ï¿½ï¿½ ï¿½ï¿½; ï¿½ï¿½Â½ï¿½Å²ï¿½ï¿½
 				switch (cellType) {
 					case Cell.CELL_TYPE_NUMERIC:		// 0
 						double d = cell.getNumericCellValue();
-						// µ¥ÀÌÆ® Å¸ÀÔ¿©ºÎ¸¦ Ã¼Å©ÇÑ´Ù.
+						// ï¿½ï¿½ï¿½ï¿½Æ® Å¸ï¿½Ô¿ï¿½ï¿½Î¸ï¿½ Ã¼Å©ï¿½Ñ´ï¿½.
 						if (DateUtil.isCellDateFormatted(cell)) {
 							// format in form of YYYYMMDD
 							SimpleDateFormat formatter =
@@ -142,5 +154,107 @@ public class ExcelManagerByPOI36 {
 		}
 		return result;
 
+	}
+	
+	public void WriteAndDownLoad(HttpServletResponse response , String fileName , String[][] list) throws Exception {
+		
+		if ( this.sheetName == null ) this.sheetName = "Sheet1";
+			
+		HSSFWorkbook workbook = new HSSFWorkbook();
+
+		HSSFSheet sheet = workbook.createSheet();
+		workbook.setSheetName(0 , this.sheetName );
+		
+		HSSFCellStyle style = setCellStyle(workbook);
+		HSSFCellStyle styleTitle = setTitleCellStyle(workbook);
+		
+		
+		HSSFRow row = sheet.createRow(0);
+		
+		HSSFRichTextString string = null;
+		
+		int title = 0;
+		if (this.arrTitle != null) {
+			
+			row = sheet.createRow(title);
+
+			for (int t = 0 ; t < this.arrTitle.length; t++){
+				HSSFCell cell = row.createCell(t);
+				cell.setCellStyle(styleTitle);
+				sheet.setColumnWidth(t, this.arrTitle[t].length() * 12 * 100 );
+				string = new HSSFRichTextString(this.arrTitle[t]);
+				cell.setCellValue(string);
+			}
+			title++;
+		}
+		
+		int rowCount = list.length;
+		for ( int i = 0; i < rowCount; i++){
+			
+			row = sheet.createRow(i+title);
+
+			for (int j = 0 ; j < list[i].length; j++){
+				HSSFCell cell = row.createCell(j);
+				cell.setCellStyle(style);
+				string = new HSSFRichTextString(list[i][j]);
+				cell.setCellValue(string);
+			}
+		}
+
+		OutputStream outs  = null;
+
+		try {
+			// ì¿ í‚¤ ë“±ì˜ ì •ë³´ë¥¼ ì§€ìš°ë¯€ë¡œ ì´ì „ì— ì„¸íŒ…ì„ í•´ì„œëŠ” ì•ˆëœë‹¤.
+			response.reset();
+			
+			response.setContentType("application/smnet");
+			response.setHeader("Content-Disposition","attachment; filename="+ fileName+".xls" +";");
+			response.setHeader("Content-Transfer-Encoding", "binary;");
+			response.setHeader("Pragma", "no-cache;");
+			response.setHeader("Expires", "-1;");
+			
+			outs = response.getOutputStream();
+			workbook.write(outs);
+		}
+		finally {
+			
+				try{
+					if(outs != null) { outs.close(); }
+				}catch(Exception e){}
+		}
+	}
+	
+	private HSSFCellStyle setCellStyle(HSSFWorkbook workbook){
+		
+		HSSFCellStyle style = workbook.createCellStyle();
+		style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		style.setBottomBorderColor(HSSFColor.BLACK.index);
+		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		style.setLeftBorderColor(HSSFColor.BLACK.index);
+		style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		style.setRightBorderColor(HSSFColor.BLACK.index);
+		style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		style.setTopBorderColor(HSSFColor.BLACK.index);
+		style.setWrapText(false);
+		
+		return style;
+	}
+	
+	private HSSFCellStyle setTitleCellStyle(HSSFWorkbook workbook){
+		
+		HSSFCellStyle style = workbook.createCellStyle();
+		style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		style.setBottomBorderColor(HSSFColor.BLACK.index);
+		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		style.setLeftBorderColor(HSSFColor.BLACK.index);
+		style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		style.setRightBorderColor(HSSFColor.BLACK.index);
+		style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		style.setTopBorderColor(HSSFColor.BLACK.index);
+		style.setFillBackgroundColor(HSSFColor.AQUA.index);
+		style.setWrapText(false);
+		//style.setFillPattern(HSSFCellStyle.LESS_DOTS);
+		
+		return style;
 	}
 }

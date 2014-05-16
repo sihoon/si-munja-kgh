@@ -1400,4 +1400,38 @@ public class Admin extends SessionManagement {
 		
 		return rslt;
 	}
+	
+	public List<HashMap<String, String>> getStatus(String start, String end, String dtype, String line, String stype) {
+		
+		Connection conn = null;
+		ArrayList<HashMap<String, String>> al = null;
+		
+		if (isLogin().getbResult()) {
+			
+			try {
+				
+				conn = VbyP.getDB();
+				
+				
+				VbyP.accessLog(" >>  관리자 통계 요청("+start+"/"+end+") "+line+" "+dtype+" "+stype);
+				
+				StringBuffer buf = new StringBuffer();
+				buf.append(VbyP.getSQL("adminEmoticonCate"));
+				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
+				pq.setPrepared( conn, buf.toString() );
+				pq.setString(1, start);
+				pq.setString(2, start);
+				
+				al = pq.ExecuteQueryArrayList();
+				
+				
+				
+			}catch (Exception e) {}	finally {			
+				try { if ( conn != null ) conn.close();
+				}catch(SQLException e) { VbyP.errorLog("getEmoti >> conn.close() Exception!"); }
+			}
+		}
+		
+		return al;
+	}
 }
