@@ -5,26 +5,52 @@
 		   layout="absolute" width="100%" height="100%" xmlns:lib="lib.*">
 	<fx:Script>
 		<![CDATA[
-			import lib.RO;
-			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			import mx.formatters.DateFormatter;
 			import mx.rpc.events.ResultEvent;
+			
+			import lib.RO;
 			
 			private var ro:RO = new RO();
 			private var RO_DESTINATION:String = "ADMIN";
 			private var al:ArrayCollection = new ArrayCollection();
 			
+			[Bindable]public var ltypeData:ArrayCollection = new ArrayCollection([
+				{label:"KT", data:"kt"}, 
+				{label:"뿌리오", data:"pp"} ]);
+			[Bindable]public var dtypeData:ArrayCollection = new ArrayCollection([
+				{label:"일별", data:"day"}, 
+				{label:"월별", data:"month"} ]);
+			[Bindable]public var stypeData:ArrayCollection = new ArrayCollection([
+				{label:"SMS", data:"sms"}, 
+				{label:"LMS", data:"lms"},{label:"MMS", data:"mms"} ]);
+			
+			
 			protected function creationCompleteHandler(event:FlexEvent):void {
 				
+				var date:Date = new Date();
+				date.setMonth( date.getMonth()-1);
+				dateField1.selectedDate = date
+				dateField2.selectedDate = new Date;
 				spinnerStart();
 				submit();
 			}
 			
 			protected function submit():void {
 				
+				var df:DateFormatter = new DateFormatter();
+				df.formatString = "YYYY-MM-DD";
+				
+				
 				ro.set(RO_DESTINATION, submit_ResultEventHandler);
-				ro.method.getMember();
+				ro.method.getStatus(
+					df.format(dateField1.selectedDate), 
+					df.format(dateField2.selectedDate),
+					ltype.selectedItem.data,
+					dtype.selectedItem.data,
+					stype.selectedItem.data
+				);
 				spinnerStart();
 			}
 			private function submit_ResultEventHandler(event:ResultEvent):void {
@@ -60,24 +86,26 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:Panel width="100%" height="100%" title="통계관리">
+		<s:HGroup left="0" right="0">
+			<mx:DateField width="95" id="dateField1" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+			<s:Label text=" ~ " />
+			<mx:DateField width="95" id="dateField2" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
+			<s:DropDownList id="ltype" dataProvider="{ltypeData}" selectedIndex="0"></s:DropDownList>
+			<s:DropDownList id="dtype" dataProvider="{dtypeData}" selectedIndex="0"></s:DropDownList>
+			<s:DropDownList id="stype" dataProvider="{stypeData}" selectedIndex="0"></s:DropDownList>
+			<s:Button label="검색" click="submit()"/>
+		</s:HGroup>
 		<mx:DataGrid id="dgGroup" left="10" right="10" top="10" bottom="10" draggableColumns="false"
 					 resizableColumns="false">
 			
 			<mx:columns>
 				<mx:DataGridColumn headerText="번호" sortable="false" labelFunction="fnLabel" width="50"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="user_id" headerText="아이디"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="passwd" headerText="비밀번호"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="user_name" headerText="이름"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="jumin_no" headerText="주민등록번호"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="phone_return" headerText="회신번호"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="hp" headerText="휴대폰"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="unit_cost" headerText="단가"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="line" headerText="전송라인"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="memo" headerText="메모"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="timeLogin" headerText="로그인일"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="timeJoin" headerText="가입일"></mx:DataGridColumn>
-				<mx:DataGridColumn dataField="leaveYN" headerText="탈퇴"></mx:DataGridColumn>
-				<mx:DataGridColumn headerText="" width="100"  sortable="false" />
+				<mx:DataGridColumn dataField="dt" headerText="날짜"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="total" headerText="전체"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="successCount" headerText="성공"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="standbyCount" headerText="대기"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="sendingCount" headerText="전송중"></mx:DataGridColumn>
+				<mx:DataGridColumn dataField="failCount" headerText="실패"></mx:DataGridColumn>
 			</mx:columns>
 			
 		</mx:DataGrid>
