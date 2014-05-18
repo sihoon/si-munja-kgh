@@ -116,17 +116,32 @@ public class MMS implements MMSAble {
 				
 				vo = new MMSClientVO();
 				vo = al.get(i);
-				//수신거부
-				if (Refuse.isRefuse(hashTable_refuse, vo.PHONE)){
-					
-					insertClientPqSetter_fail(pq, vo, "98");
-					
-				}else if (hashTable.containsKey(vo.PHONE)){
-					insertClientPqSetter_fail(pq, vo, "99"); 	
-				}else {
-					hashTable.put(vo.PHONE, "");
-					insertClientPqSetter(pq, vo);
+				if (via.equals("ktmms")) {
+					//수신거부
+					if (Refuse.isRefuse(hashTable_refuse, vo.PHONE)){
+						
+						insertClientPqSetter_failKT(pq, vo, "98");
+						
+					}else if (hashTable.containsKey(vo.PHONE)){
+						insertClientPqSetter_failKT(pq, vo, "99"); 	
+					}else {
+						hashTable.put(vo.PHONE, "");
+						insertClientPqSetterKT(pq, vo);
+					}
+				} else {
+					//수신거부
+					if (Refuse.isRefuse(hashTable_refuse, vo.PHONE)){
+						
+						insertClientPqSetter_fail(pq, vo, "98");
+						
+					}else if (hashTable.containsKey(vo.PHONE)){
+						insertClientPqSetter_fail(pq, vo, "99"); 	
+					}else {
+						hashTable.put(vo.PHONE, "");
+						insertClientPqSetter(pq, vo);
+					}
 				}
+				
 				
 				pq.addBatch();
 				
@@ -577,6 +592,48 @@ public class MMS implements MMSAble {
 		
 //		pq.setString(1, vo.getSUBJECT() );
 		pq.setString(1, "  " );
+		pq.setString(2, vo.getPHONE() );
+		pq.setString(3, vo.getCALLBACK() );
+		pq.setString(4, "3" );
+		pq.setString(5, vo.getREQDATE() );
+		pq.setString(6, vo.getMSG() );
+		pq.setInt(7, vo.getFILE_CNT() );
+		pq.setInt(8, vo.getFILE_CNT_REAL() );
+		pq.setString(9, vo.getFILE_PATH1() );			
+		pq.setString(10, vo.getTYPE() );
+		pq.setString(11, vo.getID() );
+		pq.setString(12, vo.getPOST() );
+		pq.setString(13, vo.getETC1() );
+		pq.setString(14, vo.getETC2() );
+		pq.setString(15, vo.getETC3() );
+		pq.setString(16, code);
+		
+	}
+	
+	// KT
+	private void insertClientPqSetterKT(PreparedExecuteQueryManager pq, MMSClientVO vo) {
+		
+		pq.setString(1, vo.getSUBJECT() );
+		pq.setString(2, vo.getPHONE() );
+		pq.setString(3, vo.getCALLBACK() );
+		pq.setString(4, vo.getSTATUS() );
+		pq.setString(5, vo.getREQDATE() );
+		pq.setString(6, vo.getMSG() );
+		pq.setInt(7, vo.getFILE_CNT() );
+		pq.setInt(8, vo.getFILE_CNT_REAL() );
+		pq.setString(9, vo.getFILE_PATH1() );			
+		pq.setString(10, vo.getTYPE() );
+		pq.setString(11, vo.getID() );
+		pq.setString(12, vo.getPOST() );
+		pq.setString(13, vo.getETC1() );
+		pq.setString(14, vo.getETC2() );
+		pq.setString(15, vo.getETC3() );
+		pq.setString(16, "0");
+	}
+	
+	private void insertClientPqSetter_failKT(PreparedExecuteQueryManager pq, MMSClientVO vo, String code) {
+		
+		pq.setString(1, vo.getSUBJECT() );
 		pq.setString(2, vo.getPHONE() );
 		pq.setString(3, vo.getCALLBACK() );
 		pq.setString(4, "3" );
