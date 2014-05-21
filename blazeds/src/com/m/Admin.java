@@ -1416,11 +1416,15 @@ public class Admin extends SessionManagement {
 				VbyP.accessLog(" >>  관리자 통계 요청("+start+"/"+end+") "+line+" "+dtype+" "+stype);
 				
 				StringBuffer buf = new StringBuffer();
-				buf.append(VbyP.getSQL("adminEmoticonCate"));
+				String sqlName = "status-"+dtype+"-"+line+"-"+stype;
+				
+				buf.append(VbyP.getSQL(sqlName));
 				PreparedExecuteQueryManager pq = new PreparedExecuteQueryManager();
 				pq.setPrepared( conn, buf.toString() );
 				pq.setString(1, start);
-				pq.setString(2, start);
+				pq.setString(2, end);
+				pq.setString(3, start);
+				pq.setString(4, end);
 				
 				al = pq.ExecuteQueryArrayList();
 				
@@ -1428,7 +1432,7 @@ public class Admin extends SessionManagement {
 				
 			}catch (Exception e) {}	finally {			
 				try { if ( conn != null ) conn.close();
-				}catch(SQLException e) { VbyP.errorLog("getEmoti >> conn.close() Exception!"); }
+				}catch(SQLException e) { VbyP.errorLog("getStatus >> conn.close() Exception!"); }
 			}
 		}
 		
