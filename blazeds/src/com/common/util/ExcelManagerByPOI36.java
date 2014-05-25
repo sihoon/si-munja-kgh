@@ -65,7 +65,7 @@ public class ExcelManagerByPOI36 {
 		}catch(IOException ie) {
 			System.out.println(ie);
 		}catch(InvalidFormatException ins) {
-			System.out.println(ins);
+			System.out.println(ins);  
 		}catch(Exception e) {
 			System.out.println(e);
 		}
