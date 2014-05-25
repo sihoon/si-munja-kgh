@@ -104,7 +104,7 @@
 					<fx:Object label="공지사항관리" url="admin/module/Notic.swf"></fx:Object>
 					<fx:Object label="세금계산서" url="admin/module/Tax.swf"></fx:Object>
 					<fx:Object label="FAQ관리" url="admin/module/Faq.swf"></fx:Object>
-					<!--<fx:Object label="통계" url="admin/module/Stats.swf"></fx:Object>-->
+					<fx:Object label="통계" url="admin/module/Stats.swf"></fx:Object>
 				</fx:Array>
 			</mx:dataProvider>
 		</mx:LinkBar>
