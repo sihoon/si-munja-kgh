@@ -485,7 +485,9 @@
 			
 			protected function excelButton_clickHandler(event:MouseEvent):void
 			{
+				navigateToURL(new URLRequest('address/addressExcel.jsp'), '_blank');
 				// type : 0(전체), 1(성공), 2(실패)
+				/*
 				var sheet:Sheet = new Sheet();
 				var dataProviderCollection:ArrayCollection = dg.dataProvider as ArrayCollection;
 				var rowCount:int =  dataProviderCollection.length;
@@ -524,6 +526,7 @@
 				var bytes: ByteArray = xls.saveToByteArray();
 				var fr:FileReference = new FileReference();
 				fr.save(bytes, fileName);
+				*/
 				
 			}
 			
