@@ -16,12 +16,13 @@
 			private var RO_DESTINATION:String = "ADMIN";
 			private var al:ArrayCollection = new ArrayCollection();
 			
-			[Bindable]public var ltypeData:ArrayCollection = new ArrayCollection([
-				{label:"KT", data:"kt"}, 
-				{label:"뿌리오", data:"pp"} ]);
 			[Bindable]public var dtypeData:ArrayCollection = new ArrayCollection([
 				{label:"일별", data:"day"}, 
 				{label:"월별", data:"month"} ]);
+			[Bindable]public var ltypeData:ArrayCollection = new ArrayCollection([
+				{label:"KT", data:"kt"}, 
+				{label:"뿌리오", data:"pp"} ]);
+			
 			[Bindable]public var stypeData:ArrayCollection = new ArrayCollection([
 				{label:"SMS", data:"sms"}, 
 				{label:"LMS", data:"lms"},{label:"MMS", data:"mms"} ]);
@@ -45,10 +46,10 @@
 				
 				ro.set(RO_DESTINATION, submit_ResultEventHandler);
 				ro.method.getStatus(
-					df.format(dateField1.selectedDate), 
-					df.format(dateField2.selectedDate),
-					ltype.selectedItem.data,
+					df.format(dateField1.selectedDate)+" 00:00:00", 
+					df.format(dateField2.selectedDate)+" 23:59:59",
 					dtype.selectedItem.data,
+					ltype.selectedItem.data,
 					stype.selectedItem.data
 				);
 				spinnerStart();
@@ -86,16 +87,17 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:Panel width="100%" height="100%" title="통계관리">
+		<s:VGroup gap="2" width="100%" height="100%">
 		<s:HGroup left="0" right="0">
 			<mx:DateField width="95" id="dateField1" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
 			<s:Label text=" ~ " />
 			<mx:DateField width="95" id="dateField2" yearNavigationEnabled="true" formatString="YYYY-MM-DD"/>
-			<s:DropDownList id="ltype" dataProvider="{ltypeData}" selectedIndex="0"></s:DropDownList>
 			<s:DropDownList id="dtype" dataProvider="{dtypeData}" selectedIndex="0"></s:DropDownList>
+			<s:DropDownList id="ltype" dataProvider="{ltypeData}" selectedIndex="0"></s:DropDownList>
 			<s:DropDownList id="stype" dataProvider="{stypeData}" selectedIndex="0"></s:DropDownList>
 			<s:Button label="검색" click="submit()"/>
 		</s:HGroup>
-		<mx:DataGrid id="dgGroup" left="10" right="10" top="10" bottom="10" draggableColumns="false"
+		<mx:DataGrid id="dgGroup" width="100%" height="100%" draggableColumns="false"
 					 resizableColumns="false">
 			
 			<mx:columns>
@@ -109,6 +111,7 @@
 			</mx:columns>
 			
 		</mx:DataGrid>
+		</s:VGroup>
 		<lib:Spinner id="spinner" visible="false" left="10"  right="10" bottom="50" top="50" spinnerColor="#ff4500" spinnerHighlightColor="#ffffff" spinnerLineThickness="8" spinnerType="gradientlines" spinnerAlpha="0.5" />
 	</s:Panel>
 </mx:Module>
