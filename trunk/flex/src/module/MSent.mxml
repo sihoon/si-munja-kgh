@@ -31,10 +31,7 @@
 			import com.as3xls.xls.ExcelFile;
 			import com.as3xls.xls.Sheet;
 			
-			import lib.BooleanAndDescriptionVO;
-			import lib.KoreaPhoneNumberFormatter;
-			import lib.RO;
-			import lib.SLibrary;
+			import flash.net.navigateToURL;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.XMLListCollection;
@@ -46,6 +43,11 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.RemoteObject;
+			
+			import lib.BooleanAndDescriptionVO;
+			import lib.KoreaPhoneNumberFormatter;
+			import lib.RO;
+			import lib.SLibrary;
 			
 			private var ro:RO = new RO();
 			private var RO_DESTINATION:String = "WEB";
@@ -135,6 +137,8 @@
 				
 				if (idx == null) idx = "0";
 				
+				gidx = new int(idx);
+				gline = line;
 				ro.set(RO_DESTINATION, detail_submit_ResultEventHandler);
 				ro.method.getSentList( new int(idx), line );
 				
@@ -257,7 +261,16 @@
 			
 			protected function excelButton_clickHandler(event:MouseEvent,type:Number):void
 			{
+				if (type == 0) {
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline), '_blank');
+				} else if (type == 1) {
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=succ"), '_blank');
+				} else {
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=fail"), '_blank');
+				}
+				
 				// type : 0(전체), 1(성공), 2(실패)
+				/*
 				var sheet:Sheet = new Sheet();
 				var dataProviderCollection:ArrayCollection = dg.dataProvider as ArrayCollection;
 				var rowCount:int =  dataProviderCollection.length;
@@ -307,7 +320,7 @@
 				var bytes: ByteArray = xls.saveToByteArray();
 				var fr:FileReference = new FileReference();
 				fr.save(bytes, fileName);
-				
+				*/
 			}
 			
 			
