@@ -485,7 +485,7 @@
 			
 			protected function excelButton_clickHandler(event:MouseEvent):void
 			{
-				navigateToURL(new URLRequest('address/addressExcel.jsp'), '_blank');
+				navigateToURL(new URLRequest('address/addressExcel.jsp'), 'nobody');
 				// type : 0(전체), 1(성공), 2(실패)
 				/*
 				var sheet:Sheet = new Sheet();
