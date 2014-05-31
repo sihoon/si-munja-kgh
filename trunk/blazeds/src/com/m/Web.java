@@ -2355,6 +2355,63 @@ public class Web extends SessionManagement{
 		return list;
 	}
 	
+    public List<SentVO> getSentListType(String user_id, int groupIndex, String line, String type) {
+
+		
+		Connection connSMS = null;
+		List<SentVO> list = null;
+		
+		SentFactoryAble sf = null;
+		sf = SentFactory.getInstance();
+			
+		
+			try {
+				if (line.equals("mms") || line.equals("ktmms")  || line.equals("ppmms")) {	
+					connSMS = VbyP.getDB("sms1");
+					sf = SentLMSFactory.getInstance();
+				}
+				else connSMS = VbyP.getDB(line);
+				
+				
+				VbyP.accessLog(user_id+" >> "+line+" 傈价郴开 夸没 :"+ Integer.toString(groupIndex));
+				
+				if (user_id != null && !user_id.equals("")) {	
+					
+					List<SentVO> tmp = sf.getSentList(connSMS, user_id, line, Integer.toString(groupIndex) );
+					SentVO tmpvo = null;
+					if (tmp != null && !SLibrary.isNull(type)) {
+						
+						list = new ArrayList<SentVO>();
+						if (type == "succ") {
+							for (int i = 0; i < tmp.size(); i++) {
+								tmpvo = tmp.get(i);
+								if (tmpvo != null && tmpvo.getResult().equals("己傍") ) {
+									list.add(tmp.get(i));
+								}
+							}
+						} else {
+							for (int i = 0; i < tmp.size(); i++) {
+								tmpvo = tmp.get(i);
+								if (tmpvo != null && !tmpvo.getResult().equals("己傍") ) {
+									list.add(tmp.get(i));
+								}
+							}
+						}
+						
+					} else if (tmp != null && SLibrary.isNull(type)) {
+							list = tmp;
+					}
+					
+				}
+			}catch (Exception e) {}	finally {			
+				try { if ( connSMS != null ) connSMS.close();
+				}catch(SQLException e) { VbyP.errorLog("getSentGroupList >> conn.close() Exception!"); }
+				connSMS = null;
+			}
+		
+		return list;
+	}
+	
 	public BooleanAndDescriptionVO deleteSent(int groupIndex, String line) {
 
 		
