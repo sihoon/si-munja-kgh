@@ -359,6 +359,7 @@
 				for (var i:int = 0; i < arrImageSize.length; i++) {
 					total += arrImageSize[i];
 				}
+				/*
 				if (total > 61439) {
 					arrImage = new Array;
 					arrImageSize = new Array;
@@ -372,6 +373,7 @@
 					
 					ExternalInterface.call("alert", "이미지 용량이 초과 되어 모두 삭제 되었습니다. "+total );
 				}
+				*/
 			}
 			
 		]]>

@@ -262,11 +262,11 @@
 			protected function excelButton_clickHandler(event:MouseEvent,type:Number):void
 			{
 				if (type == 0) {
-					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline), '_blank');
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline), 'nobody');
 				} else if (type == 1) {
-					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=succ"), '_blank');
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=succ"), 'nobody');
 				} else {
-					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=fail"), '_blank');
+					navigateToURL(new URLRequest('sent/sentExcel.jsp?idx='+gidx+'&line='+gline+"&type=fail"), 'nobody');
 				}
 				
 				// type : 0(전체), 1(성공), 2(실패)
