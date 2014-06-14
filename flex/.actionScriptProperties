@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="admin/flex_admin.mxml" projectUUID="3992ba2f-590a-45d7-844b-bd40dbfc127f" version="11">
-  <compiler additionalCompilerArguments="-services &quot;C:\Users\sihoon\workspace\ya-blazeds\WebContent\WEB-INF\flex\services-config.xml&quot; -locale en_US" autoRSLOrdering="true" copyDependentFiles="true" flexSDK="Flex 4.5.1A" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="C:/Users/sihoon/workspace/ya-blazeds/WebContent/ya-flex-debug" outputFolderPath="bin-debug" removeUnusedRSL="true" rootURL="" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="Excel.mxml" projectUUID="3992ba2f-590a-45d7-844b-bd40dbfc127f" version="11">
+  <compiler additionalCompilerArguments="-services &quot;C:\Users\sihoon\workspace\ya-blazeds\WebContent\WEB-INF\flex\services-config.xml&quot; -locale en_US" autoRSLOrdering="true" copyDependentFiles="true" flexSDK="Flex 4.6.0" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderLocation="C:/Users/sihoon/workspace/ya-blazeds/WebContent/ya-flex-debug" outputFolderPath="bin-debug" removeUnusedRSL="true" rootURL="" sourceFolderPath="src" strict="true" targetPlayerVersion="11.1.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -19,12 +19,26 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="admin/flex_admin.mxml"/>
+    <application path="Address.mxml"/>
+    <application path="Excel.mxml"/>
     <application path="Main.mxml"/>
+    <application path="Lms.mxml"/>
+    <application path="Mms.mxml"/>
+    <application path="Phone.mxml"/>
+    <application path="Normal.mxml"/>
+    <application path="Sent.mxml"/>
   </applications>
   <modules>
-    <module application="src/admin/flex_admin.mxml" destPath="admin/module/Billing.swf" optimize="false" sourcePath="src/admin/module/Billing.mxml"/>
-    <module application="src/admin/flex_admin.mxml" destPath="admin/module/Stats.swf" optimize="false" sourcePath="src/admin/module/Stats.mxml"/>
+    <module application="src/admin/flex_admin.mxml" destPath="module/MAddress.swf" optimize="false" sourcePath="src/module/MAddress.mxml"/>
+    <module application="src/admin/flex_admin.mxml" destPath="module/MSent.swf" optimize="false" sourcePath="src/module/MSent.mxml"/>
+    <module application="src/Normal.mxml" destPath="module/MPhone.swf" optimize="false" sourcePath="src/module/MPhone.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MCopyPaste.swf" optimize="false" sourcePath="src/module/MCopyPaste.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MEmoticon.swf" optimize="false" sourcePath="src/module/MEmoticon.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MEmoticonMMS.swf" optimize="false" sourcePath="src/module/MEmoticonMMS.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MExcel.swf" optimize="false" sourcePath="src/module/MExcel.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MPhoto.swf" optimize="false" sourcePath="src/module/MPhoto.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MEmoticonLMS.swf" optimize="false" sourcePath="src/module/MEmoticonLMS.mxml"/>
+    <module application="src/Excel.mxml" destPath="module/MSpecChar.swf" optimize="false" sourcePath="src/module/MSpecChar.mxml"/>
   </modules>
   <workers/>
   <buildCSSFiles/>
